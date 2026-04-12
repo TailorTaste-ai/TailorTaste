@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: Arial;
+  --font-serif: Georgia;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #f2f5f1;
+  color: #141715;
+  line-height: 1.6;
+}
+
+::selection {
+  background: #123a34;
+  color: #fbfdf9;
+}
+
+@layer components {
+  .tt-reveal {
+    animation: tt-fade-up 620ms ease-out both;
+  }
+
+  .tt-reveal-delay-1 {
+    animation-delay: 90ms;
+  }
+
+  .tt-reveal-delay-2 {
+    animation-delay: 150ms;
+  }
+
+  .form-field {
+    @apply w-full rounded-md border border-ink/15 bg-paper px-4 py-3 text-base text-ink outline-none transition placeholder:text-graphite/50 focus:border-accent focus:ring-2 focus:ring-accent/20;
+  }
+}
+
+@keyframes tt-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .tt-reveal,
+  .tt-reveal-delay-1,
+  .tt-reveal-delay-2 {
+    animation: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
