@@ -10,7 +10,8 @@ const contentSecurityPolicy = [
   "font-src 'self' data:",
   "style-src 'self' 'unsafe-inline'",
   "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-  "connect-src 'self' https://api.resend.com",
+  "connect-src 'self' https://api.resend.com https://dl.polyhaven.org https://raw.githack.com",
+  "worker-src 'self' blob:",
   "object-src 'none'",
   "upgrade-insecure-requests",
 ].join("; ");
