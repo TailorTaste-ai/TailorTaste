@@ -116,7 +116,6 @@ export const serviceFit = {
   title: "Waiter-led by design.",
   body: "TailorTaste supports the handout ritual instead of replacing it. Staff select the appropriate menu state; guests simply receive and read a beautiful object.",
   steps: ["Ask or infer the service context", "Set the language or menu state", "Hand out the menu like a traditional card"],
-  diagramPlaceholder: `${assetBrief.placeholders.serviceFlow.title}: ${assetBrief.placeholders.serviceFlow.description}`,
 };
 
 export const futureLayer = {
@@ -124,7 +123,6 @@ export const futureLayer = {
   title: "Today a menu object. Over time, a hospitality software layer.",
   body: "The first wedge is a premium physical menu. The longer-term opportunity is the system behind it: templates, scheduling, operational controls, and, over time, richer menu intelligence.",
   steps: ["Menu object", "Content control", "Operational layer", "Hospitality intelligence"],
-  roadmapPlaceholder: `${assetBrief.placeholders.futureLayer.title}: ${assetBrief.placeholders.futureLayer.description}`,
 };
 
 export const founderNote = {

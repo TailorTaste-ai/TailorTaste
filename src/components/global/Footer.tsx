@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { footerNavigation } from "@/content/navigation";
 import { siteConfig } from "@/lib/site";
@@ -11,13 +12,24 @@ export function Footer() {
           <p className="font-serif text-2xl">{siteConfig.name}</p>
           <p className="text-sm leading-6 text-chalk/70">{siteConfig.productDefinition}</p>
         </div>
-        <nav className="flex flex-wrap gap-4 text-sm text-chalk/70" aria-label="Footer navigation">
-          {footerNavigation.map((item) => (
-            <Link className="transition hover:text-chalk" href={item.href} key={item.href}>
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        <div className="flex flex-col items-start gap-6 md:items-end">
+          <nav className="flex flex-wrap gap-4 text-sm text-chalk/70" aria-label="Footer navigation">
+            {footerNavigation.map((item) => (
+              <Link className="transition hover:text-chalk" href={item.href} key={item.href}>
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+          <a href="https://sph.ethz.ch/" target="_blank" rel="noopener noreferrer">
+            <Image
+              src="/eth-sph-logo.png"
+              alt="ETH Student Project House"
+              width={112}
+              height={28}
+              className="invert opacity-70 transition hover:opacity-100"
+            />
+          </a>
+        </div>
       </Container>
     </footer>
   );
