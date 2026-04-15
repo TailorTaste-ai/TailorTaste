@@ -23,10 +23,10 @@ export function Footer() {
           <div className="flex items-center gap-5">
             <a href="https://www.entrepreneur-club.org/" target="_blank" rel="noopener noreferrer">
               <Image
-                src="/eth-ec-logo.png"
+                src="/eth-ec-logo-transparent.png"
                 alt="ETH Entrepreneur Club"
-                width={140}
-                height={28}
+                width={270}
+                height={54}
                 className="opacity-70 transition hover:opacity-100"
               />
             </a>
