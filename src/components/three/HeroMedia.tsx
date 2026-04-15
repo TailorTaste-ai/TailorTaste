@@ -1,5 +1,6 @@
 "use client";
 
+import { Component, type ErrorInfo, type ReactNode } from "react";
 import dynamic from "next/dynamic";
 
 const InteractiveMenu3D = dynamic(
@@ -17,10 +18,40 @@ const InteractiveMenu3D = dynamic(
   },
 );
 
+class HeroErrorBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error("[HeroMedia] 3D render failed:", error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex h-full min-h-[360px] items-center justify-center rounded-md bg-ink text-center">
+          <p className="text-sm text-chalk/50">
+            Interactive preview unavailable
+          </p>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export function HeroMedia() {
   return (
     <div className="relative h-full min-h-[400px] w-full lg:min-h-[480px]">
-      <InteractiveMenu3D />
+      <HeroErrorBoundary>
+        <InteractiveMenu3D />
+      </HeroErrorBoundary>
     </div>
   );
 }
