@@ -8,7 +8,7 @@ export const primaryCta: CTA = {
 
 export const secondaryCta: CTA = {
   label: "Read the vision",
-  href: "/vision",
+  href: "/about",
   variant: "secondary",
 };
 

@@ -4,13 +4,13 @@ export const faqPage = {
   hero: {
     eyebrow: "FAQ",
     title: "Direct answers for practical questions.",
-    body: "Tailor Taste is early and ambitious. This page keeps scope, stage, and service model expectations clear.",
+    body: "TailorTaste is early and ambitious. This page keeps scope, stage, and service model expectations clear.",
   },
   items: [
     {
-      question: "Is Tailor Taste already a mature, deployed product?",
+      question: "Is TailorTaste already a mature, deployed product?",
       answer:
-        "No. Tailor Taste is pre-pilot. The current focus is validating the paper-like menu object, staff-led workflow, and core operational value.",
+        "No. TailorTaste is pre-pilot. The current focus is validating the paper-like menu object, staff-led workflow, and core operational value.",
     },
     {
       question: "Is this a tablet in disguise?",

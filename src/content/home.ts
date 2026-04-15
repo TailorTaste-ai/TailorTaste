@@ -5,7 +5,7 @@ import { assetBrief } from "./assets";
 export const hero = {
   eyebrow: "A new category for premium hospitality menus",
   title: "Menus should be as dynamic as the hospitality behind them.",
-  body: "Tailor Taste is building a paper-like digital menu system for premium hospitality that preserves the elegance of a physical menu while unlocking the flexibility of software.",
+  body: "TailorTaste is building a paper-like digital menu system for premium hospitality that preserves the elegance of a physical menu while unlocking the flexibility of software.",
   ctas: [primaryCta, secondaryCta],
   mediaLabel: assetBrief.placeholders.hero.title,
   mediaDescription: assetBrief.placeholders.hero.description,
@@ -25,7 +25,7 @@ export const categoryGap: SectionIntro & { items: FeatureItem[]; diagramPlacehol
       body: "QR menus and tablets solve updates while pulling attention into devices.",
     },
     {
-      title: "Tailor Taste is the third path",
+      title: "TailorTaste is the third path",
       body: "A premium physical object with a restrained software layer underneath.",
     },
   ],
@@ -114,7 +114,7 @@ export const dreamOutcomes: SectionIntro & { items: FeatureItem[] } = {
 export const serviceFit = {
   eyebrow: "Service fit",
   title: "Waiter-led by design.",
-  body: "Tailor Taste supports the handout ritual instead of replacing it. Staff select the appropriate menu state; guests simply receive and read a beautiful object.",
+  body: "TailorTaste supports the handout ritual instead of replacing it. Staff select the appropriate menu state; guests simply receive and read a beautiful object.",
   steps: ["Ask or infer the service context", "Set the language or menu state", "Hand out the menu like a traditional card"],
   diagramPlaceholder: `${assetBrief.placeholders.serviceFlow.title}: ${assetBrief.placeholders.serviceFlow.description}`,
 };
@@ -130,13 +130,13 @@ export const futureLayer = {
 export const founderNote = {
   eyebrow: "Founder note",
   title: "Built from a simple refusal.",
-  body: "Premium venues should not have to choose between a beautiful table and an adaptable operation. Tailor Taste starts with the menu because it shapes the first decision, the first tactile impression, and one of hospitality's most visible moments.",
+  body: "Premium venues should not have to choose between a beautiful table and an adaptable operation. TailorTaste starts with the menu because it shapes the first decision, the first tactile impression, and one of hospitality's most visible moments.",
   visualLabel: assetBrief.placeholders.founder.title,
 };
 
 export const finalCta = {
   eyebrow: "First wave",
   title: "For venues, partners, and investors who see the category forming.",
-  body: "Tailor Taste is early, focused, and looking for the right conversations.",
+  body: "TailorTaste is early, focused, and looking for the right conversations.",
   ctas: finalCtas,
 };

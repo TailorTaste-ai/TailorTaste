@@ -4,7 +4,7 @@ export const visionPage = {
   hero: {
     eyebrow: "Vision",
     title: "Between static paper and intrusive screens, a new category is forming.",
-    body: "Menus sit between brand, service, operations, and guest expectation. Tailor Taste exists because this object should be more adaptive without becoming more distracting.",
+    body: "Menus sit between brand, service, operations, and guest expectation. TailorTaste exists because this object should be more adaptive without becoming more distracting.",
   },
   category: {
     eyebrow: "Category logic",
@@ -16,7 +16,7 @@ export const visionPage = {
         body: "Paper keeps atmosphere but resists change. Typical digital menus enable updates but pull attention into interfaces.",
       },
       {
-        title: "What changes with Tailor Taste",
+        title: "What changes with TailorTaste",
         body: "A premium physical object becomes the delivery layer for a restrained software system.",
       },
     ],

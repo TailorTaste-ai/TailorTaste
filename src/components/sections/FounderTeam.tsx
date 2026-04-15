@@ -11,7 +11,7 @@ export function FounderTeam({ founders }: FounderTeamProps) {
         <article className="rounded-[8px] border border-ink/10 bg-chalk p-6 shadow-soft" key={founder.linkedin}>
           <h3 className="font-serif text-2xl text-ink">
             <a
-              className="underline decoration-ink/30 underline-offset-4 transition hover:decoration-ink"
+              className="underline decoration-accent/50 underline-offset-4 transition hover:decoration-accent hover:text-accent"
               href={founder.linkedin}
               target="_blank"
               rel="noopener noreferrer"

@@ -54,9 +54,9 @@ function getResendConfig(): ContactDeliveryConfig | ContactDeliveryConfigError {
   }
 
   const apiKey = process.env.RESEND_API_KEY?.trim();
-  const from = process.env.CONTACT_FROM_EMAIL?.trim() || "Tailor Taste <onboarding@resend.dev>";
+  const from = process.env.CONTACT_FROM_EMAIL?.trim() || "TailorTaste <onboarding@resend.dev>";
   const to = parseRecipients(process.env.CONTACT_TO_EMAILS);
-  const subjectPrefix = process.env.CONTACT_SUBJECT_PREFIX?.trim() || "Tailor Taste Inquiry";
+  const subjectPrefix = process.env.CONTACT_SUBJECT_PREFIX?.trim() || "TailorTaste Inquiry";
 
   if (!to.length) {
     return {
@@ -76,7 +76,7 @@ function getResendConfig(): ContactDeliveryConfig | ContactDeliveryConfigError {
 
 function buildPlainText(values: ContactFormValues) {
   return [
-    "Tailor Taste contact inquiry",
+    "TailorTaste contact inquiry",
     "",
     `Name: ${values.name}`,
     `Email: ${values.email}`,
@@ -102,12 +102,90 @@ function buildHtml(values: ContactFormValues) {
 
   return `
     <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.5;color:#111827">
-      <h2 style="margin:0 0 12px">Tailor Taste contact inquiry</h2>
+      <h2 style="margin:0 0 12px">TailorTaste contact inquiry</h2>
       <table style="border-collapse:collapse;margin-bottom:16px">${metadata}</table>
       <h3 style="margin:0 0 8px">Message</h3>
       <p style="white-space:pre-wrap;margin:0">${values.message}</p>
     </div>
   `;
+}
+
+function buildConfirmationPlainText(values: ContactFormValues) {
+  return [
+    `Hi ${values.name},`,
+    "",
+    "Thank you for reaching out to TailorTaste. We have received your inquiry and will get back to you shortly.",
+    "",
+    "Here is a summary of what you sent:",
+    "",
+    `Inquiry type: ${values.inquiryType}`,
+    `Organization: ${values.organization}`,
+    "",
+    "Message:",
+    values.message,
+    "",
+    "Best regards,",
+    "The TailorTaste Team",
+  ].join("\n");
+}
+
+function buildConfirmationHtml(values: ContactFormValues) {
+  return `
+    <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#141715;max-width:560px">
+      <h2 style="margin:0 0 16px;font-size:20px;color:#141715">Thank you for reaching out</h2>
+      <p style="margin:0 0 16px;color:#3c443d">
+        Hi ${values.name}, we have received your inquiry and our team will follow up shortly.
+      </p>
+      <div style="background:#f2f5f1;border-radius:8px;padding:16px 20px;margin:0 0 20px">
+        <p style="margin:0 0 4px;font-weight:600;font-size:13px;color:#141715">Your inquiry</p>
+        <p style="margin:0 0 2px;font-size:13px;color:#3c443d"><strong>Type:</strong> ${values.inquiryType}</p>
+        <p style="margin:0 0 2px;font-size:13px;color:#3c443d"><strong>Organization:</strong> ${values.organization}</p>
+        <p style="margin:12px 0 4px;font-weight:600;font-size:13px;color:#141715">Message</p>
+        <p style="margin:0;font-size:13px;color:#3c443d;white-space:pre-wrap">${values.message}</p>
+      </div>
+      <p style="margin:0;font-size:13px;color:#3c443d">
+        Best regards,<br/>The TailorTaste Team
+      </p>
+    </div>
+  `;
+}
+
+async function sendViaResend(
+  config: ContactDeliveryConfig,
+  to: string[],
+  subject: string,
+  text: string,
+  html: string,
+  replyTo?: string,
+): Promise<{ ok: boolean; id?: string; error?: string }> {
+  const payload: Record<string, unknown> = {
+    from: config.from,
+    to,
+    subject,
+    text,
+    html,
+  };
+  if (replyTo) {
+    payload.reply_to = replyTo;
+  }
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${config.apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    const errorText = (await response.text()).slice(0, 400);
+    return { ok: false, error: `Resend request failed (${response.status}). ${errorText}` };
+  }
+
+  const result = (await response.json()) as { id?: string };
+  return { ok: true, id: result.id };
 }
 
 export async function sendContactInquiry(values: ContactFormValues): Promise<ContactDeliveryResult> {
@@ -119,37 +197,37 @@ export async function sendContactInquiry(values: ContactFormValues): Promise<Con
   const subject = `${config.subjectPrefix} | ${values.inquiryType}`;
 
   try {
-    const response = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${config.apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: config.from,
-        to: config.to,
-        subject,
-        text: buildPlainText(values),
-        html: buildHtml(values),
-        reply_to: values.email,
-      }),
-      cache: "no-store",
-    });
+    const mainResult = await sendViaResend(
+      config,
+      config.to,
+      subject,
+      buildPlainText(values),
+      buildHtml(values),
+      values.email,
+    );
 
-    if (!response.ok) {
-      const errorText = (await response.text()).slice(0, 400);
+    if (!mainResult.ok) {
       return {
         ok: false,
         reason: "provider",
-        message: `Resend request failed (${response.status}). ${errorText}`,
+        message: mainResult.error ?? "Failed to deliver inquiry.",
       };
     }
 
-    const payload = (await response.json()) as { id?: string };
+    sendViaResend(
+      config,
+      [values.email],
+      "TailorTaste — We received your inquiry",
+      buildConfirmationPlainText(values),
+      buildConfirmationHtml(values),
+    ).catch(() => {
+      // Confirmation is best-effort; don't fail the main request
+    });
+
     return {
       ok: true,
       provider: "resend",
-      messageId: payload.id,
+      messageId: mainResult.id,
     };
   } catch (error) {
     return {

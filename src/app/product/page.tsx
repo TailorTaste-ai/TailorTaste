@@ -15,31 +15,36 @@ export default function ProductPage() {
   return (
     <>
       <section className="py-24">
-        <Container className="space-y-12">
+        <Container className="space-y-16">
           <SectionHeader as="h1" {...productPage.hero} />
-          <div className="grid gap-10 lg:grid-cols-2">
-            <Card className="space-y-8 shadow-none">
-              <SectionHeader {...productPage.objectModel} />
-              <div className="grid gap-3 sm:grid-cols-3">
-                {productPage.objectModel.items.map((item) => (
-                  <div className="rounded-[8px] border border-ink/10 bg-paper px-4 py-3" key={item.title}>
-                    <h3 className="text-sm font-semibold text-ink">{item.title}</h3>
-                    <p className="mt-2 text-sm leading-6 text-graphite">{item.body}</p>
+
+          {/* What it is */}
+          <div className="space-y-8">
+            <SectionHeader {...productPage.objectModel} />
+            <div className="grid gap-5 sm:grid-cols-3">
+              {productPage.objectModel.items.map((item) => (
+                <div className="group rounded-[12px] border border-ink/8 bg-chalk p-6 transition hover:border-ink/15 hover:shadow-soft" key={item.title}>
+                  <h3 className="font-serif text-lg text-ink">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-graphite">{item.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Capabilities */}
+          <div className="space-y-8">
+            <SectionHeader {...productPage.capabilities} />
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {productPage.capabilities.items.map((item, i) => (
+                <div className="flex gap-4 rounded-[12px] border border-ink/8 bg-chalk p-6 transition hover:border-ink/15 hover:shadow-soft" key={item.title}>
+                  <span className="mt-0.5 text-xs font-semibold text-accent/60">{String(i + 1).padStart(2, "0")}</span>
+                  <div>
+                    <h3 className="font-serif text-lg text-ink">{item.title}</h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-graphite">{item.body}</p>
                   </div>
-                ))}
-              </div>
-            </Card>
-            <Card className="space-y-8 shadow-none">
-              <SectionHeader {...productPage.capabilities} />
-              <div className="grid gap-3 sm:grid-cols-2">
-                {productPage.capabilities.items.map((item) => (
-                  <div className="rounded-[8px] border border-ink/10 bg-paper px-4 py-3" key={item.title}>
-                    <h3 className="text-sm font-semibold text-ink">{item.title}</h3>
-                    <p className="mt-2 text-sm leading-6 text-graphite">{item.body}</p>
-                  </div>
-                ))}
-              </div>
-            </Card>
+                </div>
+              ))}
+            </div>
           </div>
         </Container>
       </section>
@@ -98,11 +103,11 @@ export default function ProductPage() {
             <SectionHeader
               eyebrow="Pilot invitation"
               title="Discuss a pilot with focused operators."
-              body="Tailor Taste is currently looking for high-quality conversations with premium venues and service-led teams."
+              body="TailorTaste is currently looking for high-quality conversations with premium venues and service-led teams."
             />
           </div>
           <div>
-            <Button {...primaryCta} className="bg-chalk text-ink hover:bg-paper" />
+            <Button label={primaryCta.label} href={primaryCta.href} variant="inverted" />
           </div>
         </Container>
       </section>

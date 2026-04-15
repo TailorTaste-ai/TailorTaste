@@ -4,6 +4,7 @@ import type { CTA } from "@/lib/site";
 const variantClasses: Record<CTA["variant"], string> = {
   primary: "bg-ink text-chalk hover:bg-graphite",
   secondary: "border border-ink/20 bg-chalk text-ink hover:border-ink/40",
+  inverted: "bg-chalk text-ink hover:bg-paper",
   text: "min-h-0 px-0 py-0 text-ink underline underline-offset-4 hover:text-graphite",
 };
 

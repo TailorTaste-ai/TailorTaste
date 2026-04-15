@@ -2,18 +2,19 @@ import type { FeatureItem, SectionIntro } from "@/lib/site";
 import { Card } from "@/components/primitives/Card";
 import { Container } from "@/components/primitives/Container";
 import { SectionHeader } from "@/components/primitives/SectionHeader";
+import { CategoryDiagram } from "./CategoryDiagram";
 
 export function CategoryGap({
   eyebrow,
   title,
   body,
   items,
-  diagramPlaceholder,
 }: SectionIntro & { items: FeatureItem[]; diagramPlaceholder?: string }) {
   return (
     <section className="tt-reveal tt-reveal-delay-1 py-24">
       <Container className="space-y-12">
         <SectionHeader eyebrow={eyebrow} title={title} body={body} align="center" />
+        <CategoryDiagram />
         <div className="grid gap-4 md:grid-cols-3">
           {items.map((item) => (
             <Card className="space-y-3" key={item.title}>
@@ -22,9 +23,6 @@ export function CategoryGap({
             </Card>
           ))}
         </div>
-        {diagramPlaceholder ? (
-          <div className="rounded-[8px] border border-dashed border-ink/20 bg-chalk px-5 py-4 text-sm text-graphite">{diagramPlaceholder}</div>
-        ) : null}
       </Container>
     </section>
   );

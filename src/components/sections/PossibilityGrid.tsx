@@ -12,10 +12,10 @@ export function PossibilityGrid({ eyebrow, title, body, items }: SectionIntro & 
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
-            <Card className="border-chalk/10 bg-chalk/8 shadow-none" key={item.title}>
+            <div className="rounded-[8px] border border-chalk/15 bg-chalk/[0.04] p-6 backdrop-blur-sm" key={item.title}>
               <h3 className="font-serif text-2xl text-chalk">{item.title}</h3>
               <p className="mt-3 text-sm leading-6 text-chalk/70">{item.body}</p>
-            </Card>
+            </div>
           ))}
         </div>
       </Container>

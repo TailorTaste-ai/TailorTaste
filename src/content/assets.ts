@@ -22,7 +22,7 @@ export const assetBrief = {
     },
     categoryGap: {
       title: "Category Diagram Placeholder",
-      description: "Paper vs intrusive digital vs Tailor Taste diagram for quick category comprehension.",
+      description: "Paper vs intrusive digital vs TailorTaste diagram for quick category comprehension.",
     },
     serviceFlow: {
       title: "Service Flow Placeholder",

@@ -1,7 +1,7 @@
 export type CTA = {
   label: string;
   href: string;
-  variant: "primary" | "secondary" | "text";
+  variant: "primary" | "secondary" | "inverted" | "text";
 };
 
 export type SectionIntro = {
@@ -45,9 +45,13 @@ export type RoadmapStage = {
 
 export type AboutPageContent = {
   hero: SectionIntro;
+  mission: SectionIntro;
+  vision: SectionIntro & { items: FeatureItem[] };
   founderNote: SectionIntro;
   founders: FounderProfile[];
-  sections: SectionIntro[];
+  whyNow: SectionIntro & { items: FeatureItem[] };
+  stage: SectionIntro;
+  conversationFit: SectionIntro;
 };
 
 export type FounderProfile = {
@@ -107,10 +111,10 @@ export type FuturePageContent = {
 };
 
 export const siteConfig = {
-  name: "Tailor Taste",
+  name: "TailorTaste",
   description: "A paper-like digital menu system for premium hospitality.",
   productDefinition:
-    "Tailor Taste is a paper-like digital menu system for premium hospitality that gives restaurants and hotels the flexibility of software without sacrificing the elegance, readability, and immersive feel of a physical menu.",
+    "TailorTaste is a paper-like digital menu system for premium hospitality that gives restaurants and hotels the flexibility of software without sacrificing the elegance, readability, and immersive feel of a physical menu.",
   primaryCTA: "Discuss a pilot",
   url: "https://tailortaste.com",
 };
