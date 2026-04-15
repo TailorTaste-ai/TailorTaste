@@ -20,15 +20,26 @@ export function Footer() {
               </Link>
             ))}
           </nav>
-          <a href="https://sph.ethz.ch/" target="_blank" rel="noopener noreferrer">
-            <Image
-              src="/eth-sph-logo.png"
-              alt="ETH Student Project House"
-              width={112}
-              height={28}
-              className="invert opacity-70 transition hover:opacity-100"
-            />
-          </a>
+          <div className="flex items-center gap-5">
+            <a href="https://www.entrepreneur-club.org/" target="_blank" rel="noopener noreferrer">
+              <Image
+                src="/eth-ec-logo.png"
+                alt="ETH Entrepreneur Club"
+                width={140}
+                height={28}
+                className="opacity-70 transition hover:opacity-100"
+              />
+            </a>
+            <a href="https://sph.ethz.ch/" target="_blank" rel="noopener noreferrer">
+              <Image
+                src="/eth-sph-logo.png"
+                alt="ETH Student Project House"
+                width={112}
+                height={28}
+                className="invert opacity-70 transition hover:opacity-100"
+              />
+            </a>
+          </div>
         </div>
       </Container>
     </footer>
