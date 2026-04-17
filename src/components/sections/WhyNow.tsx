@@ -5,8 +5,8 @@ import { SectionHeader } from "@/components/primitives/SectionHeader";
 
 export function WhyNow({ eyebrow, title, body, items }: SectionIntro & { items: FeatureItem[] }) {
   return (
-    <section className="tt-reveal tt-reveal-delay-2 bg-chalk py-24">
-      <Container className="space-y-12">
+    <section className="tt-reveal tt-reveal-delay-2 bg-chalk section-y">
+      <Container className="space-y-10 sm:space-y-12">
         <SectionHeader eyebrow={eyebrow} title={title} body={body} />
         <div className="grid gap-4 sm:grid-cols-2">
           {items.map((item) => (

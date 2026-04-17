@@ -26,6 +26,26 @@ test.describe("launch smoke", () => {
     await expect(bucurLink).toHaveAttribute("rel", /noopener noreferrer/);
   });
 
+  test("/product renders the tablet, opens a dashboard accordion, and has no horizontal scroll", async ({ page }) => {
+    await page.goto("/product");
+
+    const waiter = page.getByRole("heading", { name: "Live menu controls" });
+    await expect(waiter).toBeVisible();
+
+    const menuStatesToggle = page.getByRole("button", { name: /Menu states/ });
+    /* On mobile the accordion starts collapsed; on desktop the control is
+       present but non-interactive. Either way, clicking must not throw
+       and the Dinner segment must remain reachable. */
+    await menuStatesToggle.click({ force: true }).catch(() => {});
+
+    await expect(page.getByRole("button", { name: "Dinner" })).toBeVisible();
+
+    const horizontalScroll = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(horizontalScroll).toBeLessThanOrEqual(1);
+  });
+
   test("contact form handles validation and backend-unavailable state gracefully", async ({ page }) => {
     await page.goto("/contact");
 

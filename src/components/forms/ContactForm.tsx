@@ -103,7 +103,11 @@ export function ContactForm({ inquiryTypes }: ContactFormProps) {
   }
 
   return (
-    <form className="space-y-5 rounded-[8px] border border-ink/10 bg-chalk p-6 shadow-soft" onSubmit={handleSubmit} noValidate>
+    <form
+      className="space-y-5 rounded-[8px] border border-ink/10 bg-chalk p-5 shadow-soft sm:p-6"
+      onSubmit={handleSubmit}
+      noValidate
+    >
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Name" error={errors.name}>
           <input
@@ -168,7 +172,7 @@ export function ContactForm({ inquiryTypes }: ContactFormProps) {
         />
       </Field>
       <button
-        className="min-h-11 rounded-[8px] bg-ink px-5 py-3 text-sm font-medium text-chalk transition hover:bg-graphite focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+        className="inline-flex w-full min-h-11 items-center justify-center rounded-[8px] bg-ink px-5 py-3 text-sm font-medium text-chalk transition hover:bg-graphite focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
         type="submit"
         disabled={isSubmitting}
       >

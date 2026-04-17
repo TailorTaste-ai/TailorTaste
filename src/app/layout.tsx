@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { SiteShell } from "@/components/global/SiteShell";
 import { shouldAllowIndexing } from "@/lib/env";
@@ -6,6 +6,16 @@ import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
 const allowIndexing = shouldAllowIndexing();
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f2f5f1" },
+    { media: "(prefers-color-scheme: dark)", color: "#141715" },
+  ],
+};
 
 export const metadata: Metadata = {
   title: {
