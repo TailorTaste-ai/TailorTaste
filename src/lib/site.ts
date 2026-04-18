@@ -44,14 +44,16 @@ export type RoadmapStage = {
 };
 
 export type AboutPageContent = {
-  hero: SectionIntro;
-  mission: SectionIntro;
-  vision: SectionIntro & { items: FeatureItem[] };
-  founderNote: SectionIntro;
+  opening: SectionIntro;
+  whyWeCare: SectionIntro;
+  whatWeSaw: SectionIntro;
+  whatWeBelieve: SectionIntro & { items: FeatureItem[] };
+  buildPhilosophy: SectionIntro;
+  whatItIsNot: SectionIntro & { items: FeatureItem[] };
+  foundersIntro: SectionIntro;
   founders: FounderProfile[];
-  whyNow: SectionIntro & { items: FeatureItem[] };
-  stage: SectionIntro;
-  conversationFit: SectionIntro;
+  whereWeAreNow: SectionIntro;
+  closingCta: SectionIntro & { cta: CTA };
 };
 
 export type FounderProfile = {

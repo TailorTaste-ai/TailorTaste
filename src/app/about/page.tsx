@@ -1,147 +1,97 @@
 import type { Metadata } from "next";
 import { Card } from "@/components/primitives/Card";
 import { Container } from "@/components/primitives/Container";
-import { Eyebrow } from "@/components/primitives/Eyebrow";
 import { SectionHeader } from "@/components/primitives/SectionHeader";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { FounderTeam } from "@/components/sections/FounderTeam";
 import { aboutPage } from "@/content/about";
-import { finalCta } from "@/content/home";
-import { roadmapStages } from "@/content/roadmap";
 import { buildPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = buildPageMetadata("About", "/about");
 
 export default function AboutPage() {
+  const closingCta = {
+    eyebrow: aboutPage.closingCta.eyebrow ?? "Closing",
+    title: aboutPage.closingCta.title,
+    body: aboutPage.closingCta.body ?? "",
+    ctas: [aboutPage.closingCta.cta],
+  };
+
   return (
     <>
-      {/* Hero */}
       <section className="py-24">
         <Container className="space-y-6">
-          <SectionHeader as="h1" {...aboutPage.hero} />
+          <SectionHeader as="h1" {...aboutPage.opening} />
         </Container>
       </section>
 
-      {/* Mission — full-width accent band */}
       <section className="bg-cypress py-20 text-chalk">
         <Container className="space-y-6">
-          <p className="text-xs font-semibold uppercase text-chalk/60">
-            {aboutPage.mission.eyebrow}
-          </p>
-          <h2 className="max-w-3xl font-serif text-[2rem] leading-[1.08] text-chalk sm:text-[2.75rem]">
-            {aboutPage.mission.title}
-          </h2>
-          <p className="max-w-2xl text-base leading-7 text-chalk/75">
-            {aboutPage.mission.body}
-          </p>
-        </Container>
-      </section>
-
-      {/* Vision */}
-      <section className="py-24">
-        <Container className="space-y-12">
-          <SectionHeader {...aboutPage.vision} />
-          <div className="grid gap-4 sm:grid-cols-3">
-            {aboutPage.vision.items.map((item) => (
-              <div
-                className="rounded-[8px] border border-ink/10 bg-chalk px-5 py-5"
-                key={item.title}
-              >
-                <h3 className="text-sm font-semibold text-ink">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-sm leading-6 text-graphite">
-                  {item.body}
-                </p>
-              </div>
-            ))}
+          <div className="[&_h2]:text-chalk [&_p]:text-chalk/75">
+            <SectionHeader {...aboutPage.whyWeCare} />
           </div>
         </Container>
       </section>
 
-      {/* Why now */}
+      <section className="py-24">
+        <Container className="space-y-12">
+          <SectionHeader {...aboutPage.whatWeSaw} />
+        </Container>
+      </section>
+
       <section className="border-y border-ink/10 bg-chalk py-24">
         <Container className="space-y-12">
-          <SectionHeader {...aboutPage.whyNow} />
+          <SectionHeader {...aboutPage.whatWeBelieve} />
           <div className="grid gap-4 sm:grid-cols-2">
-            {aboutPage.whyNow.items.map((item) => (
+            {aboutPage.whatWeBelieve.items.map((item) => (
               <Card className="shadow-none" key={item.title}>
                 <h3 className="font-serif text-xl text-ink">{item.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-graphite">
-                  {item.body}
-                </p>
+                <p className="mt-2 text-sm leading-6 text-graphite">{item.body}</p>
               </Card>
             ))}
           </div>
         </Container>
       </section>
 
-      {/* Roadmap */}
-      <section className="bg-ink py-24 text-chalk">
+      <section className="py-24">
         <Container className="space-y-10">
+          <SectionHeader {...aboutPage.buildPhilosophy} />
+        </Container>
+      </section>
+
+      <section className="bg-ink py-24 text-chalk">
+        <Container className="space-y-12">
           <div className="[&_h2]:text-chalk [&_p]:text-chalk/75">
-            <SectionHeader
-              eyebrow="Object to system"
-              title="The menu is the wedge, not the endpoint."
-              body="The first phase is a credible hardware object. Over time, the supporting software layer can expand carefully into operations and intelligence."
-            />
+            <SectionHeader {...aboutPage.whatItIsNot} />
           </div>
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {roadmapStages.map((stage) => (
+          <div className="grid gap-4 sm:grid-cols-2">
+            {aboutPage.whatItIsNot.items.map((item) => (
               <div
                 className="rounded-[8px] border border-chalk/10 bg-chalk/8 p-6"
-                key={stage.title}
+                key={item.title}
               >
-                <p className="text-xs font-semibold uppercase text-chalk/60">
-                  {stage.horizon}
-                </p>
-                <h3 className="mt-3 font-serif text-xl text-chalk">
-                  {stage.title}
-                </h3>
-                <p className="mt-3 text-sm leading-6 text-chalk/70">
-                  {stage.body}
-                </p>
+                <h3 className="font-serif text-xl text-chalk">{item.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-chalk/75">{item.body}</p>
               </div>
             ))}
           </div>
         </Container>
       </section>
 
-      {/* Founders */}
       <section className="py-24">
         <Container className="space-y-12">
-          <SectionHeader {...aboutPage.founderNote} />
+          <SectionHeader {...aboutPage.foundersIntro} />
           <FounderTeam founders={aboutPage.founders} />
         </Container>
       </section>
 
-      {/* Stage + Conversation fit */}
-      <section className="border-t border-ink/10 bg-chalk py-24">
-        <Container>
-          <div className="grid gap-8 md:grid-cols-2">
-            <div className="space-y-4">
-              <Eyebrow>{aboutPage.stage.eyebrow!}</Eyebrow>
-              <h3 className="font-serif text-2xl text-ink">
-                {aboutPage.stage.title}
-              </h3>
-              <p className="text-sm leading-6 text-graphite">
-                {aboutPage.stage.body}
-              </p>
-            </div>
-            <div className="space-y-4">
-              <Eyebrow>{aboutPage.conversationFit.eyebrow!}</Eyebrow>
-              <h3 className="font-serif text-2xl text-ink">
-                {aboutPage.conversationFit.title}
-              </h3>
-              <p className="text-sm leading-6 text-graphite">
-                {aboutPage.conversationFit.body}
-              </p>
-            </div>
-          </div>
+      <section className="border-y border-ink/10 bg-chalk py-24">
+        <Container className="space-y-12">
+          <SectionHeader {...aboutPage.whereWeAreNow} />
         </Container>
       </section>
 
-      <FinalCTA {...finalCta} />
+      <FinalCTA {...closingCta} />
     </>
   );
 }
