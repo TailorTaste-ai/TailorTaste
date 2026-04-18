@@ -386,9 +386,14 @@ export function RestaurantMenu({
 
   /* One shared scale for every column so the typography stays uniform
      across the whole menu. The `resetKey` makes sure we recompute the
-     fit immediately whenever the visible content changes. */
+     fit immediately whenever the visible content changes.
+
+     We always call BOTH hooks unconditionally (rules of hooks), even
+     though only one is active depending on `pdfMode`. The inactive hook
+     never gets refs registered so its scale stays a no-op `1`. */
   const fitResetKey = `${language}-${state}-${diet}-${visible.starters.length}-${visible.chefRecs.length}-${visible.mains.length}-${visible.desserts.length}-${appearVersion}`;
   const FitColumn = useSharedColumnFit(3, fitResetKey);
+  const PdfFit = useSharedColumnFit(1, `pdf-${fitResetKey}`);
 
   /* PDF mode — single column, simulates an uploaded/imported PDF.
      Hidden items stay in the DOM and collapse per-row so individual
@@ -409,39 +414,41 @@ export function RestaurantMenu({
           className={`relative h-full w-full overflow-hidden border px-[4%] py-[3%] ${appearClass}`.trim()}
           style={{ borderColor: `${COLORS.muted}44` }}
         >
-          <p
-            className="text-center font-serif uppercase tracking-[0.3em]"
-            style={{ color: COLORS.muted, fontSize: FS.pdfLabel }}
-          >
-            Imported PDF · {menu.title[language]}
-          </p>
-          <h2
-            className="mt-2 text-center font-serif font-bold"
-            style={{ color: COLORS.ink, fontSize: FS.pdfTitle }}
-          >
-            {headings.starters} &amp; {headings.mains}
-          </h2>
-          <Flourish color={COLORS.gold} width="50%" />
-          <div
-            className="mt-2 flex flex-col"
-            style={{ color: COLORS.ink, fontSize: FS.pdfRow }}
-          >
-            {flat.map((dish) => (
-              <div
-                key={dish.id}
-                className="flex min-w-0 justify-between gap-3 border-b border-dashed pb-1"
-                style={{ borderColor: `${COLORS.muted}33` }}
-              >
-                <span
-                  className="min-w-0 font-serif break-words"
-                  style={{ overflowWrap: "anywhere" }}
+          <PdfFit index={0} className="h-full w-full">
+            <p
+              className="text-center font-serif uppercase tracking-[0.3em]"
+              style={{ color: COLORS.muted, fontSize: FS.pdfLabel }}
+            >
+              Imported PDF · {menu.title[language]}
+            </p>
+            <h2
+              className="mt-2 text-center font-serif font-bold"
+              style={{ color: COLORS.ink, fontSize: FS.pdfTitle }}
+            >
+              {headings.starters} &amp; {headings.mains}
+            </h2>
+            <Flourish color={COLORS.gold} width="50%" />
+            <div
+              className="mt-2 flex flex-col"
+              style={{ color: COLORS.ink, fontSize: FS.pdfRow }}
+            >
+              {flat.map((dish) => (
+                <div
+                  key={dish.id}
+                  className="flex min-w-0 justify-between gap-3 border-b border-dashed pb-1"
+                  style={{ borderColor: `${COLORS.muted}33` }}
                 >
-                  {dish.i18n[language].name}
-                </span>
-                <span className="shrink-0 font-serif tabular-nums">{dish.price}</span>
-              </div>
-            ))}
-          </div>
+                  <span
+                    className="min-w-0 font-serif break-words"
+                    style={{ overflowWrap: "anywhere" }}
+                  >
+                    {dish.i18n[language].name}
+                  </span>
+                  <span className="shrink-0 font-serif tabular-nums">{dish.price}</span>
+                </div>
+              ))}
+            </div>
+          </PdfFit>
         </div>
       </div>
     );
