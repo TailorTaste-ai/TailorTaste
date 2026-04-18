@@ -6,10 +6,9 @@ type ServiceFitProps = {
   title: string;
   body: string;
   steps: string[];
-  diagramPlaceholder?: string;
 };
 
-export function ServiceFit({ eyebrow, title, body, steps, diagramPlaceholder }: ServiceFitProps) {
+export function ServiceFit({ eyebrow, title, body, steps }: ServiceFitProps) {
   return (
     <section className="tt-reveal bg-chalk section-y">
       <Container className="space-y-10 sm:space-y-12">
@@ -24,11 +23,6 @@ export function ServiceFit({ eyebrow, title, body, steps, diagramPlaceholder }: 
             </div>
           ))}
         </div>
-        {diagramPlaceholder ? (
-          <div className="rounded-[8px] border border-dashed border-ink/20 bg-paper px-5 py-4 text-sm text-graphite">
-            {diagramPlaceholder}
-          </div>
-        ) : null}
       </Container>
     </section>
   );

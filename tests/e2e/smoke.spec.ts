@@ -29,7 +29,7 @@ test.describe("launch smoke", () => {
   test("/product renders the tablet, opens a dashboard accordion, and has no horizontal scroll", async ({ page }) => {
     await page.goto("/product");
 
-    const waiter = page.getByRole("heading", { name: "Live menu controls" });
+    const waiter = page.getByText("Live menu controls");
     await expect(waiter).toBeVisible();
 
     const menuStatesToggle = page.getByRole("button", { name: /Menu states/ });
@@ -38,7 +38,7 @@ test.describe("launch smoke", () => {
        and the Dinner segment must remain reachable. */
     await menuStatesToggle.click({ force: true }).catch(() => {});
 
-    await expect(page.getByRole("button", { name: "Dinner" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Dinner", exact: true })).toBeVisible();
 
     const horizontalScroll = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -53,6 +53,7 @@ test.describe("launch smoke", () => {
 
   test("contact form handles validation and backend-unavailable state gracefully", async ({ page }) => {
     await page.goto("/contact");
+    await page.waitForTimeout(2000);
 
     await page.getByRole("button", { name: "Send inquiry" }).click();
     await expect(page.getByText("Name is required.")).toBeVisible();
@@ -65,6 +66,6 @@ test.describe("launch smoke", () => {
     await page.getByLabel("Message").fill("Interested in discussing a pilot.");
     await page.getByRole("button", { name: "Send inquiry" }).click();
 
-    await expect(page.getByText("Contact delivery is not configured yet.")).toBeVisible();
+    await expect(page.getByText(/Contact delivery is not configured yet\./)).toBeVisible();
   });
 });

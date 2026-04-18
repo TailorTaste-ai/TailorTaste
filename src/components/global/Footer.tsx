@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { footerNavigation } from "@/content/navigation";
 import { siteConfig } from "@/lib/site";
@@ -17,20 +18,42 @@ export function Footer() {
           <p className="font-serif text-xl sm:text-2xl">{siteConfig.name}</p>
           <p className="text-sm leading-6 text-chalk/70">{siteConfig.productDefinition}</p>
         </div>
-        <nav
-          className="-mx-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-chalk/70"
-          aria-label="Footer navigation"
-        >
-          {footerNavigation.map((item) => (
-            <Link
-              className="inline-flex min-h-10 items-center rounded-md px-2 transition hover:text-chalk"
-              href={item.href}
-              key={item.href}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        <div className="flex flex-col items-start gap-6 md:items-end">
+          <nav
+            className="-mx-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-chalk/70"
+            aria-label="Footer navigation"
+          >
+            {footerNavigation.map((item) => (
+              <Link
+                className="inline-flex min-h-10 items-center rounded-md px-2 transition hover:text-chalk"
+                href={item.href}
+                key={item.href}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+          <div className="flex items-center gap-5">
+            <a href="https://www.entrepreneur-club.org/" target="_blank" rel="noopener noreferrer">
+              <Image
+                src="/eth-ec-logo-transparent.png"
+                alt="ETH Entrepreneur Club"
+                width={270}
+                height={54}
+                className="opacity-70 transition hover:opacity-100"
+              />
+            </a>
+            <a href="https://sph.ethz.ch/" target="_blank" rel="noopener noreferrer">
+              <Image
+                src="/eth-sph-logo.png"
+                alt="ETH Student Project House"
+                width={112}
+                height={28}
+                className="invert opacity-70 transition hover:opacity-100"
+              />
+            </a>
+          </div>
+        </div>
       </Container>
     </footer>
   );

@@ -6,10 +6,9 @@ type FutureLayerProps = {
   title: string;
   body: string;
   steps: string[];
-  roadmapPlaceholder?: string;
 };
 
-export function FutureLayer({ eyebrow, title, body, steps, roadmapPlaceholder }: FutureLayerProps) {
+export function FutureLayer({ eyebrow, title, body, steps }: FutureLayerProps) {
   return (
     <section className="tt-reveal section-y">
       <Container className="space-y-10 sm:space-y-12">
@@ -24,11 +23,6 @@ export function FutureLayer({ eyebrow, title, body, steps, roadmapPlaceholder }:
             </div>
           ))}
         </div>
-        {roadmapPlaceholder ? (
-          <div className="rounded-[8px] border border-dashed border-ink/20 bg-chalk px-5 py-4 text-sm text-graphite">
-            {roadmapPlaceholder}
-          </div>
-        ) : null}
       </Container>
     </section>
   );

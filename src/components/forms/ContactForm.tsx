@@ -20,7 +20,7 @@ const initialValues: ContactFormValues = {
 };
 
 type ContactFormProps = {
-  inquiryTypes: string[];
+  inquiryTypes: readonly string[];
 };
 
 export function ContactForm({ inquiryTypes }: ContactFormProps) {

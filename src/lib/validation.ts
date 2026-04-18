@@ -11,6 +11,7 @@ export type ContactFormValues = {
 export type ContactFormErrors = Partial<Record<keyof ContactFormValues, string>>;
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const allowedInquiryTypes = new Set<string>(contactInquiryTypes);
 
 export const contactFormLimits = {
   name: 80,
@@ -58,7 +59,7 @@ export function validateContactForm(values: ContactFormValues) {
     errors.inquiryType = "Choose an inquiry type.";
   } else if (normalized.inquiryType.length > contactFormLimits.inquiryType) {
     errors.inquiryType = "Inquiry type is too long.";
-  } else if (!contactInquiryTypes.includes(normalized.inquiryType)) {
+  } else if (!allowedInquiryTypes.has(normalized.inquiryType)) {
     errors.inquiryType = "Choose an inquiry type.";
   }
 
