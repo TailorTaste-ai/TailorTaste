@@ -57,6 +57,26 @@ canvas {
 }
 
 @layer components {
+  .tt-fluid-display {
+    font-size: clamp(1.9rem, 1.2rem + 5vw, 4.5rem);
+    line-height: 1.05;
+  }
+
+  .tt-fluid-heading {
+    font-size: clamp(1.55rem, 1.15rem + 2.6vw, 2.75rem);
+    line-height: 1.08;
+  }
+
+  .tt-fluid-body {
+    font-size: clamp(0.95rem, 0.9rem + 0.35vw, 1.125rem);
+    line-height: 1.75;
+  }
+
+  .tt-fluid-subheading {
+    font-size: clamp(1.2rem, 1.05rem + 0.9vw, 1.5rem);
+    line-height: 1.2;
+  }
+
   .tt-reveal {
     animation: tt-fade-up 620ms ease-out both;
   }

@@ -23,10 +23,10 @@ export function HeroManifesto({ eyebrow, title, body, ctas }: HeroManifestoProps
         <div className="space-y-6 sm:space-y-8">
           <Eyebrow>{eyebrow}</Eyebrow>
           <div className="space-y-5 sm:space-y-6">
-            <h1 className="max-w-4xl text-balance font-serif text-[2.25rem] leading-[1.08] sm:text-5xl sm:leading-[1.05] lg:text-6xl xl:text-7xl xl:leading-none">
+            <h1 className="tt-fluid-display max-w-4xl text-balance font-serif">
               {title}
             </h1>
-            <p className="max-w-2xl text-pretty text-base leading-7 text-chalk/75 sm:text-lg sm:leading-8">
+            <p className="tt-fluid-body max-w-2xl text-pretty text-chalk/75">
               {body}
             </p>
           </div>

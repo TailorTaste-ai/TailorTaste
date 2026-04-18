@@ -28,10 +28,10 @@ export default function AboutPage() {
           <p className="text-xs font-semibold uppercase text-chalk/60">
             {aboutPage.mission.eyebrow}
           </p>
-          <h2 className="text-balance max-w-3xl font-serif text-[1.75rem] leading-[1.12] text-chalk sm:text-[2.25rem] sm:leading-[1.1] md:text-[2.75rem] md:leading-[1.08]">
+          <h2 className="tt-fluid-heading max-w-3xl text-balance font-serif text-chalk">
             {aboutPage.mission.title}
           </h2>
-          <p className="max-w-2xl text-pretty text-base leading-7 text-chalk/75">
+          <p className="tt-fluid-body max-w-2xl text-pretty text-chalk/75">
             {aboutPage.mission.body}
           </p>
         </Container>
@@ -109,12 +109,12 @@ export default function AboutPage() {
           <div className="grid gap-8 md:grid-cols-2 md:gap-10">
             <div className="space-y-4">
               <Eyebrow>{aboutPage.stage.eyebrow!}</Eyebrow>
-              <h3 className="font-serif text-xl text-ink sm:text-2xl">{aboutPage.stage.title}</h3>
+              <h3 className="tt-fluid-subheading font-serif text-ink">{aboutPage.stage.title}</h3>
               <p className="text-sm leading-6 text-graphite">{aboutPage.stage.body}</p>
             </div>
             <div className="space-y-4">
               <Eyebrow>{aboutPage.conversationFit.eyebrow!}</Eyebrow>
-              <h3 className="font-serif text-xl text-ink sm:text-2xl">
+              <h3 className="tt-fluid-subheading font-serif text-ink">
                 {aboutPage.conversationFit.title}
               </h3>
               <p className="text-sm leading-6 text-graphite">{aboutPage.conversationFit.body}</p>
