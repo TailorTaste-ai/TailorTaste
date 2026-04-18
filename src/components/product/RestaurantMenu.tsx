@@ -272,48 +272,41 @@ function menuTransitionClass(version: number): string {
   return version > 0 ? "tt-menu-fade" : "";
 }
 
-/* Auto-fit wrapper: measures the natural content height vs. the available
-   column height and applies a uniform `transform: scale()` if the content
-   would otherwise overflow. This is what guarantees the middle column
-   (chef's box + 6 mains) never shows partially-clipped items, regardless
-   of viewport size, language, or how many items are added in the future. */
-function FitColumn({
-  children,
-  className,
-  style,
-  resetKey,
-}: {
-  children: ReactNode;
-  className?: string;
-  style?: CSSProperties;
-  /* Bumping this remounts/remeasures (used so language/state/diet changes
-     immediately recompute the fit instead of waiting for ResizeObserver). */
-  resetKey?: string | number;
-}) {
-  const outerRef = useRef<HTMLDivElement>(null);
-  const innerRef = useRef<HTMLDivElement>(null);
+/* Shared auto-fit across all three menu columns: measures every column's
+   natural content height vs. its available height and applies the *same*
+   uniform `transform: scale()` to every column (the smallest scale needed
+   so no column overflows). Sharing the scale guarantees text in every
+   column is rendered at the same visual size — the chef's-box / 6-mains
+   middle column dictates the shrink, and the side columns shrink in
+   lock-step so typography stays uniform across the menu. */
+function useSharedColumnFit(columnCount: number, resetKey: string | number) {
+  const outerRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const innerRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [scale, setScale] = useState(1);
 
   useEffect(() => {
-    const outer = outerRef.current;
-    const inner = innerRef.current;
-    if (!outer || !inner) return;
-
     const compute = () => {
-      const avail = outer.clientHeight;
-      /* `scrollHeight` ignores the CSS transform we apply, so it always
-         reports the natural unscaled content height. */
-      const natural = inner.scrollHeight;
-      if (avail <= 0 || natural <= 0) return;
-      const next = natural > avail ? avail / natural : 1;
-      setScale((curr) => (Math.abs(curr - next) > 0.003 ? next : curr));
+      let minScale = 1;
+      for (let i = 0; i < columnCount; i++) {
+        const outer = outerRefs.current[i];
+        const inner = innerRefs.current[i];
+        if (!outer || !inner) continue;
+        const avail = outer.clientHeight;
+        /* `scrollHeight` ignores the CSS transform we apply, so it always
+           reports the natural unscaled content height. */
+        const natural = inner.scrollHeight;
+        if (avail <= 0 || natural <= 0) continue;
+        const colScale = natural > avail ? avail / natural : 1;
+        if (colScale < minScale) minScale = colScale;
+      }
+      setScale((curr) => (Math.abs(curr - minScale) > 0.003 ? minScale : curr));
     };
 
     compute();
 
     const ro = new ResizeObserver(compute);
-    ro.observe(outer);
-    ro.observe(inner);
+    outerRefs.current.forEach((el) => el && ro.observe(el));
+    innerRefs.current.forEach((el) => el && ro.observe(el));
 
     /* Re-measure once fonts finish loading — serif metrics can shift the
        natural height by a few pixels on first paint. */
@@ -321,12 +314,30 @@ function FitColumn({
     fonts?.ready?.then(compute).catch(() => undefined);
 
     return () => ro.disconnect();
-  }, [resetKey]);
+  }, [columnCount, resetKey]);
 
-  return (
-    <div ref={outerRef} className={className} style={{ ...style, overflow: "hidden" }}>
+  const FitColumn = ({
+    index,
+    children,
+    className,
+    style,
+  }: {
+    index: number;
+    children: ReactNode;
+    className?: string;
+    style?: CSSProperties;
+  }) => (
+    <div
+      ref={(el) => {
+        outerRefs.current[index] = el;
+      }}
+      className={className}
+      style={{ ...style, overflow: "hidden" }}
+    >
       <div
-        ref={innerRef}
+        ref={(el) => {
+          innerRefs.current[index] = el;
+        }}
         className="flex flex-col"
         style={{
           transform: scale < 1 ? `scale(${scale})` : undefined,
@@ -338,6 +349,8 @@ function FitColumn({
       </div>
     </div>
   );
+
+  return FitColumn;
 }
 
 export function RestaurantMenu({
@@ -370,6 +383,12 @@ export function RestaurantMenu({
   } as const;
 
   const appearClass = menuTransitionClass(appearVersion);
+
+  /* One shared scale for every column so the typography stays uniform
+     across the whole menu. The `resetKey` makes sure we recompute the
+     fit immediately whenever the visible content changes. */
+  const fitResetKey = `${language}-${state}-${diet}-${visible.starters.length}-${visible.chefRecs.length}-${visible.mains.length}-${visible.desserts.length}-${appearVersion}`;
+  const FitColumn = useSharedColumnFit(3, fitResetKey);
 
   /* PDF mode — single column, simulates an uploaded/imported PDF.
      Hidden items stay in the DOM and collapse per-row so individual
@@ -471,12 +490,12 @@ export function RestaurantMenu({
           <div className="grid min-h-0 flex-1 grid-cols-3 items-stretch">
             {/* Column 1 — Starters */}
             <FitColumn
+              index={0}
               className="h-full min-w-0 px-1.5"
               style={{
                 borderRight: `1px solid ${COLORS.gold}`,
                 containerType: "inline-size",
               }}
-              resetKey={`starters-${language}-${state}-${diet}-${visible.starters.length}-${appearVersion}`}
             >
               <Heading text={headings.starters} colors={COLORS} />
               <DishList items={visible.starters} language={language} colors={COLORS} />
@@ -484,12 +503,12 @@ export function RestaurantMenu({
 
             {/* Column 2 — Chef's Recommendations box + Main Courses */}
             <FitColumn
+              index={1}
               className="h-full min-w-0 px-1.5"
               style={{
                 borderRight: `1px solid ${COLORS.gold}`,
                 containerType: "inline-size",
               }}
-              resetKey={`mains-${language}-${state}-${diet}-${visible.chefRecs.length}-${visible.mains.length}-${appearVersion}`}
             >
               {visible.chefRecs.length > 0 && (
                 <>
@@ -523,9 +542,9 @@ export function RestaurantMenu({
 
             {/* Column 3 — Desserts */}
             <FitColumn
+              index={2}
               className="h-full min-w-0 px-1.5"
               style={{ containerType: "inline-size" }}
-              resetKey={`desserts-${language}-${state}-${diet}-${visible.desserts.length}-${appearVersion}`}
             >
               <Heading text={headings.desserts} colors={COLORS} />
               <DishList items={visible.desserts} language={language} colors={COLORS} />
