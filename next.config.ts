@@ -6,10 +6,10 @@ const contentSecurityPolicy = [
   "base-uri 'self'",
   "form-action 'self'",
   "frame-ancestors 'none'",
-  "img-src 'self' data: https:",
+  "img-src 'self' data: blob:",
   "font-src 'self' data:",
   "style-src 'self' 'unsafe-inline'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+  "script-src 'self' 'unsafe-inline'",
   "connect-src 'self' https://api.resend.com",
   "object-src 'none'",
   "upgrade-insecure-requests",
@@ -31,6 +31,10 @@ const nextConfig: NextConfig = {
       {
         key: "Referrer-Policy",
         value: "strict-origin-when-cross-origin",
+      },
+      {
+        key: "Strict-Transport-Security",
+        value: "max-age=63072000; includeSubDomains; preload",
       },
     ];
 

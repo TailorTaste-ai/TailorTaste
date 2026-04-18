@@ -1,3 +1,5 @@
+import { contactInquiryTypes } from "@/content/contact";
+
 export type ContactFormValues = {
   name: string;
   email: string;
@@ -56,6 +58,8 @@ export function validateContactForm(values: ContactFormValues) {
     errors.inquiryType = "Choose an inquiry type.";
   } else if (normalized.inquiryType.length > contactFormLimits.inquiryType) {
     errors.inquiryType = "Inquiry type is too long.";
+  } else if (!contactInquiryTypes.includes(normalized.inquiryType)) {
+    errors.inquiryType = "Choose an inquiry type.";
   }
 
   if (!normalized.message) {

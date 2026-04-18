@@ -7,7 +7,13 @@ import {
   type ContactFormValues,
 } from "@/lib/validation";
 
-type ContactApiErrorCode = "invalid_json" | "validation_failed" | "delivery_unavailable" | "delivery_failed";
+type ContactApiErrorCode =
+  | "invalid_json"
+  | "validation_failed"
+  | "spam_detected"
+  | "rate_limited"
+  | "delivery_unavailable"
+  | "delivery_failed";
 
 type ContactApiErrorResponse = {
   ok: false;
@@ -23,29 +29,106 @@ type ContactApiSuccessResponse = {
 
 export const runtime = "nodejs";
 
+const CONTACT_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
+const CONTACT_RATE_LIMIT_MAX_REQUESTS = 5;
+const CONTACT_MIN_SUBMIT_DURATION_MS = 2_000;
+const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
+
+type ParsedContactBody = {
+  values: ContactFormValues;
+  companyWebsite: string;
+  startedAt: number | null;
+};
+
 function toStringField(value: unknown) {
   return typeof value === "string" ? value : "";
 }
 
-function parseBody(value: unknown): ContactFormValues {
+function toNumberField(value: unknown) {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+  if (typeof value === "string" && value.trim()) {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+  return null;
+}
+
+function parseBody(value: unknown): ParsedContactBody {
   if (!value || typeof value !== "object") {
     return {
-      name: "",
-      email: "",
-      organization: "",
-      inquiryType: "",
-      message: "",
+      values: {
+        name: "",
+        email: "",
+        organization: "",
+        inquiryType: "",
+        message: "",
+      },
+      companyWebsite: "",
+      startedAt: null,
     };
   }
 
   const body = value as Record<string, unknown>;
   return {
-    name: toStringField(body.name),
-    email: toStringField(body.email),
-    organization: toStringField(body.organization),
-    inquiryType: toStringField(body.inquiryType),
-    message: toStringField(body.message),
+    values: {
+      name: toStringField(body.name),
+      email: toStringField(body.email),
+      organization: toStringField(body.organization),
+      inquiryType: toStringField(body.inquiryType),
+      message: toStringField(body.message),
+    },
+    companyWebsite: toStringField(body.companyWebsite),
+    startedAt: toNumberField(body.startedAt),
   };
+}
+
+function getClientIp(request: Request) {
+  const forwardedFor = request.headers.get("x-forwarded-for");
+  if (forwardedFor) {
+    return forwardedFor.split(",")[0].trim();
+  }
+
+  return request.headers.get("x-real-ip")?.trim() || "unknown";
+}
+
+function takeRateLimitSlot(ipAddress: string, now = Date.now()) {
+  const current = rateLimitStore.get(ipAddress);
+
+  if (!current || current.resetAt <= now) {
+    rateLimitStore.set(ipAddress, {
+      count: 1,
+      resetAt: now + CONTACT_RATE_LIMIT_WINDOW_MS,
+    });
+    return { allowed: true, retryAfterSeconds: 0 };
+  }
+
+  if (current.count >= CONTACT_RATE_LIMIT_MAX_REQUESTS) {
+    return {
+      allowed: false,
+      retryAfterSeconds: Math.max(1, Math.ceil((current.resetAt - now) / 1000)),
+    };
+  }
+
+  current.count += 1;
+  return { allowed: true, retryAfterSeconds: 0 };
+}
+
+function isLikelyBotSubmission(companyWebsite: string, startedAt: number | null, now = Date.now()) {
+  if (companyWebsite.trim()) {
+    return true;
+  }
+
+  if (startedAt === null || startedAt > now) {
+    return true;
+  }
+
+  return now - startedAt < CONTACT_MIN_SUBMIT_DURATION_MS;
+}
+
+export function resetContactRateLimitForTests() {
+  rateLimitStore.clear();
 }
 
 export async function POST(request: Request) {
@@ -64,7 +147,26 @@ export async function POST(request: Request) {
     );
   }
 
-  const values = normalizeContactFormValues(parseBody(json));
+  const { values: rawValues, companyWebsite, startedAt } = parseBody(json);
+  const rateLimit = takeRateLimitSlot(getClientIp(request));
+
+  if (!rateLimit.allowed) {
+    return NextResponse.json<ContactApiErrorResponse>(
+      {
+        ok: false,
+        error: "rate_limited",
+        message: "Too many inquiries were submitted from this connection. Please wait a few minutes and try again.",
+      },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(rateLimit.retryAfterSeconds),
+        },
+      },
+    );
+  }
+
+  const values = normalizeContactFormValues(rawValues);
   const validationErrors = validateContactForm(values);
 
   if (hasContactFormErrors(validationErrors)) {
@@ -76,6 +178,17 @@ export async function POST(request: Request) {
         fieldErrors: validationErrors,
       },
       { status: 422 },
+    );
+  }
+
+  if (isLikelyBotSubmission(companyWebsite, startedAt)) {
+    return NextResponse.json<ContactApiErrorResponse>(
+      {
+        ok: false,
+        error: "spam_detected",
+        message: "We could not submit your inquiry right now. Please try again in a moment.",
+      },
+      { status: 400 },
     );
   }
 

@@ -46,6 +46,11 @@ test.describe("launch smoke", () => {
     expect(horizontalScroll).toBeLessThanOrEqual(1);
   });
 
+  test("home page renders the interactive hero canvas under the production CSP", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator("canvas").first()).toBeVisible();
+  });
+
   test("contact form handles validation and backend-unavailable state gracefully", async ({ page }) => {
     await page.goto("/contact");
 

@@ -32,6 +32,18 @@ describe("validateContactForm", () => {
     expect(errors.email).toBe("Use a valid email address.");
   });
 
+  it("rejects inquiry types outside the allowlist", () => {
+    const errors = validateContactForm({
+      name: "Ty",
+      email: "ty@tailortaste.com",
+      organization: "Tailor Taste",
+      inquiryType: "Unlisted category",
+      message: "Hello",
+    });
+
+    expect(errors.inquiryType).toBe("Choose an inquiry type.");
+  });
+
   it("enforces max field lengths", () => {
     const errors = validateContactForm({
       name: "n".repeat(contactFormLimits.name + 1),
