@@ -2,6 +2,13 @@
 
 import Image from "next/image";
 import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
+import {
   dishMatchesDiet,
   menuByState,
   type Diet,
@@ -265,6 +272,74 @@ function menuTransitionClass(version: number): string {
   return version > 0 ? "tt-menu-fade" : "";
 }
 
+/* Auto-fit wrapper: measures the natural content height vs. the available
+   column height and applies a uniform `transform: scale()` if the content
+   would otherwise overflow. This is what guarantees the middle column
+   (chef's box + 6 mains) never shows partially-clipped items, regardless
+   of viewport size, language, or how many items are added in the future. */
+function FitColumn({
+  children,
+  className,
+  style,
+  resetKey,
+}: {
+  children: ReactNode;
+  className?: string;
+  style?: CSSProperties;
+  /* Bumping this remounts/remeasures (used so language/state/diet changes
+     immediately recompute the fit instead of waiting for ResizeObserver). */
+  resetKey?: string | number;
+}) {
+  const outerRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const outer = outerRef.current;
+    const inner = innerRef.current;
+    if (!outer || !inner) return;
+
+    const compute = () => {
+      const avail = outer.clientHeight;
+      /* `scrollHeight` ignores the CSS transform we apply, so it always
+         reports the natural unscaled content height. */
+      const natural = inner.scrollHeight;
+      if (avail <= 0 || natural <= 0) return;
+      const next = natural > avail ? avail / natural : 1;
+      setScale((curr) => (Math.abs(curr - next) > 0.003 ? next : curr));
+    };
+
+    compute();
+
+    const ro = new ResizeObserver(compute);
+    ro.observe(outer);
+    ro.observe(inner);
+
+    /* Re-measure once fonts finish loading — serif metrics can shift the
+       natural height by a few pixels on first paint. */
+    const fonts = (document as Document & { fonts?: { ready?: Promise<unknown> } }).fonts;
+    fonts?.ready?.then(compute).catch(() => undefined);
+
+    return () => ro.disconnect();
+  }, [resetKey]);
+
+  return (
+    <div ref={outerRef} className={className} style={{ ...style, overflow: "hidden" }}>
+      <div
+        ref={innerRef}
+        className="flex flex-col"
+        style={{
+          transform: scale < 1 ? `scale(${scale})` : undefined,
+          transformOrigin: "top center",
+          width: "100%",
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
 export function RestaurantMenu({
   language = "en",
   state = "dinner",
@@ -393,26 +468,28 @@ export function RestaurantMenu({
               style={{ backgroundColor: COLORS.gold }}
             />
           )}
-          <div className="grid min-h-0 flex-1 grid-cols-3 items-start">
+          <div className="grid min-h-0 flex-1 grid-cols-3 items-stretch">
             {/* Column 1 — Starters */}
-            <div
-              className="flex h-full min-w-0 flex-col px-1.5"
+            <FitColumn
+              className="h-full min-w-0 px-1.5"
               style={{
                 borderRight: `1px solid ${COLORS.gold}`,
                 containerType: "inline-size",
               }}
+              resetKey={`starters-${language}-${state}-${diet}-${visible.starters.length}-${appearVersion}`}
             >
               <Heading text={headings.starters} colors={COLORS} />
               <DishList items={visible.starters} language={language} colors={COLORS} />
-            </div>
+            </FitColumn>
 
             {/* Column 2 — Chef's Recommendations box + Main Courses */}
-            <div
-              className="flex h-full min-w-0 flex-col px-1.5"
+            <FitColumn
+              className="h-full min-w-0 px-1.5"
               style={{
                 borderRight: `1px solid ${COLORS.gold}`,
                 containerType: "inline-size",
               }}
+              resetKey={`mains-${language}-${state}-${diet}-${visible.chefRecs.length}-${visible.mains.length}-${appearVersion}`}
             >
               {visible.chefRecs.length > 0 && (
                 <>
@@ -442,16 +519,17 @@ export function RestaurantMenu({
 
               <Heading text={headings.mains} colors={COLORS} />
               <DishList items={visible.mains} language={language} colors={COLORS} />
-            </div>
+            </FitColumn>
 
             {/* Column 3 — Desserts */}
-            <div
-              className="flex h-full min-w-0 flex-col px-1.5"
+            <FitColumn
+              className="h-full min-w-0 px-1.5"
               style={{ containerType: "inline-size" }}
+              resetKey={`desserts-${language}-${state}-${diet}-${visible.desserts.length}-${appearVersion}`}
             >
               <Heading text={headings.desserts} colors={COLORS} />
               <DishList items={visible.desserts} language={language} colors={COLORS} />
-            </div>
+            </FitColumn>
           </div>
         </div>
 
