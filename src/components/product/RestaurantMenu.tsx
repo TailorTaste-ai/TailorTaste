@@ -2,6 +2,13 @@
 
 import Image from "next/image";
 import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
+import {
   dishMatchesDiet,
   menuByState,
   type Diet,
@@ -31,30 +38,33 @@ const GOLD = "#9a8e7a";
 
 const COLORS = { paper: PAPER, ink: INK, muted: MUTED, gold: GOLD };
 
-/* Fluid font sizes — values scale with the tablet frame's inline-size
-   via container queries (cqw). The Tailwind text-[Xpx] classes below
-   each usage stay in place as a static fallback for browsers that do
-   not support container queries; the inline clamp() overrides them
-   where supported.
+/* Fluid font sizes — values scale with the *nearest* container that
+   declares `container-type: inline-size`. Each column (and the chef's
+   box) sets its own container, so `cqw` here resolves against the
+   column / box width, not the whole menu. That way the same desktop
+   ratio is preserved on mobile: the menu just becomes a smaller copy
+   of itself rather than wrapping text mid-word.
 
-   Caps are intentionally conservative so long localized dish names
-   (e.g. "Velouté de Champignons Sauvages", "Carpaccio de Tomates
-   Anciennes") never overflow the ~170px three-column grid inside the
-   tablet screen. */
+   `name`, `desc`, `price`, `heading`, `chef`, `empty`, `separator`
+   are sized against a single column (~33% of menu width) or the chef
+   box (~30%). The `brand*`, `monogram`, `pdfTitle`, `pdfLabel`, and
+   `pdfRow` values size against the full menu width. */
 const FS = {
-  name: "clamp(8.5px, 2.5cqw, 11px)",
-  desc: "clamp(6.5px, 1.9cqw, 8.5px)",
-  price: "clamp(7px, 2.1cqw, 9.5px)",
-  heading: "clamp(8px, 2.5cqw, 10.5px)",
-  chef: "clamp(7.5px, 2.3cqw, 10px)",
-  brandName: "clamp(8.5px, 2.5cqw, 11px)",
-  brandSubtitle: "clamp(6.5px, 1.9cqw, 8.5px)",
-  monogram: "clamp(8px, 2.3cqw, 10px)",
-  empty: "clamp(6.5px, 1.9cqw, 8.5px)",
-  separator: "clamp(6px, 1.8cqw, 8px)",
-  pdfLabel: "clamp(8px, 2.2cqw, 10.5px)",
-  pdfTitle: "clamp(14px, 4.6cqw, 22px)",
-  pdfRow: "clamp(8px, 2.3cqw, 11px)",
+  /* per-column / per-chef-box (cqw = % of column or chef box width) */
+  name: "clamp(6px, 7cqw, 12px)",
+  desc: "clamp(5px, 5.5cqw, 9px)",
+  price: "clamp(5.5px, 6cqw, 10px)",
+  heading: "clamp(6px, 7cqw, 11px)",
+  chef: "clamp(5.5px, 6.5cqw, 10px)",
+  empty: "clamp(5px, 5.5cqw, 9px)",
+  separator: "clamp(4.5px, 5cqw, 8px)",
+  /* full-menu (cqw = % of menu width) */
+  brandName: "clamp(7px, 2.5cqw, 11px)",
+  brandSubtitle: "clamp(5.5px, 1.9cqw, 8.5px)",
+  monogram: "clamp(7px, 2.3cqw, 10px)",
+  pdfLabel: "clamp(7px, 2.2cqw, 10.5px)",
+  pdfTitle: "clamp(12px, 4.6cqw, 22px)",
+  pdfRow: "clamp(7px, 2.3cqw, 11px)",
 } as const;
 
 function Flourish({ color, width = "60%" }: { color: string; width?: string }) {
@@ -88,19 +98,19 @@ function DishRow({
   return (
     <div className="min-w-0 px-1 py-0 text-center">
       <p
-        className="font-serif text-[8px] font-bold leading-[1.15] break-words hyphens-auto sm:text-[9.5px]"
-        style={{ color: colors.ink, fontSize: FS.name, overflowWrap: "anywhere" }}
+        className="font-serif font-bold leading-[1.15]"
+        style={{ color: colors.ink, fontSize: FS.name }}
       >
         {text.name}
       </p>
       <p
-        className="font-serif text-[6.5px] italic leading-[1.15] break-words hyphens-auto sm:text-[7.5px]"
-        style={{ color: colors.muted, fontSize: FS.desc, overflowWrap: "anywhere" }}
+        className="font-serif italic leading-[1.15]"
+        style={{ color: colors.muted, fontSize: FS.desc }}
       >
         {text.desc}
       </p>
       <p
-        className="font-serif text-[7px] leading-[1.15] sm:text-[8.5px]"
+        className="font-serif leading-[1.15]"
         style={{ color: colors.ink, fontSize: FS.price }}
       >
         {dish.price}
@@ -124,7 +134,7 @@ function DishItem({
     <div>
       {showLeadingSeparator && (
         <p
-          className="mt-[2px] mb-[2px] text-center font-serif text-[6px] leading-none"
+          className="mt-[2px] mb-[2px] text-center font-serif leading-none"
           style={{ color: colors.gold, fontSize: FS.separator }}
         >
           ·   ·   ·
@@ -147,7 +157,7 @@ function DishList({
   if (items.length === 0) {
     return (
       <p
-        className="mt-1 text-center font-serif text-[7px] italic leading-tight"
+        className="mt-1 text-center font-serif italic leading-tight"
         style={{ color: `${colors.muted}99`, fontSize: FS.empty }}
       >
         no items
@@ -173,7 +183,7 @@ function Heading({ text, colors }: { text: string; colors: typeof COLORS }) {
   return (
     <div className="mb-1">
       <h3
-        className="text-center font-serif text-[8.5px] font-bold uppercase leading-tight tracking-[0.22em] sm:text-[10px]"
+        className="text-center font-serif font-bold uppercase leading-tight tracking-[0.18em]"
         style={{ color: colors.ink, fontVariant: "small-caps", fontSize: FS.heading }}
       >
         {text}
@@ -205,7 +215,7 @@ function BrandHeader({
         aria-hidden
       >
         <span
-          className="font-serif text-[8.5px] font-bold leading-none tracking-[0.05em]"
+          className="font-serif font-bold leading-none tracking-[0.05em]"
           style={{ color: colors.ink, fontSize: FS.monogram }}
         >
           {brand.monogram}
@@ -213,7 +223,7 @@ function BrandHeader({
       </div>
       <div className="flex flex-col items-center text-center leading-none">
         <p
-          className="text-[8.5px] font-bold uppercase tracking-[0.32em] sm:text-[9.5px]"
+          className="font-bold uppercase tracking-[0.32em]"
           style={{
             color: colors.ink,
             fontFamily: "var(--font-serif, ui-serif)",
@@ -223,7 +233,7 @@ function BrandHeader({
           {brand.name}
         </p>
         <p
-          className="mt-0.5 font-serif text-[6.5px] italic tracking-wide sm:text-[7px]"
+          className="mt-0.5 font-serif italic tracking-wide"
           style={{ color: colors.muted, fontSize: FS.brandSubtitle }}
         >
           {brand.subtitle[language]}
@@ -262,6 +272,87 @@ function menuTransitionClass(version: number): string {
   return version > 0 ? "tt-menu-fade" : "";
 }
 
+/* Shared auto-fit across all three menu columns: measures every column's
+   natural content height vs. its available height and applies the *same*
+   uniform `transform: scale()` to every column (the smallest scale needed
+   so no column overflows). Sharing the scale guarantees text in every
+   column is rendered at the same visual size — the chef's-box / 6-mains
+   middle column dictates the shrink, and the side columns shrink in
+   lock-step so typography stays uniform across the menu. */
+function useSharedColumnFit(columnCount: number, resetKey: string | number) {
+  const outerRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const innerRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const compute = () => {
+      let minScale = 1;
+      for (let i = 0; i < columnCount; i++) {
+        const outer = outerRefs.current[i];
+        const inner = innerRefs.current[i];
+        if (!outer || !inner) continue;
+        const avail = outer.clientHeight;
+        /* `scrollHeight` ignores the CSS transform we apply, so it always
+           reports the natural unscaled content height. */
+        const natural = inner.scrollHeight;
+        if (avail <= 0 || natural <= 0) continue;
+        const colScale = natural > avail ? avail / natural : 1;
+        if (colScale < minScale) minScale = colScale;
+      }
+      setScale((curr) => (Math.abs(curr - minScale) > 0.003 ? minScale : curr));
+    };
+
+    compute();
+
+    const ro = new ResizeObserver(compute);
+    outerRefs.current.forEach((el) => el && ro.observe(el));
+    innerRefs.current.forEach((el) => el && ro.observe(el));
+
+    /* Re-measure once fonts finish loading — serif metrics can shift the
+       natural height by a few pixels on first paint. */
+    const fonts = (document as Document & { fonts?: { ready?: Promise<unknown> } }).fonts;
+    fonts?.ready?.then(compute).catch(() => undefined);
+
+    return () => ro.disconnect();
+  }, [columnCount, resetKey]);
+
+  const FitColumn = ({
+    index,
+    children,
+    className,
+    style,
+  }: {
+    index: number;
+    children: ReactNode;
+    className?: string;
+    style?: CSSProperties;
+  }) => (
+    <div
+      ref={(el) => {
+        outerRefs.current[index] = el;
+      }}
+      className={className}
+      style={{ ...style, overflow: "hidden" }}
+    >
+      <div
+        ref={(el) => {
+          innerRefs.current[index] = el;
+        }}
+        className="flex flex-col"
+        style={{
+          transform: scale < 1 ? `scale(${scale})` : undefined,
+          transformOrigin: "top center",
+          width: "100%",
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+
+  return FitColumn;
+}
+
 export function RestaurantMenu({
   language = "en",
   state = "dinner",
@@ -293,6 +384,17 @@ export function RestaurantMenu({
 
   const appearClass = menuTransitionClass(appearVersion);
 
+  /* One shared scale for every column so the typography stays uniform
+     across the whole menu. The `resetKey` makes sure we recompute the
+     fit immediately whenever the visible content changes.
+
+     We always call BOTH hooks unconditionally (rules of hooks), even
+     though only one is active depending on `pdfMode`. The inactive hook
+     never gets refs registered so its scale stays a no-op `1`. */
+  const fitResetKey = `${language}-${state}-${diet}-${visible.starters.length}-${visible.chefRecs.length}-${visible.mains.length}-${visible.desserts.length}-${appearVersion}`;
+  const FitColumn = useSharedColumnFit(3, fitResetKey);
+  const PdfFit = useSharedColumnFit(1, `pdf-${fitResetKey}`);
+
   /* PDF mode — single column, simulates an uploaded/imported PDF.
      Hidden items stay in the DOM and collapse per-row so individual
      toggles only animate the affected line. */
@@ -312,39 +414,41 @@ export function RestaurantMenu({
           className={`relative h-full w-full overflow-hidden border px-[4%] py-[3%] ${appearClass}`.trim()}
           style={{ borderColor: `${COLORS.muted}44` }}
         >
-          <p
-            className="text-center font-serif text-[8.5px] uppercase tracking-[0.3em]"
-            style={{ color: COLORS.muted, fontSize: FS.pdfLabel }}
-          >
-            Imported PDF · {menu.title[language]}
-          </p>
-          <h2
-            className="mt-2 text-center font-serif text-[16px] font-bold sm:text-[20px]"
-            style={{ color: COLORS.ink, fontSize: FS.pdfTitle }}
-          >
-            {headings.starters} &amp; {headings.mains}
-          </h2>
-          <Flourish color={COLORS.gold} width="50%" />
-          <div
-            className="mt-2 flex flex-col text-[9px] sm:text-[10.5px]"
-            style={{ color: COLORS.ink, fontSize: FS.pdfRow }}
-          >
-            {flat.map((dish) => (
-              <div
-                key={dish.id}
-                className="flex min-w-0 justify-between gap-3 border-b border-dashed pb-1"
-                style={{ borderColor: `${COLORS.muted}33` }}
-              >
-                <span
-                  className="min-w-0 font-serif break-words"
-                  style={{ overflowWrap: "anywhere" }}
+          <PdfFit index={0} className="h-full w-full">
+            <p
+              className="text-center font-serif uppercase tracking-[0.3em]"
+              style={{ color: COLORS.muted, fontSize: FS.pdfLabel }}
+            >
+              Imported PDF · {menu.title[language]}
+            </p>
+            <h2
+              className="mt-2 text-center font-serif font-bold"
+              style={{ color: COLORS.ink, fontSize: FS.pdfTitle }}
+            >
+              {headings.starters} &amp; {headings.mains}
+            </h2>
+            <Flourish color={COLORS.gold} width="50%" />
+            <div
+              className="mt-2 flex flex-col"
+              style={{ color: COLORS.ink, fontSize: FS.pdfRow }}
+            >
+              {flat.map((dish) => (
+                <div
+                  key={dish.id}
+                  className="flex min-w-0 justify-between gap-3 border-b border-dashed pb-1"
+                  style={{ borderColor: `${COLORS.muted}33` }}
                 >
-                  {dish.i18n[language].name}
-                </span>
-                <span className="shrink-0 font-serif tabular-nums">{dish.price}</span>
-              </div>
-            ))}
-          </div>
+                  <span
+                    className="min-w-0 font-serif break-words"
+                    style={{ overflowWrap: "anywhere" }}
+                  >
+                    {dish.i18n[language].name}
+                  </span>
+                  <span className="shrink-0 font-serif tabular-nums">{dish.price}</span>
+                </div>
+              ))}
+            </div>
+          </PdfFit>
         </div>
       </div>
     );
@@ -390,33 +494,42 @@ export function RestaurantMenu({
               style={{ backgroundColor: COLORS.gold }}
             />
           )}
-          <div className="grid min-h-0 flex-1 grid-cols-3 items-start">
+          <div className="grid min-h-0 flex-1 grid-cols-3 items-stretch">
             {/* Column 1 — Starters */}
-            <div
-              className="flex h-full min-w-0 flex-col px-1.5"
-              style={{ borderRight: `1px solid ${COLORS.gold}` }}
+            <FitColumn
+              index={0}
+              className="h-full min-w-0 px-1.5"
+              style={{
+                borderRight: `1px solid ${COLORS.gold}`,
+                containerType: "inline-size",
+              }}
             >
               <Heading text={headings.starters} colors={COLORS} />
               <DishList items={visible.starters} language={language} colors={COLORS} />
-            </div>
+            </FitColumn>
 
             {/* Column 2 — Chef's Recommendations box + Main Courses */}
-            <div
-              className="flex h-full min-w-0 flex-col px-1.5"
-              style={{ borderRight: `1px solid ${COLORS.gold}` }}
+            <FitColumn
+              index={1}
+              className="h-full min-w-0 px-1.5"
+              style={{
+                borderRight: `1px solid ${COLORS.gold}`,
+                containerType: "inline-size",
+              }}
             >
               {visible.chefRecs.length > 0 && (
                 <>
                   <div
-                    className="mx-auto w-[92%] px-2 py-1.5"
+                    className="mx-auto w-[92%] px-1 py-1.5"
                     style={{
                       border: `1.5px solid ${COLORS.ink}`,
                       outline: `1px solid ${COLORS.ink}`,
                       outlineOffset: "-5px",
+                      containerType: "inline-size",
                     }}
                   >
                     <h3
-                      className="text-center font-serif text-[7.5px] font-bold leading-tight break-words sm:text-[9px]"
+                      className="text-center font-serif font-bold leading-tight"
                       style={{ color: COLORS.ink, fontVariant: "small-caps", fontSize: FS.chef }}
                     >
                       {headings.chef1}
@@ -432,13 +545,17 @@ export function RestaurantMenu({
 
               <Heading text={headings.mains} colors={COLORS} />
               <DishList items={visible.mains} language={language} colors={COLORS} />
-            </div>
+            </FitColumn>
 
             {/* Column 3 — Desserts */}
-            <div className="flex h-full min-w-0 flex-col px-1.5">
+            <FitColumn
+              index={2}
+              className="h-full min-w-0 px-1.5"
+              style={{ containerType: "inline-size" }}
+            >
               <Heading text={headings.desserts} colors={COLORS} />
               <DishList items={visible.desserts} language={language} colors={COLORS} />
-            </div>
+            </FitColumn>
           </div>
         </div>
 
