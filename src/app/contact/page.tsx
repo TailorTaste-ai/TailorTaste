@@ -9,11 +9,11 @@ export const metadata: Metadata = buildPageMetadata("Contact", "/contact");
 
 export default function ContactPage() {
   return (
-    <section className="py-24">
-      <Container className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr]">
-        <div className="space-y-8">
+    <section className="section-y">
+      <Container className="grid gap-10 md:gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+        <div className="space-y-6 sm:space-y-8">
           <SectionHeader as="h1" {...contactPage.hero} />
-          <div className="rounded-[8px] border border-ink/10 bg-chalk p-6 text-sm leading-6 text-graphite">
+          <div className="rounded-[8px] border border-ink/10 bg-chalk p-5 text-sm leading-6 text-graphite sm:p-6">
             {contactPage.deliveryNote}
           </div>
         </div>

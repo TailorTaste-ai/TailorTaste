@@ -25,7 +25,7 @@ export function Button({ label, href, variant, className = "" }: ButtonProps) {
 
 export function ButtonCluster({ ctas }: { ctas: CTA[] }) {
   return (
-    <div className="flex flex-col gap-3 sm:flex-row">
+    <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
       {ctas.map((cta) => (
         <Button key={`${cta.label}-${cta.href}`} {...cta} />
       ))}

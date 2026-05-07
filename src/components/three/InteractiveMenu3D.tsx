@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo, Suspense } from "react";
+import { useRef, useMemo, useEffect, useState, Suspense } from "react";
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import {
   OrbitControls,
@@ -28,7 +28,6 @@ const SW = W - BEZEL * 2;
 const SH = H - BEZEL * 2;
 
 /* ─── Palette ─── */
-const CASE_COLOR = "#2f4633";
 const SCREEN_BG = "#F7F2E8";
 const INK = "#12100d";
 const MUTED = "#3b352f";
@@ -340,8 +339,19 @@ function MenuTablet() {
   const logoTex = useLoader(THREE.TextureLoader, "/textures/tt-logo-gold.png");
   const transparentLogoTex = useMemo(() => createTransparentLogoTexture(logoTex.image), [logoTex.image]);
   const backLeatherTex = useLoader(THREE.TextureLoader, "/textures/leather-green-back.png");
-  backLeatherTex.colorSpace = THREE.SRGBColorSpace;
-  backLeatherTex.anisotropy = 16;
+
+  /*
+   * Three.js textures are designed to be configured by mutation; doing it inside
+   * an effect keeps the React-hooks immutability rule satisfied while preserving
+   * the intent (set once after the texture loads).
+   */
+  useEffect(() => {
+    /* eslint-disable react-hooks/immutability -- Three.js textures are configured by mutation */
+    backLeatherTex.colorSpace = THREE.SRGBColorSpace;
+    backLeatherTex.anisotropy = 16;
+    backLeatherTex.needsUpdate = true;
+    /* eslint-enable react-hooks/immutability */
+  }, [backLeatherTex]);
 
   /* Gentle floating — no Z-rotation drift */
   useFrame((state) => {
@@ -422,11 +432,24 @@ const LOCKED_POLAR = Math.acos(0.6 / Math.sqrt(0.36 + 20.25));
 
 /* ─── Exported scene ─── */
 export function InteractiveMenu3D() {
+  /* Lower the DPR ceiling on small viewports to relieve fill-rate
+     pressure on mid-range phones. Desktops keep the sharper [1, 2]. */
+  const [isCompact, setIsCompact] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const mql = window.matchMedia("(max-width: 640px)");
+    const update = () => setIsCompact(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
+
   return (
     <Canvas
       camera={{ position: [0, 0.6, 4.5], fov: 32 }}
-      style={{ width: "100%", height: "100%", touchAction: "none" }}
-      dpr={[1, 2]}
+      /* `pan-y` lets a vertical swipe scroll the page; horizontal drags still rotate the tablet. */
+      style={{ width: "100%", height: "100%", touchAction: "pan-y" }}
+      dpr={isCompact ? [1, 1.5] : [1, 2]}
       gl={{ antialias: true, logarithmicDepthBuffer: true }}
     >
       <ambientLight intensity={0.55} />

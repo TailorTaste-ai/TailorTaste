@@ -20,11 +20,12 @@ const initialValues: ContactFormValues = {
 };
 
 type ContactFormProps = {
-  inquiryTypes: string[];
+  inquiryTypes: readonly string[];
 };
 
 export function ContactForm({ inquiryTypes }: ContactFormProps) {
   const [values, setValues] = useState(initialValues);
+  const [companyWebsite, setCompanyWebsite] = useState("");
   const [errors, setErrors] = useState<ContactFormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitState, setSubmitState] = useState<{ status: "idle" | "success" | "error"; message: string }>({
@@ -32,6 +33,7 @@ export function ContactForm({ inquiryTypes }: ContactFormProps) {
     message: "",
   });
   const [started, setStarted] = useState(false);
+  const [submissionStartedAt, setSubmissionStartedAt] = useState(() => Date.now());
 
   function updateValue(field: keyof ContactFormValues, value: string) {
     if (!started) {
@@ -61,7 +63,11 @@ export function ContactForm({ inquiryTypes }: ContactFormProps) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(normalized),
+        body: JSON.stringify({
+          ...normalized,
+          companyWebsite,
+          startedAt: submissionStartedAt,
+        }),
       });
 
       const payload = (await response.json()) as {
@@ -90,8 +96,10 @@ export function ContactForm({ inquiryTypes }: ContactFormProps) {
         message: payload.message ?? "Thanks. Your inquiry has been sent.",
       });
       setValues(initialValues);
+      setCompanyWebsite("");
       setErrors({});
       setStarted(false);
+      setSubmissionStartedAt(Date.now());
     } catch {
       setSubmitState({
         status: "error",
@@ -103,7 +111,21 @@ export function ContactForm({ inquiryTypes }: ContactFormProps) {
   }
 
   return (
-    <form className="space-y-5 rounded-[8px] border border-ink/10 bg-chalk p-6 shadow-soft" onSubmit={handleSubmit} noValidate>
+    <form
+      className="space-y-5 rounded-[8px] border border-ink/10 bg-chalk p-5 shadow-soft sm:p-6"
+      onSubmit={handleSubmit}
+      noValidate
+    >
+      <input
+        name="companyWebsite"
+        type="text"
+        tabIndex={-1}
+        autoComplete="off"
+        value={companyWebsite}
+        onChange={(event) => setCompanyWebsite(event.target.value)}
+        style={{ position: "absolute", left: "-9999px" }}
+        aria-hidden="true"
+      />
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Name" error={errors.name}>
           <input
@@ -168,7 +190,7 @@ export function ContactForm({ inquiryTypes }: ContactFormProps) {
         />
       </Field>
       <button
-        className="min-h-11 rounded-[8px] bg-ink px-5 py-3 text-sm font-medium text-chalk transition hover:bg-graphite focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+        className="inline-flex w-full min-h-11 items-center justify-center rounded-[8px] bg-ink px-5 py-3 text-sm font-medium text-chalk transition hover:bg-graphite focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
         type="submit"
         disabled={isSubmitting}
       >

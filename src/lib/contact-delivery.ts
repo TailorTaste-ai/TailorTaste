@@ -31,6 +31,19 @@ type ContactDeliveryConfig = {
   subjectPrefix: string;
 };
 
+function sanitizeHeaderValue(input: string) {
+  return input.replace(/[\r\n]+/g, " ").trim();
+}
+
+export function escapeHtml(input: string) {
+  return input
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function parseRecipients(value: string | undefined): string[] {
   if (!value) {
     return [];
@@ -88,7 +101,7 @@ function buildPlainText(values: ContactFormValues) {
   ].join("\n");
 }
 
-function buildHtml(values: ContactFormValues) {
+export function buildHtml(values: ContactFormValues) {
   const rows = [
     ["Name", values.name],
     ["Email", values.email],
@@ -97,7 +110,10 @@ function buildHtml(values: ContactFormValues) {
   ];
 
   const metadata = rows
-    .map(([key, value]) => `<tr><td style="padding:4px 0;font-weight:600">${key}</td><td style="padding:4px 0">${value}</td></tr>`)
+    .map(
+      ([key, value]) =>
+        `<tr><td style="padding:4px 0;font-weight:600">${key}</td><td style="padding:4px 0">${escapeHtml(value)}</td></tr>`,
+    )
     .join("");
 
   return `
@@ -105,49 +121,36 @@ function buildHtml(values: ContactFormValues) {
       <h2 style="margin:0 0 12px">TailorTaste contact inquiry</h2>
       <table style="border-collapse:collapse;margin-bottom:16px">${metadata}</table>
       <h3 style="margin:0 0 8px">Message</h3>
-      <p style="white-space:pre-wrap;margin:0">${values.message}</p>
+      <p style="white-space:pre-wrap;margin:0">${escapeHtml(values.message)}</p>
     </div>
   `;
 }
 
-function buildConfirmationPlainText(values: ContactFormValues) {
+export function buildConfirmationPlainText() {
   return [
-    `Hi ${values.name},`,
-    "",
     "Thank you for reaching out to TailorTaste. We have received your inquiry and will get back to you shortly.",
-    "",
-    "Here is a summary of what you sent:",
-    "",
-    `Inquiry type: ${values.inquiryType}`,
-    `Organization: ${values.organization}`,
-    "",
-    "Message:",
-    values.message,
     "",
     "Best regards,",
     "The TailorTaste Team",
   ].join("\n");
 }
 
-function buildConfirmationHtml(values: ContactFormValues) {
+export function buildConfirmationHtml() {
   return `
     <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#141715;max-width:560px">
       <h2 style="margin:0 0 16px;font-size:20px;color:#141715">Thank you for reaching out</h2>
       <p style="margin:0 0 16px;color:#3c443d">
-        Hi ${values.name}, we have received your inquiry and our team will follow up shortly.
+        Thank you for reaching out to TailorTaste. We have received your inquiry and our team will follow up shortly.
       </p>
-      <div style="background:#f2f5f1;border-radius:8px;padding:16px 20px;margin:0 0 20px">
-        <p style="margin:0 0 4px;font-weight:600;font-size:13px;color:#141715">Your inquiry</p>
-        <p style="margin:0 0 2px;font-size:13px;color:#3c443d"><strong>Type:</strong> ${values.inquiryType}</p>
-        <p style="margin:0 0 2px;font-size:13px;color:#3c443d"><strong>Organization:</strong> ${values.organization}</p>
-        <p style="margin:12px 0 4px;font-weight:600;font-size:13px;color:#141715">Message</p>
-        <p style="margin:0;font-size:13px;color:#3c443d;white-space:pre-wrap">${values.message}</p>
-      </div>
       <p style="margin:0;font-size:13px;color:#3c443d">
         Best regards,<br/>The TailorTaste Team
       </p>
     </div>
   `;
+}
+
+export function buildInquirySubject(subjectPrefix: string, inquiryType: string) {
+  return `${sanitizeHeaderValue(subjectPrefix)} | ${sanitizeHeaderValue(inquiryType)}`;
 }
 
 async function sendViaResend(
@@ -194,7 +197,7 @@ export async function sendContactInquiry(values: ContactFormValues): Promise<Con
     return config;
   }
 
-  const subject = `${config.subjectPrefix} | ${values.inquiryType}`;
+  const subject = buildInquirySubject(config.subjectPrefix, values.inquiryType);
 
   try {
     const mainResult = await sendViaResend(
@@ -218,8 +221,8 @@ export async function sendContactInquiry(values: ContactFormValues): Promise<Con
       config,
       [values.email],
       "TailorTaste — We received your inquiry",
-      buildConfirmationPlainText(values),
-      buildConfirmationHtml(values),
+      buildConfirmationPlainText(),
+      buildConfirmationHtml(),
     ).catch(() => {
       // Confirmation is best-effort; don't fail the main request
     });

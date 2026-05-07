@@ -65,7 +65,7 @@ export type FounderProfile = {
 export type ContactPageContent = {
   hero: SectionIntro;
   deliveryNote: string;
-  inquiryTypes: string[];
+  inquiryTypes: readonly string[];
 };
 
 export type AssetBriefItem = {

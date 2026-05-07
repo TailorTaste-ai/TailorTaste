@@ -11,14 +11,14 @@ export function CategoryGap({
   items,
 }: SectionIntro & { items: FeatureItem[]; diagramPlaceholder?: string }) {
   return (
-    <section className="tt-reveal tt-reveal-delay-1 py-24">
-      <Container className="space-y-12">
+    <section className="tt-reveal tt-reveal-delay-1 section-y">
+      <Container className="space-y-10 sm:space-y-12">
         <SectionHeader eyebrow={eyebrow} title={title} body={body} align="center" />
         <CategoryDiagram />
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
           {items.map((item) => (
             <Card className="space-y-3" key={item.title}>
-              <h3 className="font-serif text-2xl text-ink">{item.title}</h3>
+              <h3 className="font-serif text-xl text-ink sm:text-2xl">{item.title}</h3>
               <p className="text-sm leading-6 text-graphite">{item.body}</p>
             </Card>
           ))}

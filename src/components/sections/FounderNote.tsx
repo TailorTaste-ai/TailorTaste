@@ -10,11 +10,13 @@ type FounderNoteProps = {
 
 export function FounderNote({ eyebrow, title, body, visualLabel }: FounderNoteProps) {
   return (
-    <section className="tt-reveal bg-chalk py-24">
+    <section className="tt-reveal bg-chalk section-y">
       <Container width="narrow">
-        <div className="rounded-md border border-ink/10 bg-paper p-8 shadow-soft sm:p-10">
+        <div className="rounded-md border border-ink/10 bg-paper p-6 shadow-soft sm:p-8 md:p-10">
           <SectionHeader eyebrow={eyebrow} title={title} body={body} />
-          <p className="mt-8 text-sm font-medium text-accent">{visualLabel ?? "Founder note placeholder"}</p>
+          {visualLabel ? (
+            <p className="mt-6 text-sm font-medium text-accent sm:mt-8">{visualLabel}</p>
+          ) : null}
         </div>
       </Container>
     </section>

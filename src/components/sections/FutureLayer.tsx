@@ -10,13 +10,16 @@ type FutureLayerProps = {
 
 export function FutureLayer({ eyebrow, title, body, steps }: FutureLayerProps) {
   return (
-    <section className="tt-reveal py-24">
-      <Container className="space-y-12">
+    <section className="tt-reveal section-y">
+      <Container className="space-y-10 sm:space-y-12">
         <SectionHeader eyebrow={eyebrow} title={title} body={body} />
-        <div className="grid gap-3 md:grid-cols-4">
-          {steps.map((step) => (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {steps.map((step, i) => (
             <div className="rounded-md border border-ink/10 bg-chalk p-5" key={step}>
-              <p className="text-sm font-medium text-ink">{step}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-accent/70">
+                {String(i + 1).padStart(2, "0")}
+              </p>
+              <p className="mt-2 text-sm font-medium text-ink">{step}</p>
             </div>
           ))}
         </div>

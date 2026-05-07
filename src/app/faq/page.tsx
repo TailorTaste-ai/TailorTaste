@@ -12,14 +12,16 @@ export const metadata: Metadata = buildPageMetadata("FAQ", "/faq");
 export default function FaqPage() {
   return (
     <>
-      <section className="py-24">
-        <Container className="space-y-10">
+      <section className="section-y">
+        <Container className="space-y-8 sm:space-y-10">
           <SectionHeader as="h1" {...faqPage.hero} />
           <div className="grid gap-4">
             {faqPage.items.map((item) => (
               <Card className="shadow-none" key={item.question}>
                 <details className="group">
-                  <summary className="cursor-pointer list-none font-serif text-2xl text-ink">{item.question}</summary>
+                  <summary className="cursor-pointer list-none font-serif text-xl text-ink sm:text-2xl">
+                    {item.question}
+                  </summary>
                   <p className="mt-3 text-sm leading-7 text-graphite">{item.answer}</p>
                 </details>
               </Card>

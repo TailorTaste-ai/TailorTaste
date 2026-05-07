@@ -13,5 +13,5 @@ const widths = {
 };
 
 export function Container({ children, className = "", width = "standard" }: ContainerProps) {
-  return <div className={`mx-auto w-full px-5 sm:px-8 ${widths[width]} ${className}`}>{children}</div>;
+  return <div className={`container-safe mx-auto w-full ${widths[width]} ${className}`}>{children}</div>;
 }
