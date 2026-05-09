@@ -115,13 +115,14 @@ export function buildHtml(values: ContactFormValues) {
         `<tr><td style="padding:4px 0;font-weight:600">${key}</td><td style="padding:4px 0">${escapeHtml(value)}</td></tr>`,
     )
     .join("");
+  const message = escapeHtml(values.message);
 
   return `
     <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.5;color:#111827">
       <h2 style="margin:0 0 12px">TailorTaste contact inquiry</h2>
       <table style="border-collapse:collapse;margin-bottom:16px">${metadata}</table>
       <h3 style="margin:0 0 8px">Message</h3>
-      <p style="white-space:pre-wrap;margin:0">${escapeHtml(values.message)}</p>
+      <p style="white-space:pre-wrap;margin:0">${message}</p>
     </div>
   `;
 }

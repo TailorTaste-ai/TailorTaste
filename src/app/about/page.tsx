@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { Card } from "@/components/primitives/Card";
 import { Container } from "@/components/primitives/Container";
+import { Eyebrow } from "@/components/primitives/Eyebrow";
 import { SectionHeader } from "@/components/primitives/SectionHeader";
 import { FinalCTA } from "@/components/sections/FinalCTA";
+import { FounderFit } from "@/components/sections/FounderFit";
 import { FounderTeam } from "@/components/sections/FounderTeam";
 import { aboutPage } from "@/content/about";
 import { buildPageMetadata } from "@/lib/metadata";
+import type { FeatureItem, MetricItem, SectionIntro } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata("About", "/about");
 
@@ -19,79 +21,83 @@ export default function AboutPage() {
 
   return (
     <>
-      <section className="py-24">
-        <Container className="space-y-6">
-          <SectionHeader as="h1" {...aboutPage.opening} />
-        </Container>
-      </section>
-
-      <section className="bg-cypress py-20 text-chalk">
-        <Container className="space-y-6">
-          <div className="[&_h2]:text-chalk [&_p]:text-chalk/75">
-            <SectionHeader {...aboutPage.whyWeCare} />
+      <section className="border-b border-ink/10 py-16 sm:py-20 lg:py-24">
+        <Container className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
+          <div className="space-y-8">
+            <SectionHeader as="h1" {...aboutPage.hero} />
+            <div className="grid gap-3">
+              {aboutPage.hero.items.map((item) => (
+                <article className="rounded-[8px] border border-ink/10 bg-chalk p-5" key={item.title}>
+                  <h2 className="font-serif text-xl leading-tight text-ink">{item.title}</h2>
+                  <p className="mt-2 text-sm leading-6 text-graphite">{item.body}</p>
+                </article>
+              ))}
+            </div>
           </div>
-        </Container>
-      </section>
 
-      <section className="py-24">
-        <Container className="space-y-12">
-          <SectionHeader {...aboutPage.whatWeSaw} />
-        </Container>
-      </section>
-
-      <section className="border-y border-ink/10 bg-chalk py-24">
-        <Container className="space-y-12">
-          <SectionHeader {...aboutPage.whatWeBelieve} />
-          <div className="grid gap-4 sm:grid-cols-2">
-            {aboutPage.whatWeBelieve.items.map((item) => (
-              <Card className="shadow-none" key={item.title}>
-                <h3 className="font-serif text-xl text-ink">{item.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-graphite">{item.body}</p>
-              </Card>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      <section className="py-24">
-        <Container className="space-y-10">
-          <SectionHeader {...aboutPage.buildPhilosophy} />
-        </Container>
-      </section>
-
-      <section className="bg-ink py-24 text-chalk">
-        <Container className="space-y-12">
-          <div className="[&_h2]:text-chalk [&_p]:text-chalk/75">
-            <SectionHeader {...aboutPage.whatItIsNot} />
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {aboutPage.whatItIsNot.items.map((item) => (
-              <div
-                className="rounded-[8px] border border-chalk/10 bg-chalk/8 p-6"
-                key={item.title}
-              >
-                <h3 className="font-serif text-xl text-chalk">{item.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-chalk/75">{item.body}</p>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      <section className="py-24">
-        <Container className="space-y-12">
-          <SectionHeader {...aboutPage.foundersIntro} />
           <FounderTeam founders={aboutPage.founders} />
         </Container>
       </section>
 
+      <section className="py-20 sm:py-24">
+        <Container className="space-y-14">
+          <FounderFit {...aboutPage.founderFit} />
+          <MetricGrid {...aboutPage.trackRecord} />
+        </Container>
+      </section>
+
       <section className="border-y border-ink/10 bg-chalk py-24">
-        <Container className="space-y-12">
-          <SectionHeader {...aboutPage.whereWeAreNow} />
+        <Container className="space-y-16">
+          <FeatureGrid {...aboutPage.domainComplement} />
+          <FeatureGrid {...aboutPage.operatingStyle} />
+        </Container>
+      </section>
+
+      <section className="py-24">
+        <Container>
+          <SectionHeader {...aboutPage.currentFocus} />
         </Container>
       </section>
 
       <FinalCTA {...closingCta} />
     </>
+  );
+}
+
+function FeatureGrid({ eyebrow, title, body, items }: SectionIntro & { items: FeatureItem[] }) {
+  return (
+    <div className="space-y-8">
+      <SectionHeader eyebrow={eyebrow} title={title} body={body} />
+      <div className="grid gap-4 md:grid-cols-3">
+        {items.map((item) => (
+          <article className="rounded-[8px] border border-ink/10 bg-paper p-6" key={item.title}>
+            <h3 className="font-serif text-xl leading-tight text-ink">{item.title}</h3>
+            <p className="mt-3 text-sm leading-6 text-graphite">{item.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MetricGrid({ eyebrow, title, body, items }: SectionIntro & { items: MetricItem[] }) {
+  return (
+    <div className="space-y-8 border-t border-ink/10 pt-12">
+      <div className="max-w-3xl space-y-4">
+        {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
+        <h2 className="tt-fluid-heading text-balance font-serif text-ink">{title}</h2>
+        {body ? <p className="tt-fluid-body text-pretty text-graphite">{body}</p> : null}
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {items.map((item) => (
+          <article className="rounded-[8px] border border-ink/10 bg-chalk p-5" key={item.label}>
+            <p className="text-xs font-medium uppercase text-accent">{item.label}</p>
+            <p className="mt-3 font-serif text-3xl leading-tight text-ink">{item.value}</p>
+            <p className="mt-3 text-sm leading-6 text-graphite">{item.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
   );
 }

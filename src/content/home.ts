@@ -11,25 +11,24 @@ export const hero = {
   mediaDescription: assetBrief.placeholders.hero.description,
 };
 
-export const categoryGap: SectionIntro & { items: FeatureItem[]; diagramPlaceholder: string } = {
+export const categoryGap: SectionIntro & { items: FeatureItem[] } = {
   eyebrow: "The missing middle",
-  title: "Between static paper and intrusive screens, there should be something better.",
-  body: "Premium hospitality should not have to choose between beauty and control.",
+  title: "Paper has presence. QR has control. TailorTaste is the missing middle.",
+  body: "Paper menus feel right in the room, but they are slow to change. QR menus are easy to update, but pull guests into a screen. TailorTaste keeps the menu as a beautiful physical object, with software quietly underneath.",
   items: [
     {
-      title: "Paper is elegant",
-      body: "It fits the room and the ritual, but it is slow to change.",
+      title: "Paper menus",
+      body: "Beautiful on the table. Hard to change.",
     },
     {
-      title: "Most digital menus are flexible",
-      body: "QR menus and tablets solve updates while pulling attention into devices.",
+      title: "TailorTaste",
+      body: "Looks like a menu. Works like software. Controlled by staff.",
     },
     {
-      title: "TailorTaste is the third path",
-      body: "A premium physical object with a restrained software layer underneath.",
+      title: "QR & tablets",
+      body: "Easy to update. Wrong mood for premium service.",
     },
   ],
-  diagramPlaceholder: `${assetBrief.placeholders.categoryGap.title}: ${assetBrief.placeholders.categoryGap.description}`,
 };
 
 export const whyNow: SectionIntro & { items: FeatureItem[] } = {

@@ -28,6 +28,7 @@ const SW = W - BEZEL * 2;
 const SH = H - BEZEL * 2;
 
 /* ─── Palette ─── */
+const CASE_COLOR = "#2f4633";
 const SCREEN_BG = "#F7F2E8";
 const INK = "#12100d";
 const MUTED = "#3b352f";
@@ -369,7 +370,7 @@ function MenuTablet() {
     <group ref={group} rotation={[-0.12, 0, 0]} scale={0.8}>
       {/* ── Case body — solid color for thin edges/corners ── */}
       <RoundedBox args={[W, H, D]} radius={R} smoothness={4}>
-        <meshPhysicalMaterial color="#294233" roughness={0.92} metalness={0.01} clearcoat={0.04} clearcoatRoughness={0.96} envMapIntensity={0.05} />
+        <meshPhysicalMaterial color={CASE_COLOR} roughness={0.92} metalness={0.01} clearcoat={0.04} clearcoatRoughness={0.96} envMapIntensity={0.05} />
       </RoundedBox>
 
       {/* ── Front leather (full face, sits on top of case) ── */}

@@ -39,17 +39,17 @@ export function Footer() {
                 src="/eth-ec-logo-transparent.png"
                 alt="ETH Entrepreneur Club"
                 width={270}
-                height={54}
-                className="opacity-70 transition hover:opacity-100"
+                height={61}
+                className="h-auto opacity-70 transition hover:opacity-100"
               />
             </a>
             <a href="https://sph.ethz.ch/" target="_blank" rel="noopener noreferrer">
               <Image
                 src="/eth-sph-logo.png"
                 alt="ETH Student Project House"
-                width={112}
-                height={28}
-                className="invert opacity-70 transition hover:opacity-100"
+                width={110}
+                height={32}
+                className="h-auto invert opacity-70 transition hover:opacity-100"
               />
             </a>
           </div>

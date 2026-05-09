@@ -1,98 +1,164 @@
 import type { AboutPageContent } from "@/lib/site";
 
 export const aboutPage: AboutPageContent = {
-  opening: {
-    eyebrow: "About",
-    title:
-      "Premium hospitality should not have to choose between elegance and operational flexibility.",
-    body: "Paper menus feel right, but they are rigid. Most digital alternatives are easier to update, but they often make the table feel colder, more transactional, and less considered. We started Tailor Taste because we believe restaurants and hotels should not have to make that trade-off.",
-  },
-  whyWeCare: {
-    eyebrow: "Why we care",
-    title:
-      "In premium hospitality, the menu is part of the experience, not just a piece of information.",
-    body: "Tailor Taste came from a simple conviction. One of us grew up around hospitality and saw how much guest experience depends on details that many people overlook. At the same time, we understood why restaurants moved toward digital tools. QR codes and tablets give operators flexibility, but they often do so by making the dining experience feel worse. We did not want to accept that as the only option.",
-  },
-  whatWeSaw: {
-    eyebrow: "What we saw",
-    title:
-      "Paper makes change inconvenient, while typical digital formats often dilute elegance.",
-    body: "Restaurants and hotels that care deeply about cuisine, atmosphere, and service often work with ingredients that are seasonal, variable, and sourced to a very high standard. Prices move. Availability changes. Menus evolve. Current options force teams to choose between atmosphere and agility. That is the problem we wanted to solve.",
-  },
-  whatWeBelieve: {
-    eyebrow: "What we believe",
-    title: "A clear set of principles guides every product decision.",
-    body: "These beliefs define how Tailor Taste should behave at the table and behind the scenes.",
+  hero: {
+    eyebrow: "Cofounders",
+    title: "Built by two Cofounders who already know how to execute together.",
+    body: "Ty Stevens and Bucur Andrei Borcoman have worked together for more than 1.5 years through ETH Entrepreneur Club, building trust across fast-moving teams, strategic decisions, and high-effort execution.",
     items: [
       {
-        title: "Technology should support hospitality",
-        body: "Technology should support hospitality, not dominate it.",
+        title: "1.5+ years working together",
+        body: "A tested working relationship from ETH Entrepreneur Club, not a newly assembled founding pair.",
       },
       {
-        title: "Flexibility should preserve elegance",
-        body: "Flexibility should not come at the cost of elegance.",
+        title: "Shared leadership standard",
+        body: "Both have led large teams individually and know what it takes to move people toward an outcome.",
       },
       {
-        title: "A premium menu should remain a menu",
-        body: "A premium menu should still feel like a menu, not a self-ordering device.",
-      },
-      {
-        title: "Digital tools should elevate service",
-        body: "Digital tools at the table should improve service, not replace it.",
+        title: "Complementary founder instincts",
+        body: "Ty leads strategy, industry understanding, recruiting, leadership, and selling. Bucur leads the technical and hardware build.",
       },
     ],
-  },
-  buildPhilosophy: {
-    eyebrow: "Why we are building it this way",
-    title:
-      "Paper-like by design, staff-controlled by default, practical where flexibility matters.",
-    body: "Tailor Taste is being built as a paper-like digital menu for restaurants and hotels where operational flexibility matters, but where the experience still has to feel refined. The product is intentionally designed around a different philosophy from most restaurant tech. It is staff-controlled rather than guest-operated. It is built to feel closer to paper than to a tablet. And it focuses on practical flexibility where it matters most: language switching, menu changes, and readability in low-light settings.",
-  },
-  whatItIsNot: {
-    eyebrow: "What it is not",
-    title: "Deliberate non-goals protect the premium table experience.",
-    body: "These boundaries are intentional. We do not believe a premium table should feel like an interface.",
-    items: [
-      {
-        title: "Not a QR workflow",
-        body: "It is not a QR workflow.",
-      },
-      {
-        title: "Not a self-ordering tablet",
-        body: "It is not a self-ordering tablet.",
-      },
-      {
-        title: "Not generic table tech",
-        body: "It is not generic restaurant technology placed on a table.",
-      },
-    ],
-  },
-  foundersIntro: {
-    eyebrow: "Who is behind it",
-    title: "Built by founders with complementary hospitality and engineering perspectives.",
-    body: "Tailor Taste was founded by Ty Stevens and Bucur Andrei Borcoman, two founders at ETH Zurich with complementary perspectives on the problem. Ty Stevens brings the hospitality instinct behind the product, with a strong focus on how service feels to the guest and why premium environments demand more care, taste, and restraint than most digital tools currently offer. Bucur Andrei Borcoman studies Mechanical Engineering at ETH Zurich and brings the hardware engineering mindset needed to turn that vision into a physical product that feels considered, durable, and appropriate for real hospitality environments. Together, we are building Tailor Taste at the intersection of hospitality, hardware, and design.",
   },
   founders: [
     {
       name: "Ty Stevens",
-      role: "Co-founder",
+      role: "Cofounder",
       linkedin: "https://www.linkedin.com/in/ty-stevens-/",
+      summary:
+        "Strategic founder with indirect behind-the-scenes exposure to how major hotel chains operate, plus strong instincts for recruiting, leadership, and selling.",
+      focusAreas: [
+        "Strategy, positioning, and go-to-market judgment",
+        "Hospitality insight from indirect industry exposure",
+        "Recruiting, leadership, and customer-facing execution",
+      ],
+      portrait: {
+        alt: "Portrait placeholder for Ty Stevens",
+        initials: "TS",
+        placeholder: "Cofounder portrait",
+      },
     },
     {
       name: "Bucur Andrei Borcoman",
-      role: "Co-founder",
+      role: "Cofounder",
       linkedin: "https://www.linkedin.com/in/bucur-andrei-borcoman/",
+      summary:
+        "Technical founder focused on hardware, with roughly eight years of building robots, machinery, and mechanical systems in different forms.",
+      focusAreas: [
+        "Hardware thinking and physical product execution",
+        "Robotics, machinery, and technical prototyping",
+        "Fast technical iteration from concept to build",
+      ],
+      portrait: {
+        alt: "Portrait placeholder for Bucur Andrei Borcoman",
+        initials: "BB",
+        placeholder: "Cofounder portrait",
+      },
     },
   ],
-  whereWeAreNow: {
-    eyebrow: "Where we are now",
-    title: "Building the first version with deliberate focus before broader rollout.",
-    body: "We are currently building the first version of Tailor Taste and refining it carefully before broader rollout. Our focus is simple: prove that a digital menu can deliver real operational flexibility while still feeling calm, elegant, and appropriate in premium service. We would rather build deliberately than pretend certainty too early.",
+  founderFit: {
+    eyebrow: "Founder fit",
+    title: "The important thing is not only what each founder knows. It is how the pair works.",
+    body: "Ty and Bucur have already operated together under pressure, moved quickly, and built confidence in each other's judgment across strategy, leadership, and technical execution.",
+    items: [
+      {
+        title: "Tested working rhythm",
+        body: "More than 1.5 years of collaboration through ETH Entrepreneur Club gave the team real evidence of speed, trust, and decision quality.",
+      },
+      {
+        title: "Strategic and technical balance",
+        body: "Ty brings industry sense, sales orientation, recruiting, and strategy. Bucur brings deep technical judgment, especially around hardware.",
+      },
+      {
+        title: "Mutual domain fluency",
+        body: "Each founder has a clear edge, but neither works in isolation. Both understand enough of the other's domain to make decisions quickly together.",
+      },
+    ],
+  },
+  trackRecord: {
+    eyebrow: "Execution record",
+    title: "ETH Entrepreneur Club gave the team a live proving ground for leadership and execution.",
+    body: "The exact metrics can be filled in as they are finalized. The point for now is clear: both Cofounders have already led people, shipped events, and worked through real operational pressure.",
+    items: [
+      {
+        label: "Teams led",
+        value: "[team size]",
+        body: "Large student and operator teams led individually across ETH Entrepreneur Club work.",
+      },
+      {
+        label: "Events built",
+        value: "[events led]",
+        body: "Different event formats created and executed from planning through delivery.",
+      },
+      {
+        label: "Reach",
+        value: "[attendance]",
+        body: "Placeholder for attendance, community reach, or participant volume.",
+      },
+      {
+        label: "Partners",
+        value: "[sponsors/partners]",
+        body: "Placeholder for sponsors, speakers, companies, or institutional partners.",
+      },
+      {
+        label: "Resources",
+        value: "[budget]",
+        body: "Placeholder for budgets, resources, or operational scope managed.",
+      },
+      {
+        label: "Outcome",
+        value: "[outcome]",
+        body: "Placeholder for concrete event results, repeatability, or stakeholder feedback.",
+      },
+    ],
+  },
+  domainComplement: {
+    eyebrow: "Complementary domains",
+    title: "The split is clear: strategy and industry judgment on one side, hardware execution on the other.",
+    body: "TailorTaste needs both. The product has to understand premium hospitality and still become a real physical object that can be built, tested, and improved.",
+    items: [
+      {
+        title: "Ty: strategy, industry, recruiting, selling",
+        body: "Ty brings the strategic lens, hospitality context, customer-facing judgment, recruiting strength, and team leadership needed to shape the company around real demand.",
+      },
+      {
+        title: "Bucur: hardware, robotics, machinery, build",
+        body: "Bucur brings the technical brain of the team, with years of hands-on experience building robots, machinery, and physical systems.",
+      },
+      {
+        title: "Shared understanding",
+        body: "The pair is not split into disconnected lanes. Each understands enough of the other's domain to challenge decisions and keep execution moving.",
+      },
+    ],
+  },
+  operatingStyle: {
+    eyebrow: "Operating style",
+    title: "High effort, fast iteration, outcome first.",
+    body: "The team works quickly, iterates fast, and cares more about results than process theater. Both founders are ambitious, direct, and comfortable leading.",
+    items: [
+      {
+        title: "Fast builders",
+        body: "The team prefers quick cycles: decide, build, test, learn, and keep moving.",
+      },
+      {
+        title: "Strong leaders",
+        body: "Both founders have led large teams individually and understand how to create momentum around a shared goal.",
+      },
+      {
+        title: "Outcome-driven",
+        body: "The standard is simple: does the work create the result? If not, the team changes course quickly.",
+      },
+    ],
+  },
+  currentFocus: {
+    eyebrow: "Current focus",
+    title: "Turning founder fit into a focused first product.",
+    body: "Right now the team is using its strategy, hospitality, and hardware edge to build the first version of TailorTaste deliberately, with early proof and pilot conversations as the next important milestones.",
   },
   closingCta: {
-    eyebrow: "Closing",
-    title: "Modern flexibility should not have to weaken premium hospitality.",
-    body: "If you run a restaurant or hotel and want to discuss a pilot, we would love to hear from you.",
+    eyebrow: "Talk to the Cofounders",
+    title: "For pilots, partnerships, or investor conversations, talk directly to the people building it.",
+    body: "TailorTaste is still early, which makes founder-level conversations the highest-signal way to understand the product, the team, and the opportunity.",
     cta: {
       label: "Discuss a pilot",
       href: "/contact",

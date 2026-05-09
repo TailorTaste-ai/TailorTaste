@@ -44,22 +44,36 @@ export type RoadmapStage = {
 };
 
 export type AboutPageContent = {
-  opening: SectionIntro;
-  whyWeCare: SectionIntro;
-  whatWeSaw: SectionIntro;
-  whatWeBelieve: SectionIntro & { items: FeatureItem[] };
-  buildPhilosophy: SectionIntro;
-  whatItIsNot: SectionIntro & { items: FeatureItem[] };
-  foundersIntro: SectionIntro;
+  hero: SectionIntro & { items: FeatureItem[] };
   founders: FounderProfile[];
-  whereWeAreNow: SectionIntro;
+  founderFit: SectionIntro & { items: FeatureItem[] };
+  trackRecord: SectionIntro & { items: MetricItem[] };
+  domainComplement: SectionIntro & { items: FeatureItem[] };
+  operatingStyle: SectionIntro & { items: FeatureItem[] };
+  currentFocus: SectionIntro;
   closingCta: SectionIntro & { cta: CTA };
+};
+
+export type MetricItem = {
+  label: string;
+  value: string;
+  body: string;
+};
+
+export type FounderPortrait = {
+  src?: string;
+  alt: string;
+  initials: string;
+  placeholder: string;
 };
 
 export type FounderProfile = {
   name: string;
   role: string;
   linkedin: string;
+  summary: string;
+  focusAreas: string[];
+  portrait: FounderPortrait;
 };
 
 export type ContactPageContent = {

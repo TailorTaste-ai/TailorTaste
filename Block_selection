@@ -1,7 +1,90 @@
-## Block Selection Ledger
+## Tailor Taste First-Block Selection Plan (run_id: `2026-04-12T16-55Z`)
 
-### Technical Launch Hardening + About Founder Links [STATUS: DONE | run_id: 2026-04-12T18-08Z | updated: 2026-04-12]
+### Summary
+We fully reviewed [WEBSITE_WORKFLOW_BLUEPRINT.md](/Users/tystevens/Downloads/Personal/stupid%20shit/Tailor%20Taste/Website/WEBSITE_WORKFLOW_BLUEPRINT.md) (2,386 lines) and mapped the implementation phases as the primary work blocks.  
+Using the requested role split (Structure Analyst, Dependency Mapper, Implementation Strategist, Audit Reviewer), the best first implementation block is **P1: Information Architecture and Global Shell**.
 
-- 2026-04-12 | 2026-04-12T18-08Z | status changed to PLANNED | note: selected as launch-readiness implementation block
-- 2026-04-12 | 2026-04-12T18-08Z | status changed to IN_PROGRESS | note: CI, tests, runtime hardening, and founder link implementation started
-- 2026-04-12 | 2026-04-12T18-08Z | status changed to DONE | note: acceptance criteria implemented and verification checks passed
+### 1) Block Inventory
+| Block | Why It Matters | Key Dependencies | Readiness |
+|---|---|---|---|
+| P1 Information Architecture + Global Shell | Establishes nav/layout/metadata/content boundaries for every page | Existing scaffold/routes/global comps/content files | **High** |
+| P2 Homepage Narrative + Copy System | Core belief-building story and conversion flow | P1 shell stable | **High** |
+| P3 Design System + Premium Styling | Shared visual language and reusable primitive consistency | P1 stable, P2 narrative stable enough | **High** |
+| P4 Product Page Buildout | Practical product clarity + MVP boundaries | P1 + (P2/P3 context) | **High** |
+| P5 Vision Page Buildout | Category thesis + investability narrative | P2 + P4 clarity | **Medium-High** |
+| P6 About + Founder Voice | Human conviction and stage honesty | Founder thesis content availability | **Medium** |
+| P7 Contact Flow + Conversion UX | High-intent lead capture with truthful local-submit behavior | P1 shell + form stub | **High** |
+| P8 Asset System + Placeholders | Visual pipeline without fake maturity | P3 direction partially stable | **Medium** |
+| P9 Motion + Interaction Polish | Perceived premium polish and hierarchy | P2/P3/P8 stable | **Medium** |
+| P10 FAQ + Reality Anchors | Handles objections and stage transparency | Product story stabilized | **Medium** |
+| P11 Future/Roadmap Page | Expands ambition without overclaiming | P5 stable + disciplined roadmap language | **Medium** |
+| P12 SEO/Metadata/Analytics Readiness | Shareability/indexing/event taxonomy | Routes/content near-stable | **Medium** |
+| P13 Accessibility/Responsive/Performance QA | Launch confidence and quality gates | Major implementation mostly complete | **Medium** |
+| P14 Final Content + Launch Readiness | Coherence, trust checks, final release pass | Most prior phases complete | **Medium** |
+
+### 2) First-Block Decision
+**Selected block:** `P1: Information Architecture and Global Shell`
+
+**Why first:**
+- Highest dependency unlock across all later phases.
+- Requirements are concrete, testable, and already scoped to specific files.
+- Reduces early ambiguity (ownership, nav truth, CTA consistency, metadata source).
+- Prevents later rework across every route/page.
+
+**What it unlocks:**
+- Stable assembly layer for P2/P4/P5/P6/P7.
+- Safe parallel work boundaries (content vs sections vs globals).
+- Consistent routing, link contracts, and top-level trust signals.
+
+**Assumptions:**
+- Current scaffold and route files exist as documented.
+- No contradictory architecture decisions outside this blueprint.
+- “First block selected” means status should be `PLANNED` (not `IN_PROGRESS`).
+
+**Definition of done for this block:**
+- P1 acceptance checklist is satisfied (route renders, working nav/footer links, CTA to `/contact`, no fake links, lint/build pass).
+
+### 3) Execution Plan for Chosen Block
+**Scope boundaries**
+- In scope: global shell, nav/footer, CTA consistency, metadata defaults/per-page metadata, content ownership boundaries.
+- Out of scope: homepage narrative rewrite, final styling pass, page-specific deep content buildouts.
+
+**Substeps**
+1. Validate current global shell architecture vs P1 checklist.
+2. Align `mainNavigation`/footer links and CTA source-of-truth in content files.
+3. Normalize `layout.tsx` metadata to `siteConfig` and add page metadata where useful.
+4. Ensure route files remain thin and only assemble sections/content.
+5. Run `npm run lint` and `npm run build`; record gaps if any.
+
+**Likely systems/files affected**
+- `src/app/layout.tsx`, `src/components/global/*`, `src/content/navigation.ts`, `src/content/ctas.ts`, `src/lib/site.ts`.
+
+**Acceptance criteria**
+- Exact P1 acceptance checklist in blueprint is met and verifiable.
+
+**Risks**
+- Hidden divergence between existing nav/footer and content contracts.
+- Metadata duplication between layout and route files.
+- Premature styling edits sneaking into IA work.
+
+**Next two likely blocks after P1**
+1. **P2 Homepage Narrative and Copy System**
+2. **P3 Design System and Premium Styling**
+
+### 4) Markdown Update Plan (status + audit trail)
+Planned edits to [WEBSITE_WORKFLOW_BLUEPRINT.md](/Users/tystevens/Downloads/Personal/stupid%20shit/Tailor%20Taste/Website/WEBSITE_WORKFLOW_BLUEPRINT.md):
+
+1. Update the P1 heading to include:
+`[STATUS: PLANNED | run_id: 2026-04-12T16-55Z | updated: 2026-04-12]`
+
+2. Append (or create if missing) at file end:
+```md
+## Codex Block History
+
+- 2026-04-12 | 2026-04-12T16-55Z | P1: Information Architecture and Global Shell | status changed to PLANNED | note: selected as first implementation block
+```
+
+### Assumptions and Defaults
+- Defaulted to the document’s phase model (`P1...P14`) as the major implementation block system.
+- Treated “selected as next block” as `PLANNED` per your status rules.
+- In this turn we produced a decision-complete plan and exact edit targets; apply these edits when execution mode is enabled.
