@@ -47,17 +47,10 @@ export type AboutPageContent = {
   hero: SectionIntro & { items: FeatureItem[] };
   founders: FounderProfile[];
   founderFit: SectionIntro & { items: FeatureItem[] };
-  trackRecord: SectionIntro & { items: MetricItem[] };
   domainComplement: SectionIntro & { items: FeatureItem[] };
   operatingStyle: SectionIntro & { items: FeatureItem[] };
   currentFocus: SectionIntro;
   closingCta: SectionIntro & { cta: CTA };
-};
-
-export type MetricItem = {
-  label: string;
-  value: string;
-  body: string;
 };
 
 export type FounderPortrait = {
@@ -128,9 +121,9 @@ export type FuturePageContent = {
 
 export const siteConfig = {
   name: "TailorTaste",
-  description: "A paper-like digital menu system for premium hospitality.",
+  description: "A physical menu object staff can update before and during service.",
   productDefinition:
-    "TailorTaste is a paper-like digital menu system for premium hospitality that gives restaurants and hotels the flexibility of software without sacrificing the elegance, readability, and immersive feel of a physical menu.",
+    "TailorTaste gives restaurants and hotels a physical menu object for language changes, service states, and controlled menu updates without guest side tablet behavior.",
   primaryCTA: "Discuss a pilot",
   url: "https://tailortaste.com",
 };

@@ -7,11 +7,12 @@ import { Container } from "@/components/primitives/Container";
 export function Footer() {
   return (
     <footer
-      className="border-t border-ink/10 bg-ink py-10 text-chalk sm:py-12"
+      className="relative overflow-hidden border-t border-ink/10 bg-ink py-10 text-chalk sm:py-12"
       style={{ paddingBottom: "max(2.5rem, env(safe-area-inset-bottom))" }}
     >
+      <div className="absolute inset-0 opacity-35" style={{ background: "repeating-linear-gradient(90deg, rgba(255,250,241,0.08) 0 1px, transparent 1px 86px)" }} aria-hidden />
       <Container
-        className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between md:gap-12"
+        className="relative flex flex-col gap-8 md:flex-row md:items-start md:justify-between md:gap-12"
         width="wide"
       >
         <div className="max-w-md space-y-3">

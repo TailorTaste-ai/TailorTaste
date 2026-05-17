@@ -353,7 +353,7 @@ export function WaiterDashboard({
 
         <AccordionSection
           number="03"
-          title="Low-light preset"
+          title="Low light preset"
           hint="Adjust screen brightness for dim rooms without breaking the mood."
         >
           <BrightnessSlider value={brightness} onChange={onBrightnessChange} />

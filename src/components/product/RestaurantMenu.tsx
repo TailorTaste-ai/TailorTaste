@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import {
   useEffect,
   useRef,
@@ -35,6 +34,7 @@ const PAPER = "#F7F2E8";
 const INK = "#12100d";
 const MUTED = "#3b352f";
 const GOLD = "#9a8e7a";
+const HAIRLINE = "#b9ad99";
 
 const COLORS = { paper: PAPER, ink: INK, muted: MUTED, gold: GOLD };
 
@@ -246,14 +246,14 @@ function BrandHeader({
 function CornerDot({ color, position }: { color: string; position: string }) {
   return (
     <div
-      className={`absolute h-3 w-3 rounded-full ${position}`}
+      className={`absolute h-3.5 w-3.5 rounded-full ${position}`}
       style={{
         border: `1px solid ${color}`,
-        boxShadow: `inset 0 0 0 1px ${color}`,
+        boxShadow: `inset 0 0 0 2px ${PAPER}, inset 0 0 0 3px ${color}`,
       }}
     >
       <div
-        className="absolute left-1/2 top-1/2 h-1 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full"
+        className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full"
         style={{ backgroundColor: color }}
       />
     </div>
@@ -459,6 +459,9 @@ export function RestaurantMenu({
       className="absolute inset-0"
       style={{
         backgroundColor: COLORS.paper,
+        backgroundImage:
+          "linear-gradient(120deg, rgba(255,255,255,0.52), transparent 34%), radial-gradient(circle at 50% 10%, rgba(255,255,255,0.44), transparent 42%), linear-gradient(rgba(154,142,122,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(154,142,122,0.035) 1px, transparent 1px)",
+        backgroundSize: "cover, cover, 20px 20px, 20px 20px",
         containerType: "inline-size",
         ...screenStyle,
       }}
@@ -474,7 +477,7 @@ export function RestaurantMenu({
         />
         <div
           className="absolute inset-[2.6%] pointer-events-none"
-          style={{ border: `1px solid ${COLORS.gold}` }}
+          style={{ border: `1px solid ${HAIRLINE}` }}
         />
 
         {/* Corner dots */}
@@ -484,7 +487,7 @@ export function RestaurantMenu({
         <CornerDot color={COLORS.gold} position="right-[3.3%] bottom-[3.3%]" />
 
         {/* Brand header + three columns */}
-        <div className="relative flex h-full w-full flex-col px-[4.5%] py-[5%]">
+        <div className="relative flex h-full w-full flex-col px-[4.8%] py-[5.1%]">
           {menu.brand && (
             <BrandHeader brand={menu.brand} language={language} colors={COLORS} />
           )}
@@ -500,7 +503,7 @@ export function RestaurantMenu({
               index={0}
               className="h-full min-w-0 px-1.5"
               style={{
-                borderRight: `1px solid ${COLORS.gold}`,
+                borderRight: `1px solid ${HAIRLINE}`,
                 containerType: "inline-size",
               }}
             >
@@ -513,7 +516,7 @@ export function RestaurantMenu({
               index={1}
               className="h-full min-w-0 px-1.5"
               style={{
-                borderRight: `1px solid ${COLORS.gold}`,
+                borderRight: `1px solid ${HAIRLINE}`,
                 containerType: "inline-size",
               }}
             >
@@ -523,9 +526,11 @@ export function RestaurantMenu({
                     className="mx-auto w-[92%] px-1 py-1.5"
                     style={{
                       border: `1.5px solid ${COLORS.ink}`,
-                      outline: `1px solid ${COLORS.ink}`,
+                      outline: `1px solid ${COLORS.gold}`,
                       outlineOffset: "-5px",
                       containerType: "inline-size",
+                      background:
+                        "linear-gradient(180deg, rgba(255,255,255,0.24), rgba(154,142,122,0.05))",
                     }}
                   >
                     <h3
@@ -559,24 +564,6 @@ export function RestaurantMenu({
           </div>
         </div>
 
-        {/* Bottom-right logo — mirrors the 3D menu texture placement */}
-        <div
-          className="pointer-events-none absolute aspect-square"
-          style={{
-            right: "5%",
-            bottom: "5%",
-            width: "7%",
-            mixBlendMode: "multiply",
-          }}
-        >
-          <Image
-            src="/logo.png"
-            alt=""
-            fill
-            sizes="(max-width: 1024px) 10vw, 80px"
-            className="object-contain"
-          />
-        </div>
       </div>
     </div>
   );

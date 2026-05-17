@@ -3,60 +3,60 @@ import type { VisionPageContent } from "@/lib/site";
 export const visionPage = {
   hero: {
     eyebrow: "Vision",
-    title: "Between static paper and intrusive screens, a new category is forming.",
-    body: "Menus sit between brand, service, operations, and guest expectation. TailorTaste exists because this object should be more adaptive without becoming more distracting.",
+    title: "Menu updates should not force guests into a QR flow.",
+    body: "Restaurants already treat menus as brand, service, and operations. TailorTaste keeps that object physical while making updates controllable from the staff side.",
   },
   category: {
     eyebrow: "Category logic",
-    title: "Paper elegance. Software control.",
-    body: "The menu can become a live service layer while preserving the ritual and atmosphere premium hospitality depends on.",
+    title: "Keep the guest object familiar. Change the control layer behind it.",
+    body: "The opportunity is not another guest interface. It is a staff controlled menu object for content that changes across service.",
     items: [
       {
         title: "Why the gap exists",
-        body: "Paper keeps atmosphere but resists change. Typical digital menus enable updates but pull attention into interfaces.",
+        body: "Paper works at the table but creates reprint work. Typical digital menus solve updates by moving the experience onto a personal device.",
       },
       {
         title: "What changes with TailorTaste",
-        body: "A premium physical object becomes the delivery layer for a restrained software system.",
+        body: "A physical menu object becomes the delivery layer for staff controlled content.",
       },
     ],
   },
   beachhead: {
     eyebrow: "Why now",
-    title: "Timing favors premium operators with complex service realities.",
-    body: "Hotels and destination restaurants now carry multilingual demand, frequent menu transitions, and higher guest expectations for both clarity and atmosphere.",
+    title: "Premium operators have more menu complexity than the table should reveal.",
+    body: "Hotels and destination restaurants manage multilingual guests, shifting service states, event menus, dietary expectations, and last minute availability changes. The guest should see clarity, not the operational mess behind it.",
     items: [
       {
         title: "Premium hospitality beachhead",
-        body: "This segment values service ritual and has enough operational complexity to justify a better menu layer.",
+        body: "High touch venues care enough about ritual and have enough complexity to feel the pain first.",
       },
       {
         title: "Operational pressure is real",
-        body: "Language shifts, lunch-to-dinner transitions, and event service expose the limits of static print workflows.",
+        body: "Every translation, event menu, and service transition exposes how brittle static print can be.",
       },
       {
-        title: "Technology must stay in its place",
-        body: "The goal is not more screens at the table. The goal is better hospitality decisions behind the menu.",
+        title: "Guest behavior should stay familiar",
+        body: "The guest should receive, read, and decide. Staff should handle the operational logic before that moment.",
       },
     ],
   },
   roadmapIntro: {
     eyebrow: "Object to system",
-    title: "The menu is the wedge, not the endpoint.",
-    body: "The first phase is a credible hardware object. Over time, the supporting software layer can expand carefully into operations and intelligence.",
+    title: "The menu is the wedge because staff handle it every service.",
+    body: "If the object works, the software behind it can expand into templates, scheduling, outlet controls, and later intelligence.",
   },
   futureSignals: [
     {
       title: "Menu scheduling and templates",
-      body: "Near-term software can support planned menu states and reusable content structures.",
+      body: "Teams should be able to prepare common service moments instead of rebuilding menus manually.",
     },
     {
       title: "Operational controls over time",
-      body: "Service-state and content controls can deepen without changing the guest interaction model.",
+      body: "Controls can become richer while the guest experience remains the same: receive, read, decide.",
     },
     {
       title: "Future intelligence layer",
-      body: "Inventory-linked updates and pricing suggestions remain longer-term opportunities, not current capabilities.",
+      body: "Inventory and pricing intelligence should wait until the product has earned trust in daily service.",
     },
   ],
 } satisfies VisionPageContent;

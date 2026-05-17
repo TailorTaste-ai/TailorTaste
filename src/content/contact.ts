@@ -12,10 +12,10 @@ export const contactInquiryTypes = [
 export const contactPage = {
   hero: {
     eyebrow: "Contact",
-    title: "Start the right conversation.",
-    body: "Reach out if you are exploring pilot hospitality deployments, strategic partnership, or early-stage support around the TailorTaste category.",
+    title: "Bring a real service context.",
+    body: "The most useful conversations are specific: a venue, a pilot constraint, a partnership angle, or a question about whether TailorTaste belongs in a premium hospitality workflow.",
   },
   deliveryNote:
-    "Inquiries are delivered through a server-side contact pipeline. If delivery is temporarily unavailable, the form will show a clear retry message.",
+    "Share enough context to make the follow up concrete: venue type, service setting, guest mix, or the decision you are trying to make.",
   inquiryTypes: contactInquiryTypes,
 } satisfies ContactPageContent;

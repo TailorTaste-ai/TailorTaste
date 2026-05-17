@@ -26,7 +26,7 @@ describe("FounderTeam", () => {
     expect(
       screen.getByRole("img", { name: /Portrait placeholder for Bucur Andrei Borcoman/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/Strategy, positioning, and go-to-market judgment/i)).toBeInTheDocument();
+    expect(screen.getByText(/Positioning and go to market judgment/i)).toBeInTheDocument();
     expect(screen.getByText(/Robotics, machinery, and technical prototyping/i)).toBeInTheDocument();
   });
 });

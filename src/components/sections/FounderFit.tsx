@@ -16,8 +16,8 @@ export function FounderFit({ eyebrow, title, body, items }: FounderFitProps) {
 
       <div className="grid gap-4 md:grid-cols-3">
         {items.map((item, index) => (
-          <article className="rounded-[8px] border border-ink/10 bg-chalk p-5" key={item.title}>
-            <p className="text-xs font-medium uppercase text-accent">
+          <article className="tt-luxury-card rounded-[8px] p-5" key={item.title}>
+            <p className="tt-rail-label text-accent">
               {String(index + 1).padStart(2, "0")}
             </p>
             <h4 className="mt-4 font-serif text-xl leading-tight text-ink">{item.title}</h4>

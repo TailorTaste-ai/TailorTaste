@@ -7,7 +7,7 @@ export const primaryCta: CTA = {
 };
 
 export const secondaryCta: CTA = {
-  label: "Read the vision",
+  label: "Meet the founders",
   href: "/about",
   variant: "secondary",
 };
@@ -20,7 +20,7 @@ export const partnershipCta: CTA = {
 
 export const finalCtas: CTA[] = [
   {
-    label: "Join the first wave",
+    label: "Discuss a pilot",
     href: "/contact",
     variant: "primary",
   },

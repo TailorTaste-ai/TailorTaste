@@ -35,7 +35,7 @@ class HeroErrorBoundary extends Component<
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex h-full min-h-[360px] items-center justify-center rounded-md bg-ink text-center">
+        <div className="flex h-full min-h-[360px] items-center justify-center bg-ink text-center">
           <p className="text-sm text-chalk/50">
             Interactive preview unavailable
           </p>
@@ -48,7 +48,7 @@ class HeroErrorBoundary extends Component<
 
 export function HeroMedia() {
   return (
-    <div className="relative h-full min-h-[400px] w-full lg:min-h-[480px]">
+    <div className="relative aspect-[1.18] min-h-[300px] w-full overflow-hidden border border-chalk/10 bg-[#101310] shadow-[0_40px_100px_rgba(0,0,0,0.32)] sm:aspect-[1.35] md:min-h-0 lg:aspect-[1.45]">
       <HeroErrorBoundary>
         <InteractiveMenu3D />
       </HeroErrorBoundary>

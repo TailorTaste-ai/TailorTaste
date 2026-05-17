@@ -34,10 +34,10 @@ export function Navbar() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-ink/10 bg-paper/90 backdrop-blur transition-colors duration-300">
+    <header className="sticky top-0 z-40 border-b border-ink/10 bg-paper/82 backdrop-blur-xl transition-colors duration-300">
       <Container className="flex h-14 items-center justify-between gap-4 sm:h-16 lg:h-20" width="wide">
         <Link
-          className="flex min-w-0 items-center gap-2 font-serif text-lg text-ink sm:text-xl"
+          className="flex min-w-0 items-center gap-2 font-serif text-lg font-medium text-ink sm:text-xl"
           href="/"
           aria-label={`${siteConfig.name} home`}
         >
@@ -55,14 +55,16 @@ export function Navbar() {
 
         {/* Desktop nav */}
         <nav
-          className="hidden items-center gap-6 text-sm text-graphite md:flex lg:gap-7"
+          className="hidden items-center gap-2 rounded-full border border-ink/10 bg-chalk/55 px-2 py-1 text-sm text-graphite shadow-[0_18px_45px_rgba(20,23,21,0.07)] md:flex"
           aria-label="Main navigation"
         >
           {mainNavigation.map((item) => {
             const active = pathname === item.href;
             return (
               <Link
-                className={`transition hover:text-ink ${active ? "text-ink" : ""}`}
+                className={`rounded-full px-3 py-2 transition ${
+                  active ? "bg-ink text-chalk" : "hover:bg-ink/5 hover:text-ink"
+                }`}
                 href={item.href}
                 key={item.href}
                 aria-current={active ? "page" : undefined}
@@ -79,7 +81,7 @@ export function Navbar() {
         {/* Mobile controls */}
         <button
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-md text-ink transition hover:bg-ink/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 md:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink/10 bg-chalk/60 text-ink transition hover:bg-chalk focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 md:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           aria-controls={panelId}

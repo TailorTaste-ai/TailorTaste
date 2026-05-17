@@ -4,21 +4,21 @@ export const roadmapStages: RoadmapStage[] = [
   {
     horizon: "Current wedge",
     title: "Premium menu object",
-    body: "A paper-like, staff-controlled menu object designed for premium service environments.",
+    body: "Validate the leather bound menu object, read only guest experience, and staff preparation flow.",
   },
   {
     horizon: "Near term",
     title: "Content control layer",
-    body: "Menu templates, language switching, and planned service-state transitions.",
+    body: "Add language, templates, menu states, and controlled update workflows.",
   },
   {
     horizon: "Operational layer",
-    title: "Service-aware workflows",
-    body: "Deeper controls for scheduling, outlet context, and multi-service consistency.",
+    title: "Service aware workflows",
+    body: "Support outlets, service timing, team roles, and repeated operating patterns.",
   },
   {
     horizon: "Long term",
     title: "Hospitality intelligence",
-    body: "Inventory-linked updates and pricing suggestions explored as future opportunities.",
+    body: "Explore inventory, pricing, and integrations only after the core workflow is trusted.",
   },
 ];

@@ -3,96 +3,96 @@ import type { ProductPageContent } from "@/lib/site";
 export const productPage = {
   hero: {
     eyebrow: "Product",
-    title: "A paper-like digital menu system for premium hospitality.",
-    body: "TailorTaste is a staff-controlled menu object that preserves the elegance of paper while giving teams software-level flexibility behind the service ritual.",
+    title: "A front of house menu object controlled from the staff side.",
+    body: "TailorTaste is designed for venues that need language changes, service states, and menu updates without putting a tablet or QR flow between the guest and the table.",
   },
   objectModel: {
     eyebrow: "What it is",
-    title: "A premium object, not generic restaurant tech.",
-    body: "The guest reads a beautiful menu. Staff control what it shows.",
+    title: "The product has one job at the table: be read.",
+    body: "Guest interaction is intentionally limited. The product value comes from what staff can control before and during service, not from asking the guest to navigate an interface.",
     items: [
       {
-        title: "Paper-like feel",
-        body: "Thin, text-first, designed for the table.",
+        title: "Paper like feel",
+        body: "Leather bound exterior, cream menu face, and a format that reads as a physical menu.",
       },
       {
-        title: "Read-only for guests",
-        body: "No touch interaction. No tablet behaviour.",
+        title: "Read only for guests",
+        body: "No guest tapping, swiping, ordering, or account flow in the first product direction.",
       },
       {
         title: "Monochrome clarity",
-        body: "Clean readability in any lighting.",
+        body: "Text first layout for menus, wine pairings, event cards, and service specific versions.",
       },
     ],
   },
   capabilities: {
     eyebrow: "Capabilities",
-    title: "Staff-controlled flexibility, live.",
-    body: "Focused on reliability and control — not feature sprawl.",
+    title: "Staff controlled flexibility, live.",
+    body: "The demo shows the first control layer: language, menu state, brightness, upload mode, and item visibility.",
     items: [
       {
         title: "Language switching",
-        body: "Present the menu in the right language, per guest.",
+        body: "Prepare a menu in English, French, or German without swapping physical sets.",
       },
       {
         title: "Menu states",
-        body: "Lunch, dinner, event — no reprints needed.",
+        body: "Move between lunch, dinner, and event menus from the staff dashboard.",
       },
       {
-        title: "Low-light presets",
-        body: "Readable in dim rooms without breaking mood.",
+        title: "Low light presets",
+        body: "Adjust display brightness for darker dining rooms.",
       },
       {
         title: "PDF upload",
-        body: "Upload and convert existing menu files.",
+        body: "Represent the path from existing menu files to a controlled menu object.",
       },
       {
         title: "Item toggling",
-        body: "Activate or hide individual items on the fly.",
+        body: "Hide unavailable dishes without rebuilding the whole menu.",
       },
     ],
   },
   serviceFit: {
     eyebrow: "Service fit",
-    title: "Built for waiter-led hospitality, not self-service interaction.",
-    body: "The object supports existing service choreography while giving teams more control behind the scenes.",
+    title: "The service team decides what the guest sees.",
+    body: "TailorTaste keeps menu control with staff before and during service. Some changes happen before handout; others, like hiding an unavailable dish, can happen during service.",
     steps: [
-      "Staff set language or service state before handout",
-      "Guest receives and reads a premium menu object",
-      "Updates are handled deliberately, with inactive-menu updates preferred",
+      "Select or update the language and service state from the staff side",
+      "Present the object with the same rhythm as a traditional menu",
+      "Adjust content during service when operations require it",
     ],
   },
   deployment: {
-    eyebrow: "Deployment thinking",
-    title: "Operational details are treated as product requirements.",
-    body: "Charging, storage, spares, and update behavior are part of the product direction from day one.",
+    eyebrow: "Operational discipline",
+    title: "A pilot has to prove the boring parts too.",
+    body: "The menu object only works if teams can store it, charge it, cleanly prepare it, and recover from unavailable units during service.",
     items: [
       {
         title: "Charging and storage",
-        body: "Dock and charging concepts are directional, not final hardware claims.",
+        body: "Units need a back of house home for charging, storage, and service preparation.",
       },
       {
-        title: "Spare-unit readiness",
-        body: "Pilot operations should include active units plus spares for service continuity.",
+        title: "Spare unit readiness",
+        body: "Pilots should include spare units so service can continue when one object is unavailable.",
       },
       {
         title: "Update discipline",
-        body: "Inactive-menu updates are preferred to avoid disrupting active guest experiences.",
+        body: "Teams need clear rules for which updates can happen live and which should wait until the menu returns from the table.",
       },
     ],
   },
   boundaries: [
     {
       title: "No guest ordering in MVP",
-      body: "Ordering belongs to a different category and is intentionally excluded at this stage.",
+      body: "Ordering changes the product from a menu into a transaction system. The first version stays focused on presentation and control.",
     },
     {
-      title: "No guest-side touch in the MVP",
-      body: "The menu should feel like an upgraded physical object, not a mini tablet.",
+      title: "No guest side touch in the MVP",
+      body: "Touch interaction would make the object behave like the devices premium venues are trying to avoid.",
     },
     {
-      title: "No inventory-linked automation in MVP",
-      body: "Inventory-linked changes remain part of a future software layer only.",
+      title: "No inventory linked automation in MVP",
+      body: "Inventory logic may become valuable later, but only after the core menu object and service workflow are proven.",
     },
   ],
 } satisfies ProductPageContent;

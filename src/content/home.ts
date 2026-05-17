@@ -4,8 +4,8 @@ import { assetBrief } from "./assets";
 
 export const hero = {
   eyebrow: "A new category for premium hospitality menus",
-  title: "Menus should be as dynamic as the hospitality behind them.",
-  body: "TailorTaste is building a paper-like digital menu system for premium hospitality that preserves the elegance of a physical menu while unlocking the flexibility of software.",
+  title: "A physical menu staff can control before and during service.",
+  body: "TailorTaste is a leather bound menu object for restaurants and hotels. Staff control language, service state, and content while guests simply read a premium menu.",
   ctas: [primaryCta, secondaryCta],
   mediaLabel: assetBrief.placeholders.hero.title,
   mediaDescription: assetBrief.placeholders.hero.description,
@@ -13,127 +13,128 @@ export const hero = {
 
 export const categoryGap: SectionIntro & { items: FeatureItem[] } = {
   eyebrow: "The missing middle",
-  title: "Paper has presence. QR has control. TailorTaste is the missing middle.",
-  body: "Paper menus feel right in the room, but they are slow to change. QR menus are easy to update, but pull guests into a screen. TailorTaste keeps the menu as a beautiful physical object, with software quietly underneath.",
+  title: "Paper protects the table. QR solves updates. TailorTaste combines the useful parts.",
+  body: "The problem is practical: menus change by service, language, event, availability, and lighting conditions. TailorTaste keeps the guest-facing object physical while giving staff controlled ways to update what it shows.",
   items: [
     {
       title: "Paper menus",
-      body: "Beautiful on the table. Hard to change.",
+      body: "Good for atmosphere, expensive and slow when content changes.",
     },
     {
       title: "TailorTaste",
-      body: "Looks like a menu. Works like software. Controlled by staff.",
+      body: "A physical object controlled by staff, updated through software, read like a menu.",
     },
     {
       title: "QR & tablets",
-      body: "Easy to update. Wrong mood for premium service.",
+      body: "Easy to update, but they move attention away from the room and into a device.",
     },
   ],
 };
 
 export const whyNow: SectionIntro & { items: FeatureItem[] } = {
   eyebrow: "Why now",
-  title: "The timing is becoming visible.",
-  body: "Service expectations, menu operations, and paper-like hardware are meeting in one practical opening.",
+  title: "Menu operations are becoming too complex for static print.",
+  body: "Premium teams now manage more translations, dietary questions, event formats, service states, and last minute changes. The menu has become operational infrastructure, even if it still looks like paper.",
   items: [
     {
       title: "Atmosphere and flexibility",
-      body: "Premium venues want adaptive service without losing the feel of the room.",
+      body: "Operators need faster changes without adding visible restaurant tech to the table.",
     },
     {
       title: "Rising language expectations",
-      body: "Hotels and destination restaurants increasingly serve international guests.",
+      body: "Hotels and destination restaurants often serve the same table in different languages.",
     },
     {
       title: "Weak existing answers",
-      body: "QR menus and conventional tablets often feel wrong for high-touch service.",
+      body: "QR codes and tablets optimize access, not presentation, handout, or staff control.",
     },
     {
       title: "A new object is possible",
-      body: "Paper-like hardware and restrained software can upgrade the menu itself.",
+      body: "Low power displays make a calm, readable, menu shaped object technically realistic.",
     },
   ],
 };
 
 export const objectReveal = {
   eyebrow: "The object",
-  title: "A premium menu object, not generic restaurant technology.",
-  body: "The current product direction is thin, paper-like, monochrome, text-first, and staff-controlled. The guest reads while the service team controls the menu state. Guest-side touch and ordering are intentionally excluded from the MVP direction.",
-  principles: ["Paper-like presence", "Staff-controlled state", "Monochrome clarity", "Built for tableside service"],
+  title: "The guest should not have to operate the product.",
+  body: "The menu is read only for guests. Staff handle language, menu state, and content before or during service, so the product supports the room instead of becoming a guest interface.",
+  principles: ["Read only for guests", "Prepared by staff", "Monochrome menu face", "Built for handout"],
   mediaLabel: assetBrief.placeholders.objectReveal.title,
   mediaDescription: assetBrief.placeholders.objectReveal.description,
 };
 
 export const possibilities: SectionIntro & { items: FeatureItem[] } = {
   eyebrow: "What becomes possible",
-  title: "Software flexibility without a software mood.",
+  title: "The first useful controls are the ones teams already need.",
+  body: "The product should first reduce manual menu work, not add new guest behavior.",
   items: [
     {
       title: "Language switching",
-      body: "Serve international guests with a considered menu experience.",
+      body: "Use one object for multiple guest languages instead of maintaining separate printed sets.",
     },
     {
       title: "Lunch and dinner states",
-      body: "Move between service moments without stacks of printed menus.",
+      body: "Prepare lunch, dinner, event, or tasting menu states from the staff side.",
     },
     {
-      title: "Low-light readability",
-      body: "Support legibility while preserving the atmosphere of the room.",
+      title: "Low light readability",
+      body: "Tune readability for darker rooms without turning the menu into a bright screen.",
     },
     {
-      title: "Staff-controlled flexibility",
-      body: "Let the team adjust menu states without exposing guests to interface work.",
+      title: "Staff controlled flexibility",
+      body: "Keep menu changes in staff hands instead of asking guests to tap through options.",
     },
     {
       title: "Future dietary support",
-      body: "Over time, build toward dietary and allergy support without narrowing the full table experience.",
+      body: "Later versions can help staff surface suitable dishes without narrowing the full menu for everyone.",
     },
   ],
 };
 
 export const dreamOutcomes: SectionIntro & { items: FeatureItem[] } = {
-  eyebrow: "Dream outcomes",
-  title: "Premium hospitality becomes more adaptive without becoming less beautiful.",
+  eyebrow: "Operational value",
+  title: "Fewer menu workarounds before and during service.",
   items: [
     {
       title: "For operators",
-      body: "More control over menu states, languages, and service moments.",
+      body: "Reduce reprints, version mismatches, and last minute menu substitutions.",
     },
     {
       title: "For guests",
-      body: "A clearer, more considered menu experience that still feels like hospitality.",
+      body: "Receive the correct menu in a format that still feels like part of the restaurant.",
     },
     {
       title: "For the category",
-      body: "The menu becomes a live service layer instead of a static artifact.",
+      body: "Treat the menu as an object staff can manage, not a static file sent to print.",
     },
   ],
 };
 
 export const serviceFit = {
   eyebrow: "Service fit",
-  title: "Waiter-led by design.",
-  body: "TailorTaste supports the handout ritual instead of replacing it. Staff select the appropriate menu state; guests simply receive and read a beautiful object.",
-  steps: ["Ask or infer the service context", "Set the language or menu state", "Hand out the menu like a traditional card"],
+  title: "The workflow stays with the staff.",
+  body: "Staff choose the relevant state, hand out the object, and make controlled updates when service needs them.",
+  steps: ["Read the table context", "Set or update the menu state", "Present it like a traditional menu"],
 };
 
 export const futureLayer = {
   eyebrow: "Future layer",
-  title: "Today a menu object. Over time, a hospitality software layer.",
-  body: "The first wedge is a premium physical menu. The longer-term opportunity is the system behind it: templates, scheduling, operational controls, and, over time, richer menu intelligence.",
+  title: "Future software should come from real menu operations.",
+  body: "Templates, scheduling, outlet controls, and intelligence only make sense after venues prove that controlled menu updates improve daily service.",
   steps: ["Menu object", "Content control", "Operational layer", "Hospitality intelligence"],
 };
 
 export const founderNote = {
   eyebrow: "Founder note",
-  title: "Built from a simple refusal.",
-  body: "Premium venues should not have to choose between a beautiful table and an adaptable operation. TailorTaste starts with the menu because it shapes the first decision, the first tactile impression, and one of hospitality's most visible moments.",
+  title: "Why start with the menu?",
+  body: "It is visible to every guest, handled by staff, translated for international tables, changed across services, and expensive to get wrong.",
   visualLabel: assetBrief.placeholders.founder.title,
 };
 
 export const finalCta = {
-  eyebrow: "First wave",
-  title: "For venues, partners, and investors who see the category forming.",
-  body: "TailorTaste is early, focused, and looking for the right conversations.",
+  eyebrow: "Pilot conversations",
+  title: "Useful feedback needs a real venue context.",
+  body: "Reach out with the service setting, menu workflow, or pilot constraint you would want TailorTaste to solve.",
   ctas: finalCtas,
 };

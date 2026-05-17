@@ -8,7 +8,7 @@ describe("About page content boundaries", () => {
 
     const hero = screen.getByRole("heading", {
       level: 1,
-      name: /Built by two Cofounders who already know how to execute together\./i,
+      name: /Two founders covering the two hard parts/i,
     });
     expect(hero).toBeInTheDocument();
 
@@ -18,15 +18,15 @@ describe("About page content boundaries", () => {
     expect(hero.compareDocumentPosition(bucur) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
-  it("renders exact Cofounder roles and founder-only proof sections", () => {
+  it("renders exact Cofounder roles and founder-only proof sections without fake metrics", () => {
     render(<AboutPage />);
 
     expect(screen.getAllByText("Cofounder")).toHaveLength(2);
-    expect(screen.getByText(/ETH Entrepreneur Club gave the team a live proving ground/i)).toBeInTheDocument();
-    expect(screen.getByText("[team size]")).toBeInTheDocument();
-    expect(screen.getByText("[events led]")).toBeInTheDocument();
-    expect(screen.getByText("[sponsors/partners]")).toBeInTheDocument();
-    expect(screen.getByText(/High effort, fast iteration, outcome first\./i)).toBeInTheDocument();
+    expect(screen.getByText(/The founding split matches the product risk/i)).toBeInTheDocument();
+    expect(screen.queryByText("[team size]")).not.toBeInTheDocument();
+    expect(screen.queryByText("[events led]")).not.toBeInTheDocument();
+    expect(screen.queryByText("[sponsors/partners]")).not.toBeInTheDocument();
+    expect(screen.getByText(/The current work is evidence, not polish\./i)).toBeInTheDocument();
   });
 
   it("does not render the old generic About manifesto sections", () => {

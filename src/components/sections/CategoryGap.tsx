@@ -9,11 +9,13 @@ export function CategoryGap({
   items,
 }: SectionIntro & { items: FeatureItem[] }) {
   return (
-    <section className="tt-reveal tt-reveal-delay-1 section-y">
+    <section className="tt-reveal tt-reveal-delay-1 tt-section-panel section-y">
       <Container className="space-y-10 sm:space-y-12">
-        <SectionHeader eyebrow={eyebrow} title={title} body={body} align="center" />
+        <div className="relative">
+          <SectionHeader eyebrow={eyebrow} title={title} body={body} align="center" />
+        </div>
 
-        <div className="mx-auto grid max-w-5xl border-y border-ink/10 md:grid-cols-3">
+        <div className="relative mx-auto grid max-w-6xl border border-ink/10 bg-paper/55 shadow-[0_32px_80px_rgba(20,23,21,0.09)] md:grid-cols-3">
           {items.map((item, index) => (
             <CategoryPosition
               emphasis={item.title === "TailorTaste"}
@@ -39,20 +41,22 @@ function CategoryPosition({
 }) {
   return (
     <article
-      className={`py-7 text-left sm:py-8 md:px-8 md:py-10 ${
+      className={`tt-category-tile relative p-6 text-left sm:p-8 md:p-10 ${
+        emphasis ? "tt-category-tile-emphasis bg-ink text-chalk" : ""
+      } ${
         index > 0 ? "border-t border-ink/10 md:border-l md:border-t-0" : ""
       }`}
     >
       <p
         className={`text-xs font-semibold uppercase tracking-[0.18em] ${
-          emphasis ? "text-accent" : "text-graphite/60"
+          emphasis ? "text-chalk/55" : "text-graphite/60"
         }`}
       >
         {item.title}
       </p>
       <p
         className={`mt-4 max-w-[24ch] font-serif text-2xl leading-tight sm:text-3xl ${
-          emphasis ? "font-semibold text-accent" : "font-normal text-ink"
+          emphasis ? "font-medium text-chalk" : "font-normal text-ink"
         }`}
       >
         {item.body}

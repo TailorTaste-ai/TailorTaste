@@ -10,11 +10,11 @@ const config: Config = {
     extend: {
       colors: {
         ink: "#141715",
-        paper: "#f2f5f1",
-        chalk: "#fbfdf9",
-        mist: "#d8ddd6",
-        graphite: "#3c443d",
-        accent: "#1f6b5b",
+        paper: "#eee8dc",
+        chalk: "#fffaf1",
+        mist: "#d7d3c7",
+        graphite: "#403f39",
+        accent: "#8a5b37",
         cypress: "#123a34",
       },
       fontFamily: {
@@ -22,7 +22,7 @@ const config: Config = {
         serif: ["var(--font-serif)", "Georgia", "serif"],
       },
       boxShadow: {
-        soft: "0 24px 80px rgba(23, 21, 19, 0.10)",
+        soft: "0 28px 80px rgba(23, 21, 19, 0.13)",
       },
     },
   },

@@ -10,7 +10,7 @@ export function FounderTeam({ founders }: FounderTeamProps) {
     <div className="grid gap-5 md:grid-cols-2">
       {founders.map((founder) => (
         <article
-          className="rounded-[8px] border border-ink/10 bg-chalk p-4 shadow-soft sm:p-5"
+          className="tt-luxury-card rounded-[8px] p-4 sm:p-5"
           key={founder.linkedin}
         >
           <FounderPortrait founder={founder} />
@@ -26,11 +26,11 @@ export function FounderTeam({ founders }: FounderTeamProps) {
                 {founder.name}
               </a>
             </h3>
-            <p className="mt-2 text-sm font-medium leading-6 text-accent">{founder.role}</p>
+            <p className="tt-rail-label mt-3 text-accent">{founder.role}</p>
             <p className="mt-4 text-sm leading-6 text-graphite">{founder.summary}</p>
 
             <div className="mt-5 border-t border-ink/10 pt-5">
-              <p className="text-xs font-medium uppercase text-graphite">
+              <p className="tt-rail-label text-graphite/70">
                 Founder edge
               </p>
               <ul className="mt-3 grid gap-2">
@@ -71,7 +71,7 @@ function FounderPortrait({ founder }: { founder: FounderProfile }) {
           <div className="flex h-20 w-20 items-center justify-center rounded-full border border-ink/10 bg-chalk font-serif text-3xl text-ink">
             {portrait.initials}
           </div>
-          <p className="text-xs font-medium uppercase text-graphite">
+      <p className="tt-rail-label text-graphite/70">
             {portrait.placeholder}
           </p>
         </div>

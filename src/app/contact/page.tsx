@@ -13,7 +13,7 @@ export default function ContactPage() {
       <Container className="grid gap-10 md:gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
         <div className="space-y-6 sm:space-y-8">
           <SectionHeader as="h1" {...contactPage.hero} />
-          <div className="rounded-[8px] border border-ink/10 bg-chalk p-5 text-sm leading-6 text-graphite sm:p-6">
+          <div className="tt-micro-block rounded-[8px] border border-ink/10 bg-chalk p-5 text-sm leading-6 text-graphite sm:p-6">
             {contactPage.deliveryNote}
           </div>
         </div>

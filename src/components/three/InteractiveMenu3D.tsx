@@ -5,8 +5,6 @@ import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import {
   OrbitControls,
   RoundedBox,
-  Environment,
-  ContactShadows,
 } from "@react-three/drei";
 import * as THREE from "three";
 import type { Group } from "three";
@@ -28,7 +26,6 @@ const SW = W - BEZEL * 2;
 const SH = H - BEZEL * 2;
 
 /* ─── Palette ─── */
-const CASE_COLOR = "#2f4633";
 const SCREEN_BG = "#F7F2E8";
 const INK = "#12100d";
 const MUTED = "#3b352f";
@@ -74,12 +71,15 @@ const desserts: Dish[] = [
 const GOLD = "#9a8e7a";
 
 function createMenuTexture(logoImg?: HTMLImageElement): THREE.CanvasTexture {
+  const TEXTURE_PX = 4096;
+  const TEXTURE_PY = 2731;
   const PX = 8192;
   const PY = 5462;
   const canvas = document.createElement("canvas");
-  canvas.width = PX;
-  canvas.height = PY;
+  canvas.width = TEXTURE_PX;
+  canvas.height = TEXTURE_PY;
   const ctx = canvas.getContext("2d")!;
+  ctx.scale(TEXTURE_PX / PX, TEXTURE_PY / PY);
 
   ctx.fillStyle = SCREEN_BG;
   ctx.fillRect(0, 0, PX, PY);
@@ -298,37 +298,53 @@ function createMenuTexture(logoImg?: HTMLImageElement): THREE.CanvasTexture {
   return tex;
 }
 
-function createTransparentLogoTexture(image: CanvasImageSource) {
-  const width = 1024;
-  const height = 1024;
+function createBackLeatherTexture(leatherImage: CanvasImageSource, logoImage: CanvasImageSource) {
+  const width = 1000;
+  const height = 800;
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext("2d")!;
-  ctx.drawImage(image, 0, 0, width, height);
-  const imageData = ctx.getImageData(0, 0, width, height);
+  ctx.drawImage(leatherImage, 0, 0, width, height);
+
+  const logoSize = 300;
+  const logoX = (width - logoSize) / 2;
+  const logoY = (height - logoSize) / 2;
+  const logoCanvas = document.createElement("canvas");
+  logoCanvas.width = logoSize;
+  logoCanvas.height = logoSize;
+  const logoCtx = logoCanvas.getContext("2d")!;
+  logoCtx.drawImage(logoImage, 0, 0, logoSize, logoSize);
+
+  const imageData = logoCtx.getImageData(0, 0, logoSize, logoSize);
   const data = imageData.data;
 
   for (let i = 0; i < data.length; i += 4) {
     const r = data[i];
     const g = data[i + 1];
     const b = data[i + 2];
+    const a = data[i + 3];
     const brightness = (r + g + b) / 3;
+    const warmGold = r > 95 && g > 65 && r > b * 1.35 && g > b * 1.12;
+    const paleHighlight = brightness > 150 && r > b * 1.12 && g > b * 1.05;
 
-    if (brightness < 18) {
+    if (a < 8 || (!warmGold && !paleHighlight)) {
       data[i + 3] = 0;
-    } else if (brightness < 40) {
-      data[i + 3] = Math.max(0, Math.min(255, (brightness - 18) * 12));
+      continue;
     }
+
+    data[i + 3] = Math.min(a, 230);
   }
 
-  ctx.putImageData(imageData, 0, 0);
+  logoCtx.putImageData(imageData, 0, 0);
+  ctx.drawImage(logoCanvas, logoX, logoY);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
-  texture.anisotropy = 16;
-  texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.anisotropy = 8;
+  texture.minFilter = THREE.LinearFilter;
   texture.magFilter = THREE.LinearFilter;
+  texture.generateMipmaps = false;
   return texture;
 }
 
@@ -338,8 +354,11 @@ function MenuTablet() {
   const siteLogoTex = useLoader(THREE.TextureLoader, "/logo.png");
   const menuTex = useMemo(() => createMenuTexture(siteLogoTex.image as HTMLImageElement), [siteLogoTex.image]);
   const logoTex = useLoader(THREE.TextureLoader, "/textures/tt-logo-gold.png");
-  const transparentLogoTex = useMemo(() => createTransparentLogoTexture(logoTex.image), [logoTex.image]);
   const backLeatherTex = useLoader(THREE.TextureLoader, "/textures/leather-green-back.png");
+  const backLogoLeatherTex = useMemo(
+    () => createBackLeatherTexture(backLeatherTex.image, logoTex.image),
+    [backLeatherTex.image, logoTex.image],
+  );
 
   /*
    * Three.js textures are designed to be configured by mutation; doing it inside
@@ -349,7 +368,13 @@ function MenuTablet() {
   useEffect(() => {
     /* eslint-disable react-hooks/immutability -- Three.js textures are configured by mutation */
     backLeatherTex.colorSpace = THREE.SRGBColorSpace;
-    backLeatherTex.anisotropy = 16;
+    backLeatherTex.wrapS = THREE.RepeatWrapping;
+    backLeatherTex.wrapT = THREE.RepeatWrapping;
+    backLeatherTex.repeat.set(1.15, 1.15);
+    backLeatherTex.anisotropy = 8;
+    backLeatherTex.minFilter = THREE.LinearFilter;
+    backLeatherTex.magFilter = THREE.LinearFilter;
+    backLeatherTex.generateMipmaps = false;
     backLeatherTex.needsUpdate = true;
     /* eslint-enable react-hooks/immutability */
   }, [backLeatherTex]);
@@ -358,7 +383,7 @@ function MenuTablet() {
   useFrame((state) => {
     if (!group.current) return;
     const t = state.clock.elapsedTime;
-    group.current.position.y = Math.sin(t * 0.4) * 0.03;
+    group.current.position.y = -0.42 + Math.sin(t * 0.4) * 0.03;
   });
 
   /*
@@ -367,10 +392,13 @@ function MenuTablet() {
    *   No rotation around Z (no in-plane tilt)
    */
   return (
-    <group ref={group} rotation={[-0.12, 0, 0]} scale={0.8}>
+    <group ref={group} rotation={[-0.1, 0, 0]} scale={1.08}>
       {/* ── Case body — solid color for thin edges/corners ── */}
       <RoundedBox args={[W, H, D]} radius={R} smoothness={4}>
-        <meshPhysicalMaterial color={CASE_COLOR} roughness={0.92} metalness={0.01} clearcoat={0.04} clearcoatRoughness={0.96} envMapIntensity={0.05} />
+        <meshBasicMaterial
+          map={backLeatherTex}
+          toneMapped={false}
+        />
       </RoundedBox>
 
       {/* ── Front leather (full face, sits on top of case) ── */}
@@ -402,7 +430,7 @@ function MenuTablet() {
       <mesh position={[0, 0, -(D / 2 + 0.004)]} rotation={[0, Math.PI, 0]} renderOrder={1}>
         <planeGeometry args={[W - 0.01, H - 0.01]} />
         <meshBasicMaterial
-          map={backLeatherTex}
+          map={backLogoLeatherTex}
           toneMapped={false}
           polygonOffset
           polygonOffsetFactor={-1}
@@ -410,26 +438,14 @@ function MenuTablet() {
         />
       </mesh>
 
-      {/* ── Back logo (on top of back leather) ── */}
-      <mesh position={[0, 0, -(D / 2 + 0.008)]} rotation={[0, Math.PI, 0]} renderOrder={2}>
-        <planeGeometry args={[W * 0.38, H * 0.38]} />
-        <meshBasicMaterial
-          map={transparentLogoTex}
-          transparent
-          alphaTest={0.02}
-          toneMapped={false}
-          depthWrite={false}
-          polygonOffset
-          polygonOffsetFactor={-2}
-          polygonOffsetUnits={-2}
-        />
-      </mesh>
     </group>
   );
 }
 
 /* ─── Polar angle — lock vertical to match camera ─── */
-const LOCKED_POLAR = Math.acos(0.6 / Math.sqrt(0.36 + 20.25));
+const CAMERA_Y = 0.34;
+const CAMERA_Z = 5.05;
+const LOCKED_POLAR = Math.acos(CAMERA_Y / Math.sqrt(CAMERA_Y ** 2 + CAMERA_Z ** 2));
 
 /* ─── Exported scene ─── */
 export function InteractiveMenu3D() {
@@ -447,11 +463,11 @@ export function InteractiveMenu3D() {
 
   return (
     <Canvas
-      camera={{ position: [0, 0.6, 4.5], fov: 32 }}
+      camera={{ position: [0, CAMERA_Y, CAMERA_Z], fov: 34 }}
       /* `pan-y` lets a vertical swipe scroll the page; horizontal drags still rotate the tablet. */
       style={{ width: "100%", height: "100%", touchAction: "pan-y" }}
-      dpr={isCompact ? [1, 1.5] : [1, 2]}
-      gl={{ antialias: true, logarithmicDepthBuffer: true }}
+      dpr={isCompact ? [1, 1.25] : [1, 1.5]}
+      gl={{ antialias: true, powerPreference: "high-performance" }}
     >
       <ambientLight intensity={0.55} />
       <directionalLight position={[5, 5, 5]} intensity={1.2} castShadow />
@@ -460,16 +476,16 @@ export function InteractiveMenu3D() {
 
       <Suspense fallback={null}>
         <MenuTablet />
-        <Environment preset="studio" />
       </Suspense>
-
-      <ContactShadows position={[0, -1.25, 0]} opacity={0.3} scale={6} blur={2.5} />
 
       <OrbitControls
         autoRotate
         autoRotateSpeed={0.25}
-        enableZoom={false}
+        enableZoom
         enablePan={false}
+        minDistance={3.2}
+        maxDistance={7.2}
+        target={[0, -0.42, 0]}
         minPolarAngle={LOCKED_POLAR}
         maxPolarAngle={LOCKED_POLAR}
         dampingFactor={0.06}

@@ -34,7 +34,7 @@ export default function FuturePage() {
           <div className="flex flex-wrap gap-2 sm:gap-3">
             {futurePage.stageLanguage.map((label) => (
               <span
-                className="rounded-[8px] border border-ink/10 bg-paper px-3 py-2 text-xs font-medium uppercase text-ink"
+                className="tt-micro-block rounded-[8px] border border-ink/10 bg-paper px-3 py-2 text-xs font-medium uppercase text-ink"
                 key={label}
               >
                 {label}

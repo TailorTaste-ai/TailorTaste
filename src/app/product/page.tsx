@@ -25,7 +25,7 @@ export default function ProductPage() {
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-5">
               {productPage.objectModel.items.map((item) => (
                 <div
-                  className="group rounded-[12px] border border-ink/8 bg-chalk p-5 transition hover:border-ink/15 hover:shadow-soft sm:p-6"
+                  className="group tt-luxury-card rounded-[8px] p-5 transition hover:border-ink/15 sm:p-6"
                   key={item.title}
                 >
                   <h3 className="font-serif text-lg text-ink">{item.title}</h3>
@@ -43,14 +43,14 @@ export default function ProductPage() {
         </Container>
       </section>
 
-      <section className="bg-chalk section-y">
+      <section className="tt-section-panel section-y">
         <Container className="grid gap-8 lg:grid-cols-2 lg:gap-10">
           <Card className="space-y-6 shadow-none sm:space-y-8">
             <SectionHeader {...productPage.serviceFit} />
             <ol className="space-y-3">
               {productPage.serviceFit.steps.map((step, index) => (
                 <li
-                  className="rounded-[8px] border border-ink/10 bg-paper px-4 py-3 text-sm leading-6 text-graphite"
+                  className="tt-micro-block border-l border-accent bg-paper/70 px-4 py-3 text-sm leading-6 text-graphite"
                   key={step}
                 >
                   <span className="mr-2 font-semibold text-ink">{String(index + 1).padStart(2, "0")}</span>
@@ -63,7 +63,7 @@ export default function ProductPage() {
             <SectionHeader {...productPage.deployment} />
             <div className="space-y-3">
               {productPage.deployment.items.map((item) => (
-                <div className="rounded-[8px] border border-ink/10 bg-paper px-4 py-3" key={item.title}>
+                <div className="tt-micro-block border-l border-accent bg-paper/70 px-4 py-3" key={item.title}>
                   <h3 className="text-sm font-semibold text-ink">{item.title}</h3>
                   <p className="mt-2 text-sm leading-6 text-graphite">{item.body}</p>
                 </div>
@@ -77,8 +77,8 @@ export default function ProductPage() {
         <Container className="space-y-8 sm:space-y-10">
           <SectionHeader
             eyebrow="MVP boundaries"
-            title="Clear exclusions protect product credibility."
-            body="These limits keep the first version focused on premium menu delivery instead of expanding into unrelated product categories."
+            title="Excluded from MVP so the first test stays clean."
+            body="These choices keep the pilot focused on the menu object, staff controls, and handout workflow."
           />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {productPage.boundaries.map((item) => (
@@ -94,13 +94,14 @@ export default function ProductPage() {
         </Container>
       </section>
 
-      <section className="bg-cypress section-y text-chalk">
-        <Container className="space-y-8 sm:space-y-10">
+      <section className="relative overflow-hidden bg-cypress section-y text-chalk">
+        <div className="absolute inset-0 opacity-30" style={{ background: "repeating-linear-gradient(90deg, rgba(255,250,241,0.12) 0 1px, transparent 1px 84px)" }} aria-hidden />
+        <Container className="relative space-y-8 sm:space-y-10">
           <div className="[&_h2]:text-chalk [&_p]:text-chalk/75">
             <SectionHeader
               eyebrow="Pilot invitation"
-              title="Discuss a pilot with focused operators."
-              body="TailorTaste is currently looking for high-quality conversations with premium venues and service-led teams."
+              title="Test it where menu changes already create friction."
+              body="Useful pilots are in venues with language needs, service state changes, event menus, or frequent content updates."
             />
           </div>
           <div>
