@@ -81,18 +81,4 @@ export const productPage = {
       },
     ],
   },
-  boundaries: [
-    {
-      title: "No guest ordering in MVP",
-      body: "Ordering changes the product from a menu into a transaction system. The first version stays focused on presentation and control.",
-    },
-    {
-      title: "No guest side touch in the MVP",
-      body: "Touch interaction would make the object behave like the devices premium venues are trying to avoid.",
-    },
-    {
-      title: "No inventory linked automation in MVP",
-      body: "Inventory logic may become valuable later, but only after the core menu object and service workflow are proven.",
-    },
-  ],
 } satisfies ProductPageContent;

@@ -15,7 +15,7 @@ export function ObjectReveal({ eyebrow, title, body, principles }: ObjectRevealP
   return (
     <section className="tt-reveal section-y">
       <Container className="grid gap-10 sm:gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16" width="wide">
-        <div className="relative overflow-hidden border border-ink/10 bg-ink shadow-[0_40px_100px_rgba(20,23,21,0.18)]">
+        <div className="relative overflow-hidden border border-ink/10 bg-ink shadow-[0_40px_100px_rgba(20,23,21,0.18)] dark:border-chalk/15">
           <Image
             src="/menu-table-premium.png"
             alt="TailorTaste premium digital menu held at a fine dining table"
@@ -35,7 +35,7 @@ export function ObjectReveal({ eyebrow, title, body, principles }: ObjectRevealP
           <ul className="grid gap-3 sm:grid-cols-2">
             {principles.map((principle) => (
               <li
-                className="border-l border-accent bg-chalk/60 px-4 py-3 text-sm font-semibold text-ink shadow-[0_14px_35px_rgba(20,23,21,0.06)]"
+                className="border-l border-accent bg-chalk/60 px-4 py-3 text-sm font-semibold text-ink shadow-[0_14px_35px_rgba(20,23,21,0.06)] dark:bg-chalk/10 dark:text-chalk"
                 key={principle}
               >
                 {principle}

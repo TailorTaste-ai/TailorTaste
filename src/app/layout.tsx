@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import type { ReactNode } from "react";
 import { Analytics } from "@vercel/analytics/next";
 import { SiteShell } from "@/components/global/SiteShell";
@@ -7,6 +8,33 @@ import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
 const allowIndexing = shouldAllowIndexing();
+const themePreviewScript = `
+(function () {
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var queryTheme = params.get("theme");
+    var theme = queryTheme;
+    try {
+      var storage = window.localStorage;
+      if (storage && (queryTheme === "dark" || queryTheme === "light")) {
+        storage.setItem("tailorTasteTheme", queryTheme);
+      }
+      if (!theme && storage) {
+        theme = storage.getItem("tailorTasteTheme");
+      }
+    } catch (_) {
+      theme = queryTheme;
+    }
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+      document.documentElement.dataset.theme = "dark";
+    } else {
+      document.documentElement.classList.remove("dark");
+      document.documentElement.removeAttribute("data-theme");
+    }
+  } catch (_) {}
+})();
+`;
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -56,8 +84,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
+        <Script id="tailor-taste-theme-preview" strategy="beforeInteractive">
+          {themePreviewScript}
+        </Script>
         <SiteShell>{children}</SiteShell>
         <Analytics />
       </body>

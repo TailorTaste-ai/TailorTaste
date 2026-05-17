@@ -3,55 +3,49 @@ import type { FAQPageContent } from "@/lib/site";
 export const faqPage = {
   hero: {
     eyebrow: "FAQ",
-    title: "What is included, what is not, and why.",
-    body: "TailorTaste is early. The useful questions are about scope, workflow, target venues, and what still needs proof.",
+    title: "Questions a venue should ask before testing TailorTaste.",
+    body: "Short answers about the guest experience, staff controls, pilot scope, and what stays future until the workflow is proven.",
   },
   items: [
     {
-      question: "Is TailorTaste already a mature, deployed product?",
+      question: "Is this a tablet menu?",
       answer:
-        "No. TailorTaste is pre pilot. The current work is proving the object, staff workflow, and venue value.",
+        "No. TailorTaste is based on e-ink style display technology, not the LED screens used in normal tablets or iPads. That makes the object thinner, quieter, and closer to paper, so it supports the dining experience instead of pulling the guest out of it.",
     },
     {
-      question: "Is this a tablet in disguise?",
-      answer: "No. The direction is a leather bound menu object with a restrained menu face, not app chrome or guest navigation.",
-    },
-    {
-      question: "Does the guest interact with the menu in the MVP?",
-      answer: "No. Guests read the menu. Staff handle language, service state, and content changes before or during service.",
-    },
-    {
-      question: "Does MVP include ordering?",
-      answer: "No. Ordering would turn TailorTaste into a transaction product. The first version is about menu presentation, staff control, and service fit.",
-    },
-    {
-      question: "What is included in the first product direction?",
+      question: "Can guests order from it?",
       answer:
-        "Language switching, preset service state menus, low light readability, and a practical path from existing menu files into the object.",
+        "No. The first pilot is not an ordering or payment product. Ordering stays with staff and existing systems; TailorTaste focuses on presentation, clarity, and controlled menu updates.",
     },
     {
-      question: "What remains future only?",
+      question: "What can staff change during service?",
       answer:
-        "Inventory linked updates, pricing suggestions, broader integrations, and deeper intelligence stay future only until the service workflow is proven.",
+        "Staff can control the active menu state, language version, readability, availability, specials, and approved menu text. Some updates can happen live; others should be approved before the menu goes back to a table.",
     },
     {
-      question: "Who is the first target segment?",
-      answer: "The beachhead is premium hotels and hotel restaurants where language, service states, events, and atmosphere all matter at once.",
-    },
-    {
-      question: "How would a pilot work in practice?",
+      question: "Can menus switch languages?",
       answer:
-        "A sensible pilot would start in one outlet, use active menus plus spare units, and test the workflow around real service moments before expanding.",
+        "Yes. A venue can prepare approved language versions and switch the menu for international guests without maintaining separate printed sets.",
     },
     {
-      question: "What if a unit is unavailable during service?",
+      question: "How are dietary and allergen needs handled?",
       answer:
-        "That risk has to be designed for. Charging, storage, spares, and service recovery are part of the product requirements, not operational afterthoughts.",
+        "The goal is to help staff surface approved dietary notes, allergen information, and suitable dishes without narrowing the whole menu unnecessarily. It should support staff judgment, not replace it.",
     },
     {
-      question: "Who should reach out now?",
+      question: "Does it support price changes or dynamic pricing?",
       answer:
-        "Operators with real menu workflow pain, investors or advisors with hospitality experience, strategic partners, and builders who can help with hardware or service operations.",
+        "Controlled price and availability updates are part of the direction. Autonomous AI pricing is not part of the first pilot; any pricing change should remain deliberate and staff-approved.",
+    },
+    {
+      question: "What does a pilot measure?",
+      answer:
+        "A pilot should measure whether staff can prepare, hand out, update, charge, store, and recover the menu object naturally during service. It should also track reduced menu work, fewer version mistakes, and guest acceptance.",
+    },
+    {
+      question: "Does it integrate with POS, PMS, or inventory systems?",
+      answer:
+        "Not in the first test. Integrations can matter later, but the first proof is simpler: can the physical menu object and staff-side workflow create value before deeper automation is added?",
     },
   ],
 } satisfies FAQPageContent;

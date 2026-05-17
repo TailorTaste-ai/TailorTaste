@@ -34,10 +34,10 @@ export function Navbar() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-ink/10 bg-paper/82 backdrop-blur-xl transition-colors duration-300">
+    <header className="sticky top-0 z-40 border-b border-ink/10 bg-paper/82 backdrop-blur-xl transition-colors duration-300 dark:border-chalk/10 dark:bg-ink/95">
       <Container className="flex h-14 items-center justify-between gap-4 sm:h-16 lg:h-20" width="wide">
         <Link
-          className="flex min-w-0 items-center gap-2 font-serif text-lg font-medium text-ink sm:text-xl"
+          className="flex min-w-0 items-center gap-2 font-serif text-lg font-medium text-ink sm:text-xl dark:text-chalk"
           href="/"
           aria-label={`${siteConfig.name} home`}
         >
@@ -46,7 +46,7 @@ export function Navbar() {
             alt=""
             width={80}
             height={80}
-            className="h-8 w-8 shrink-0 object-contain sm:h-9 sm:w-9"
+            className="h-8 w-8 shrink-0 object-contain sm:h-9 sm:w-9 dark:brightness-0 dark:invert"
             priority
             unoptimized
           />
@@ -55,7 +55,7 @@ export function Navbar() {
 
         {/* Desktop nav */}
         <nav
-          className="hidden items-center gap-2 rounded-full border border-ink/10 bg-chalk/55 px-2 py-1 text-sm text-graphite shadow-[0_18px_45px_rgba(20,23,21,0.07)] md:flex"
+          className="hidden items-center gap-2 rounded-full border border-ink/10 bg-chalk/55 px-2 py-1 text-sm text-graphite shadow-[0_18px_45px_rgba(20,23,21,0.07)] md:flex dark:border-chalk/15 dark:bg-chalk/10 dark:text-chalk/75"
           aria-label="Main navigation"
         >
           {mainNavigation.map((item) => {
@@ -63,7 +63,7 @@ export function Navbar() {
             return (
               <Link
                 className={`rounded-full px-3 py-2 transition ${
-                  active ? "bg-ink text-chalk" : "hover:bg-ink/5 hover:text-ink"
+                  active ? "bg-ink text-chalk dark:bg-chalk dark:text-ink" : "hover:bg-ink/5 hover:text-ink dark:hover:bg-chalk/10 dark:hover:text-chalk"
                 }`}
                 href={item.href}
                 key={item.href}
@@ -81,7 +81,7 @@ export function Navbar() {
         {/* Mobile controls */}
         <button
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink/10 bg-chalk/60 text-ink transition hover:bg-chalk focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 md:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink/10 bg-chalk/60 text-ink transition hover:bg-chalk focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 md:hidden dark:border-chalk/15 dark:bg-chalk/10 dark:text-chalk dark:hover:bg-chalk/20"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           aria-controls={panelId}
@@ -125,13 +125,13 @@ export function Navbar() {
           tabIndex={-1}
           aria-label="Close menu backdrop"
           onClick={() => setOpen(false)}
-          className={`fixed inset-x-0 bottom-0 top-14 z-30 bg-ink/30 backdrop-blur-[2px] transition-opacity duration-200 sm:top-16 ${
+          className={`fixed inset-x-0 bottom-0 top-14 z-30 bg-ink/30 backdrop-blur-[2px] transition-opacity duration-200 sm:top-16 dark:bg-black/55 ${
             open ? "opacity-100" : "opacity-0"
           }`}
         />
         {/* Panel */}
         <div
-          className={`fixed inset-x-0 top-14 z-40 origin-top border-b border-ink/10 bg-paper shadow-[0_10px_30px_-20px_rgba(20,23,21,0.25)] transition-[transform,opacity] duration-200 sm:top-16 ${
+          className={`fixed inset-x-0 top-14 z-40 origin-top border-b border-ink/10 bg-paper shadow-[0_10px_30px_-20px_rgba(20,23,21,0.25)] transition-[transform,opacity] duration-200 sm:top-16 dark:border-chalk/15 dark:bg-ink dark:shadow-[0_22px_60px_rgba(0,0,0,0.35)] ${
             open ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"
           }`}
         >
@@ -145,7 +145,7 @@ export function Navbar() {
                     href={item.href}
                     onClick={() => setOpen(false)}
                     className={`-mx-2 rounded-md px-2 py-3 font-serif text-xl transition ${
-                      active ? "text-ink" : "text-graphite hover:text-ink"
+                      active ? "text-ink dark:text-chalk" : "text-graphite hover:text-ink dark:text-chalk/70 dark:hover:text-chalk"
                     }`}
                     aria-current={active ? "page" : undefined}
                   >
@@ -153,7 +153,7 @@ export function Navbar() {
                   </Link>
                 );
               })}
-              <div className="mt-2 border-t border-ink/10 pt-4">
+              <div className="mt-2 border-t border-ink/10 pt-4 dark:border-chalk/15">
                 <Button
                   {...primaryCta}
                   className="flex w-full justify-center"

@@ -19,10 +19,10 @@ export default function FaqPage() {
             {faqPage.items.map((item) => (
               <Card className="shadow-none" key={item.question}>
                 <details className="group">
-                  <summary className="cursor-pointer list-none font-serif text-xl text-ink sm:text-2xl">
+                  <summary className="cursor-pointer list-none font-serif text-xl text-ink sm:text-2xl dark:text-chalk">
                     {item.question}
                   </summary>
-                  <p className="mt-3 text-sm leading-7 text-graphite">{item.answer}</p>
+                  <p className="mt-3 text-sm leading-7 text-graphite dark:text-chalk/75">{item.answer}</p>
                 </details>
               </Card>
             ))}

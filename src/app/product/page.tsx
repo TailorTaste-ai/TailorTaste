@@ -28,8 +28,8 @@ export default function ProductPage() {
                   className="group tt-luxury-card rounded-[8px] p-5 transition hover:border-ink/15 sm:p-6"
                   key={item.title}
                 >
-                  <h3 className="font-serif text-lg text-ink">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-graphite">{item.body}</p>
+                  <h3 className="font-serif text-lg text-ink dark:text-chalk">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-graphite dark:text-chalk/75">{item.body}</p>
                 </div>
               ))}
             </div>
@@ -50,7 +50,7 @@ export default function ProductPage() {
             <ol className="space-y-3">
               {productPage.serviceFit.steps.map((step, index) => (
                 <li
-                  className="tt-micro-block border-l border-accent bg-paper/70 px-4 py-3 text-sm leading-6 text-graphite"
+                  className="tt-micro-block border-l border-accent bg-paper/70 px-4 py-3 text-sm leading-6 text-graphite dark:bg-chalk/90 dark:text-ink/75"
                   key={step}
                 >
                   <span className="mr-2 font-semibold text-ink">{String(index + 1).padStart(2, "0")}</span>
@@ -63,34 +63,13 @@ export default function ProductPage() {
             <SectionHeader {...productPage.deployment} />
             <div className="space-y-3">
               {productPage.deployment.items.map((item) => (
-                <div className="tt-micro-block border-l border-accent bg-paper/70 px-4 py-3" key={item.title}>
+                <div className="tt-micro-block border-l border-accent bg-paper/70 px-4 py-3 dark:bg-chalk/90" key={item.title}>
                   <h3 className="text-sm font-semibold text-ink">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-graphite">{item.body}</p>
+                  <p className="mt-2 text-sm leading-6 text-graphite dark:text-ink/75">{item.body}</p>
                 </div>
               ))}
             </div>
           </Card>
-        </Container>
-      </section>
-
-      <section className="section-y">
-        <Container className="space-y-8 sm:space-y-10">
-          <SectionHeader
-            eyebrow="MVP boundaries"
-            title="Excluded from MVP so the first test stays clean."
-            body="These choices keep the pilot focused on the menu object, staff controls, and handout workflow."
-          />
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {productPage.boundaries.map((item) => (
-              <Card className="shadow-none" key={item.title}>
-                <h2 className="font-serif text-xl sm:text-2xl">{item.title}</h2>
-                <p className="mt-3 text-sm leading-6 text-graphite">{item.body}</p>
-              </Card>
-            ))}
-          </div>
-          <div>
-            <Button {...primaryCta} />
-          </div>
         </Container>
       </section>
 

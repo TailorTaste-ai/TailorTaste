@@ -119,17 +119,33 @@ export const serviceFit = {
 };
 
 export const futureLayer = {
-  eyebrow: "Future layer",
-  title: "Future software should come from real menu operations.",
-  body: "Templates, scheduling, outlet controls, and intelligence only make sense after venues prove that controlled menu updates improve daily service.",
-  steps: ["Menu object", "Content control", "Operational layer", "Hospitality intelligence"],
+  eyebrow: "Menu changes",
+  title: "Change the menu without reprinting the ritual.",
+  body: "Whatever a venue needs to adjust, TailorTaste should make it a controlled staff-side update. The pilot helps decide which changes matter first.",
+  steps: [
+    {
+      title: "Translations",
+      body: "Switch language versions for international tables without maintaining separate printed sets.",
+    },
+    {
+      title: "Service states",
+      body: "Move between lunch, dinner, tasting, event, or room-service menus from the staff side.",
+    },
+    {
+      title: "Menu edits",
+      body: "Update dish text, specials, sold-out items, and dietary notes without another print cycle.",
+    },
+    {
+      title: "Price and availability",
+      body: "Support controlled price or availability changes later, once the pilot proves the workflow.",
+    },
+  ],
 };
 
 export const founderNote = {
   eyebrow: "Founder note",
   title: "Why start with the menu?",
-  body: "It is visible to every guest, handled by staff, translated for international tables, changed across services, and expensive to get wrong.",
-  visualLabel: assetBrief.placeholders.founder.title,
+  body: "Because the menu is where guest experience and daily operations meet. Every guest sees it, staff handle it constantly, and small mistakes in language, availability, allergens, or price create real service friction.",
 };
 
 export const finalCta = {

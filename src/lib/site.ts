@@ -26,7 +26,6 @@ export type ProductPageContent = {
   capabilities: SectionIntro & { items: FeatureItem[] };
   serviceFit: SectionIntro & { steps: string[] };
   deployment: SectionIntro & { items: FeatureItem[] };
-  boundaries: FeatureItem[];
 };
 
 export type VisionPageContent = {
@@ -123,7 +122,7 @@ export const siteConfig = {
   name: "TailorTaste",
   description: "A physical menu object staff can update before and during service.",
   productDefinition:
-    "TailorTaste gives restaurants and hotels a physical menu object for language changes, service states, and controlled menu updates without guest side tablet behavior.",
+    "TailorTaste keeps the menu physical for guests while staff update languages, service states, availability, dietary notes, and prices from their side.",
   primaryCTA: "Discuss a pilot",
   url: "https://tailortaste.com",
 };

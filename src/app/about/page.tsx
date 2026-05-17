@@ -20,17 +20,17 @@ export default function AboutPage() {
 
   return (
     <>
-      <section className="relative overflow-hidden border-b border-ink/10 py-16 sm:py-20 lg:py-24">
-        <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-chalk/70 to-transparent" aria-hidden />
+      <section className="relative overflow-hidden border-b border-ink/10 py-16 sm:py-20 lg:py-24 dark:border-chalk/10">
+        <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-chalk/70 to-transparent dark:hidden" aria-hidden />
         <Container className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
           <div className="relative space-y-8">
             <SectionHeader as="h1" {...aboutPage.hero} />
             <div className="grid gap-3">
               {aboutPage.hero.items.map((item, index) => (
-                <article className="tt-micro-block border-l border-accent bg-chalk/70 p-5 shadow-[0_18px_45px_rgba(20,23,21,0.07)]" key={item.title}>
+                <article className="tt-micro-block tt-about-hero-card border-l border-accent p-5 shadow-[0_18px_45px_rgba(20,23,21,0.07)] dark:shadow-[0_18px_45px_rgba(0,0,0,0.22)]" key={item.title}>
                   <p className="tt-rail-label mb-4 text-accent/70">{String(index + 1).padStart(2, "0")}</p>
-                  <h2 className="font-serif text-xl leading-tight text-ink">{item.title}</h2>
-                  <p className="mt-2 text-sm leading-6 text-graphite">{item.body}</p>
+                  <h2 className="font-serif text-xl leading-tight text-ink dark:text-chalk">{item.title}</h2>
+                  <p className="mt-2 text-sm leading-6 text-graphite dark:text-chalk/70">{item.body}</p>
                 </article>
               ))}
             </div>
@@ -46,7 +46,7 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      <section className="tt-section-panel py-24">
+      <section className="tt-section-panel tt-section-panel-clean py-24">
         <Container className="space-y-16">
           <FeatureGrid {...aboutPage.domainComplement} />
           <FeatureGrid {...aboutPage.operatingStyle} />
@@ -71,8 +71,8 @@ function FeatureGrid({ eyebrow, title, body, items }: SectionIntro & { items: Fe
       <div className="grid gap-4 md:grid-cols-3">
         {items.map((item) => (
           <article className="tt-luxury-card rounded-[8px] p-6" key={item.title}>
-            <h3 className="font-serif text-xl leading-tight text-ink">{item.title}</h3>
-            <p className="mt-3 text-sm leading-6 text-graphite">{item.body}</p>
+            <h3 className="font-serif text-xl leading-tight text-ink dark:text-chalk">{item.title}</h3>
+            <p className="mt-3 text-sm leading-6 text-graphite dark:text-chalk/75">{item.body}</p>
           </article>
         ))}
       </div>

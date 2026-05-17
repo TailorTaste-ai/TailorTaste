@@ -24,7 +24,7 @@ export function HeroManifesto({ eyebrow, title, body, ctas }: HeroManifestoProps
         }}
         aria-hidden
       />
-      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-paper to-transparent" aria-hidden />
+      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-paper to-transparent dark:from-ink" aria-hidden />
       <Container
         className="relative grid items-center gap-10 sm:gap-12 md:grid-cols-[0.9fr_1.1fr] lg:gap-16"
         width="wide"
