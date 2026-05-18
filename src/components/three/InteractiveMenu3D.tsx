@@ -17,22 +17,24 @@ import type { Group } from "three";
 /* ─── Geometry ─── */
 const W = 3.2;
 const H = 2.2;
-const D = 0.06;
-const R = 0.04;
+const D = 0.085;
+const R = 0.055;
 
 /* Screen inset from the case edge */
-const BEZEL = 0.12;
+const BEZEL = 0.22;
 const SW = W - BEZEL * 2;
 const SH = H - BEZEL * 2;
-const BACK_FACE_INSET = 0.08;
-const BACK_FACE_W = W - BACK_FACE_INSET;
-const BACK_FACE_H = H - BACK_FACE_INSET;
+const LEATHER_FACE_INSET = 0.06;
+const LEATHER_FACE_W = W - LEATHER_FACE_INSET;
+const LEATHER_FACE_H = H - LEATHER_FACE_INSET;
+const INNER_LIP = 0.075;
 
 /* ─── Palette ─── */
-const SCREEN_BG = "#F7F2E8";
+const SCREEN_BG = "#F0E5D4";
 const INK = "#12100d";
 const MUTED = "#3b352f";
-const CASE_EDGE_COLOR = "#143126";
+const CASE_EDGE_COLOR = "#0b2619";
+const LIP_COLOR = "#07180f";
 const SERIF = "Georgia, 'Times New Roman', serif";
 
 /* ─── Menu data ─── */
@@ -316,7 +318,222 @@ function drawFullBleedLeather(
   ctx.drawImage(leatherImage, (width - drawW) / 2, (height - drawH) / 2, drawW, drawH);
 }
 
-function createLeatherFaceTexture(leatherImage: CanvasImageSource) {
+function seededNoise(seed: number) {
+  return Math.sin(seed * 12.9898) * 43758.5453 % 1 + (Math.sin(seed * 4.1414) % 1);
+}
+
+function normalizedNoise(seed: number) {
+  return Math.abs(seededNoise(seed)) % 1;
+}
+
+function drawFineLeatherNoise(ctx: CanvasRenderingContext2D, width: number, height: number) {
+  const noiseWidth = 512;
+  const noiseHeight = 352;
+  const noise = document.createElement("canvas");
+  noise.width = noiseWidth;
+  noise.height = noiseHeight;
+  const noiseCtx = noise.getContext("2d")!;
+  const imageData = noiseCtx.createImageData(noiseWidth, noiseHeight);
+  const { data } = imageData;
+
+  for (let i = 0; i < data.length; i += 4) {
+    const n = normalizedNoise(i * 0.33);
+    const value = Math.round(52 + n * 70);
+    data[i] = value;
+    data[i + 1] = value;
+    data[i + 2] = value;
+    data[i + 3] = Math.round(34 + n * 42);
+  }
+
+  noiseCtx.putImageData(imageData, 0, 0);
+  ctx.save();
+  ctx.globalAlpha = 0.18;
+  ctx.globalCompositeOperation = "overlay";
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(noise, 0, 0, width, height);
+  ctx.restore();
+}
+
+function drawPebbledLeatherGrain(ctx: CanvasRenderingContext2D, width: number, height: number) {
+  ctx.save();
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+
+  for (let i = 0; i < 3600; i++) {
+    const x = normalizedNoise(i * 9.71 + 11) * width;
+    const y = normalizedNoise(i * 7.37 + 29) * height;
+    const rx = 3 + normalizedNoise(i * 5.41 + 3) * 11;
+    const ry = 1.1 + normalizedNoise(i * 8.13 + 17) * 4.7;
+    const angle = normalizedNoise(i * 2.73 + 41) * Math.PI;
+    const alpha = 0.055 + normalizedNoise(i * 3.31 + 5) * 0.08;
+
+    ctx.globalCompositeOperation = i % 2 === 0 ? "screen" : "multiply";
+    ctx.strokeStyle =
+      i % 2 === 0
+        ? `rgba(151, 178, 143, ${alpha})`
+        : `rgba(3, 13, 8, ${alpha * 1.15})`;
+    ctx.lineWidth = 0.85 + normalizedNoise(i * 1.91 + 23) * 1.35;
+    ctx.beginPath();
+    ctx.ellipse(x, y, rx, ry, angle, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  for (let i = 0; i < 1900; i++) {
+    const x = normalizedNoise(i * 6.19 + 101) * width;
+    const y = normalizedNoise(i * 4.47 + 77) * height;
+    const length = 10 + normalizedNoise(i * 2.21 + 9) * 34;
+    const angle = -0.65 + normalizedNoise(i * 8.51 + 13) * 1.3;
+    const alpha = 0.04 + normalizedNoise(i * 5.77 + 19) * 0.09;
+
+    ctx.globalCompositeOperation = i % 3 === 0 ? "screen" : "multiply";
+    ctx.strokeStyle =
+      i % 3 === 0
+        ? `rgba(171, 190, 156, ${alpha})`
+        : `rgba(4, 14, 9, ${alpha})`;
+    ctx.lineWidth = 0.8 + normalizedNoise(i * 2.89 + 31) * 1.1;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + Math.cos(angle) * length, y + Math.sin(angle) * length);
+    ctx.stroke();
+  }
+
+  ctx.restore();
+}
+
+function drawStitchedRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+) {
+  const stitch = 13;
+  const gap = 11;
+
+  function dashLine(x1: number, y1: number, x2: number, y2: number) {
+    const horizontal = Math.abs(x2 - x1) > Math.abs(y2 - y1);
+    const length = horizontal ? Math.abs(x2 - x1) : Math.abs(y2 - y1);
+    const dir = horizontal ? Math.sign(x2 - x1) : Math.sign(y2 - y1);
+    let offset = 0;
+
+    while (offset < length - stitch) {
+      const wobble = Math.sin(offset * 0.09) * 1.4;
+      if (horizontal) {
+        const sx = x1 + offset * dir;
+        ctx.moveTo(sx, y1 + wobble);
+        ctx.lineTo(sx + stitch * dir, y1 - wobble * 0.4);
+      } else {
+        const sy = y1 + offset * dir;
+        ctx.moveTo(x1 + wobble, sy);
+        ctx.lineTo(x1 - wobble * 0.4, sy + stitch * dir);
+      }
+      offset += stitch + gap;
+    }
+  }
+
+  ctx.save();
+  ctx.lineCap = "round";
+
+  ctx.strokeStyle = "rgba(2, 10, 6, 0.7)";
+  ctx.lineWidth = 4.8;
+  ctx.beginPath();
+  dashLine(x + 1.4, y + 2, x + width - 1.4, y + 2);
+  dashLine(x + width + 2, y + 1.4, x + width + 2, y + height - 1.4);
+  dashLine(x + width - 1.4, y + height + 2, x + 1.4, y + height + 2);
+  dashLine(x + 2, y + height - 1.4, x + 2, y + 1.4);
+  ctx.stroke();
+
+  ctx.strokeStyle = "rgba(185, 150, 86, 0.74)";
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  dashLine(x, y, x + width, y);
+  dashLine(x + width, y, x + width, y + height);
+  dashLine(x + width, y + height, x, y + height);
+  dashLine(x, y + height, x, y);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function drawLeatherBevel(ctx: CanvasRenderingContext2D, width: number, height: number) {
+  ctx.save();
+
+  const outer = ctx.createLinearGradient(0, 0, width, height);
+  outer.addColorStop(0, "rgba(255, 255, 255, 0.12)");
+  outer.addColorStop(0.32, "rgba(38, 77, 48, 0.12)");
+  outer.addColorStop(0.75, "rgba(4, 21, 12, 0.2)");
+  outer.addColorStop(1, "rgba(0, 7, 3, 0.5)");
+  ctx.globalCompositeOperation = "soft-light";
+  ctx.fillStyle = outer;
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.globalCompositeOperation = "source-over";
+  ctx.strokeStyle = "rgba(3, 12, 7, 0.66)";
+  ctx.lineWidth = 42;
+  ctx.strokeRect(21, 21, width - 42, height - 42);
+
+  ctx.strokeStyle = "rgba(62, 105, 69, 0.52)";
+  ctx.lineWidth = 8;
+  ctx.strokeRect(51, 51, width - 102, height - 102);
+
+  ctx.strokeStyle = "rgba(5, 20, 10, 0.5)";
+  ctx.lineWidth = 16;
+  ctx.strokeRect(112, 112, width - 224, height - 224);
+
+  ctx.strokeStyle = "rgba(124, 151, 103, 0.22)";
+  ctx.lineWidth = 5;
+  ctx.strokeRect(129, 129, width - 258, height - 258);
+
+  ctx.restore();
+}
+
+function drawPhotoMatchedLeather(
+  ctx: CanvasRenderingContext2D,
+  leatherImage: CanvasImageSource,
+  photoImage: CanvasImageSource,
+  width: number,
+  height: number,
+) {
+  drawFullBleedLeather(ctx, leatherImage, width, height);
+
+  ctx.save();
+  ctx.globalAlpha = 0.82;
+  ctx.globalCompositeOperation = "color";
+  ctx.fillStyle = "#183e28";
+  ctx.fillRect(0, 0, width, height);
+  ctx.restore();
+
+  ctx.save();
+  ctx.globalAlpha = 0.18;
+  ctx.globalCompositeOperation = "screen";
+  ctx.fillStyle = "#285338";
+  ctx.fillRect(0, 0, width, height);
+  ctx.restore();
+
+  ctx.save();
+  ctx.globalAlpha = 0.16;
+  ctx.globalCompositeOperation = "multiply";
+  ctx.fillStyle = "#06160d";
+  ctx.fillRect(0, 0, width, height);
+  ctx.restore();
+
+  ctx.save();
+  ctx.globalAlpha = 0.42;
+  ctx.globalCompositeOperation = "soft-light";
+  ctx.drawImage(photoImage, 470, 270, 780, 88, 0, 0, width, height);
+  ctx.restore();
+
+  ctx.save();
+  ctx.globalAlpha = 0.9;
+  drawFineLeatherNoise(ctx, width, height);
+  drawPebbledLeatherGrain(ctx, width, height);
+  ctx.restore();
+
+  drawLeatherBevel(ctx, width, height);
+  drawStitchedRect(ctx, 74, 76, width - 148, height - 152);
+}
+
+function createLeatherFaceTexture(leatherImage: CanvasImageSource, photoImage: CanvasImageSource) {
   const width = 2048;
   const height = 1408;
   const canvas = document.createElement("canvas");
@@ -324,7 +541,7 @@ function createLeatherFaceTexture(leatherImage: CanvasImageSource) {
   canvas.height = height;
   const ctx = canvas.getContext("2d")!;
 
-  drawFullBleedLeather(ctx, leatherImage, width, height);
+  drawPhotoMatchedLeather(ctx, leatherImage, photoImage, width, height);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
@@ -335,7 +552,11 @@ function createLeatherFaceTexture(leatherImage: CanvasImageSource) {
   return texture;
 }
 
-function createBackLeatherTexture(leatherImage: CanvasImageSource, logoImage: CanvasImageSource) {
+function createBackLeatherTexture(
+  leatherImage: CanvasImageSource,
+  photoImage: CanvasImageSource,
+  logoImage: CanvasImageSource,
+) {
   const width = 2048;
   const height = 1408;
   const canvas = document.createElement("canvas");
@@ -343,7 +564,7 @@ function createBackLeatherTexture(leatherImage: CanvasImageSource, logoImage: Ca
   canvas.height = height;
   const ctx = canvas.getContext("2d")!;
 
-  drawFullBleedLeather(ctx, leatherImage, width, height);
+  drawPhotoMatchedLeather(ctx, leatherImage, photoImage, width, height);
 
   const logoSize = 360;
   const logoX = (width - logoSize) / 2;
@@ -426,20 +647,21 @@ function createRoundedFaceGeometry(width: number, height: number, radius: number
 function MenuTablet() {
   const group = useRef<Group>(null);
   const leatherFaceGeometry = useMemo(
-    () => createRoundedFaceGeometry(BACK_FACE_W, BACK_FACE_H, R * 0.72),
+    () => createRoundedFaceGeometry(LEATHER_FACE_W, LEATHER_FACE_H, R * 0.7),
     [],
   );
   const siteLogoTex = useLoader(THREE.TextureLoader, "/logo.png");
   const menuTex = useMemo(() => createMenuTexture(siteLogoTex.image as HTMLImageElement), [siteLogoTex.image]);
   const logoTex = useLoader(THREE.TextureLoader, "/textures/tt-logo-gold.png");
   const backLeatherTex = useLoader(THREE.TextureLoader, "/textures/leather-green-back.png");
+  const homePhotoTex = useLoader(THREE.TextureLoader, "/menu-table-premium.png");
   const frontFaceTex = useMemo(
-    () => createLeatherFaceTexture(backLeatherTex.image),
-    [backLeatherTex.image],
+    () => createLeatherFaceTexture(backLeatherTex.image, homePhotoTex.image),
+    [backLeatherTex.image, homePhotoTex.image],
   );
   const backFaceTex = useMemo(
-    () => createBackLeatherTexture(backLeatherTex.image, logoTex.image),
-    [backLeatherTex.image, logoTex.image],
+    () => createBackLeatherTexture(backLeatherTex.image, homePhotoTex.image, logoTex.image),
+    [backLeatherTex.image, homePhotoTex.image, logoTex.image],
   );
 
   /* Gentle floating — no Z-rotation drift */
@@ -458,16 +680,22 @@ function MenuTablet() {
     <group ref={group} rotation={[-0.1, 0, 0]} scale={1.08}>
       {/* ── Case body — solid color for thin edges/corners ── */}
       <RoundedBox args={[W, H, D]} radius={R} smoothness={8}>
-        <meshBasicMaterial
+        <meshStandardMaterial
           color={CASE_EDGE_COLOR}
+          roughness={0.94}
+          metalness={0}
           toneMapped={false}
         />
       </RoundedBox>
 
       {/* ── Continuous front leather panel; the screen sits above it. ── */}
       <mesh geometry={leatherFaceGeometry} position={[0, 0, D / 2 + 0.004]} renderOrder={1}>
-        <meshBasicMaterial
+        <meshStandardMaterial
           map={frontFaceTex}
+          bumpMap={frontFaceTex}
+          bumpScale={0.018}
+          roughness={0.88}
+          metalness={0}
           toneMapped={false}
           polygonOffset
           polygonOffsetFactor={-1}
@@ -475,8 +703,22 @@ function MenuTablet() {
         />
       </mesh>
 
+      {/* ── Dark recessed lip, matching the photographed inset around the paper. ── */}
+      <mesh position={[0, 0, D / 2 + 0.007]} renderOrder={2}>
+        <planeGeometry args={[SW + INNER_LIP, SH + INNER_LIP]} />
+        <meshStandardMaterial
+          color={LIP_COLOR}
+          roughness={0.9}
+          metalness={0}
+          toneMapped={false}
+          polygonOffset
+          polygonOffsetFactor={-2}
+          polygonOffsetUnits={-2}
+        />
+      </mesh>
+
       {/* ── Screen (on top of the rounded leather case) ── */}
-      <mesh position={[0, 0, D / 2 + 0.008]} renderOrder={2}>
+      <mesh position={[0, 0, D / 2 + 0.012]} renderOrder={3}>
         <planeGeometry args={[SW, SH]} />
         <meshBasicMaterial
           map={menuTex}
@@ -490,8 +732,12 @@ function MenuTablet() {
 
       {/* ── Continuous inset back panel, hiding the box UV tiling without corner overhang. ── */}
       <mesh geometry={leatherFaceGeometry} position={[0, 0, -(D / 2 + 0.006)]} rotation={[0, Math.PI, 0]} renderOrder={2}>
-        <meshBasicMaterial
+        <meshStandardMaterial
           map={backFaceTex}
+          bumpMap={backFaceTex}
+          bumpScale={0.014}
+          roughness={0.9}
+          metalness={0}
           toneMapped={false}
           polygonOffset
           polygonOffsetFactor={-2}
