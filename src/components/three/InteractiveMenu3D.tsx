@@ -24,11 +24,15 @@ const R = 0.04;
 const BEZEL = 0.12;
 const SW = W - BEZEL * 2;
 const SH = H - BEZEL * 2;
+const BACK_FACE_INSET = 0.08;
+const BACK_FACE_W = W - BACK_FACE_INSET;
+const BACK_FACE_H = H - BACK_FACE_INSET;
 
 /* ─── Palette ─── */
 const SCREEN_BG = "#F7F2E8";
 const INK = "#12100d";
 const MUTED = "#3b352f";
+const CASE_EDGE_COLOR = "#143126";
 const SERIF = "Georgia, 'Times New Roman', serif";
 
 /* ─── Menu data ─── */
@@ -298,22 +302,59 @@ function createMenuTexture(logoImg?: HTMLImageElement): THREE.CanvasTexture {
   return tex;
 }
 
-function createBackLeatherTexture(leatherImage: CanvasImageSource, logoImage: CanvasImageSource) {
-  const width = 1000;
-  const height = 800;
+function drawFullBleedLeather(
+  ctx: CanvasRenderingContext2D,
+  leatherImage: CanvasImageSource,
+  width: number,
+  height: number,
+) {
+  const leatherW = 1000;
+  const leatherH = 800;
+  const scale = Math.max(width / leatherW, height / leatherH);
+  const drawW = leatherW * scale;
+  const drawH = leatherH * scale;
+  ctx.drawImage(leatherImage, (width - drawW) / 2, (height - drawH) / 2, drawW, drawH);
+}
+
+function createLeatherFaceTexture(leatherImage: CanvasImageSource) {
+  const width = 2048;
+  const height = 1408;
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext("2d")!;
-  ctx.drawImage(leatherImage, 0, 0, width, height);
 
-  const logoSize = 300;
+  drawFullBleedLeather(ctx, leatherImage, width, height);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = 16;
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.generateMipmaps = true;
+  return texture;
+}
+
+function createBackLeatherTexture(leatherImage: CanvasImageSource, logoImage: CanvasImageSource) {
+  const width = 2048;
+  const height = 1408;
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d")!;
+
+  drawFullBleedLeather(ctx, leatherImage, width, height);
+
+  const logoSize = 360;
   const logoX = (width - logoSize) / 2;
   const logoY = (height - logoSize) / 2;
   const logoCanvas = document.createElement("canvas");
   logoCanvas.width = logoSize;
   logoCanvas.height = logoSize;
   const logoCtx = logoCanvas.getContext("2d")!;
+
+  logoCtx.imageSmoothingEnabled = true;
+  logoCtx.imageSmoothingQuality = "high";
   logoCtx.drawImage(logoImage, 0, 0, logoSize, logoSize);
 
   const imageData = logoCtx.getImageData(0, 0, logoSize, logoSize);
@@ -337,47 +378,69 @@ function createBackLeatherTexture(leatherImage: CanvasImageSource, logoImage: Ca
   }
 
   logoCtx.putImageData(imageData, 0, 0);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
   ctx.drawImage(logoCanvas, logoX, logoY);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
-  texture.anisotropy = 8;
-  texture.minFilter = THREE.LinearFilter;
+  texture.anisotropy = 16;
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
   texture.magFilter = THREE.LinearFilter;
-  texture.generateMipmaps = false;
+  texture.generateMipmaps = true;
   return texture;
+}
+
+function createRoundedFaceGeometry(width: number, height: number, radius: number) {
+  const x = -width / 2;
+  const y = -height / 2;
+  const r = Math.min(radius, width / 2, height / 2);
+  const shape = new THREE.Shape();
+
+  shape.moveTo(x + r, y);
+  shape.lineTo(x + width - r, y);
+  shape.quadraticCurveTo(x + width, y, x + width, y + r);
+  shape.lineTo(x + width, y + height - r);
+  shape.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+  shape.lineTo(x + r, y + height);
+  shape.quadraticCurveTo(x, y + height, x, y + height - r);
+  shape.lineTo(x, y + r);
+  shape.quadraticCurveTo(x, y, x + r, y);
+
+  const geometry = new THREE.ShapeGeometry(shape, 16);
+  const positions = geometry.attributes.position;
+  const uvs: number[] = [];
+
+  for (let i = 0; i < positions.count; i++) {
+    uvs.push(
+      (positions.getX(i) + width / 2) / width,
+      (positions.getY(i) + height / 2) / height,
+    );
+  }
+
+  geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+  return geometry;
 }
 
 /* ─── 3D Tablet ─── */
 function MenuTablet() {
   const group = useRef<Group>(null);
+  const leatherFaceGeometry = useMemo(
+    () => createRoundedFaceGeometry(BACK_FACE_W, BACK_FACE_H, R * 0.72),
+    [],
+  );
   const siteLogoTex = useLoader(THREE.TextureLoader, "/logo.png");
   const menuTex = useMemo(() => createMenuTexture(siteLogoTex.image as HTMLImageElement), [siteLogoTex.image]);
   const logoTex = useLoader(THREE.TextureLoader, "/textures/tt-logo-gold.png");
   const backLeatherTex = useLoader(THREE.TextureLoader, "/textures/leather-green-back.png");
-  const backLogoLeatherTex = useMemo(
+  const frontFaceTex = useMemo(
+    () => createLeatherFaceTexture(backLeatherTex.image),
+    [backLeatherTex.image],
+  );
+  const backFaceTex = useMemo(
     () => createBackLeatherTexture(backLeatherTex.image, logoTex.image),
     [backLeatherTex.image, logoTex.image],
   );
-
-  /*
-   * Three.js textures are designed to be configured by mutation; doing it inside
-   * an effect keeps the React-hooks immutability rule satisfied while preserving
-   * the intent (set once after the texture loads).
-   */
-  useEffect(() => {
-    /* eslint-disable react-hooks/immutability -- Three.js textures are configured by mutation */
-    backLeatherTex.colorSpace = THREE.SRGBColorSpace;
-    backLeatherTex.wrapS = THREE.RepeatWrapping;
-    backLeatherTex.wrapT = THREE.RepeatWrapping;
-    backLeatherTex.repeat.set(1.15, 1.15);
-    backLeatherTex.anisotropy = 8;
-    backLeatherTex.minFilter = THREE.LinearFilter;
-    backLeatherTex.magFilter = THREE.LinearFilter;
-    backLeatherTex.generateMipmaps = false;
-    backLeatherTex.needsUpdate = true;
-    /* eslint-enable react-hooks/immutability */
-  }, [backLeatherTex]);
 
   /* Gentle floating — no Z-rotation drift */
   useFrame((state) => {
@@ -394,18 +457,17 @@ function MenuTablet() {
   return (
     <group ref={group} rotation={[-0.1, 0, 0]} scale={1.08}>
       {/* ── Case body — solid color for thin edges/corners ── */}
-      <RoundedBox args={[W, H, D]} radius={R} smoothness={4}>
+      <RoundedBox args={[W, H, D]} radius={R} smoothness={8}>
         <meshBasicMaterial
-          map={backLeatherTex}
+          color={CASE_EDGE_COLOR}
           toneMapped={false}
         />
       </RoundedBox>
 
-      {/* ── Front leather (full face, sits on top of case) ── */}
-      <mesh position={[0, 0, D / 2 + 0.004]} renderOrder={1}>
-        <planeGeometry args={[W - 0.01, H - 0.01]} />
+      {/* ── Continuous front leather panel; the screen sits above it. ── */}
+      <mesh geometry={leatherFaceGeometry} position={[0, 0, D / 2 + 0.004]} renderOrder={1}>
         <meshBasicMaterial
-          map={backLeatherTex}
+          map={frontFaceTex}
           toneMapped={false}
           polygonOffset
           polygonOffsetFactor={-1}
@@ -413,7 +475,7 @@ function MenuTablet() {
         />
       </mesh>
 
-      {/* ── Screen (on top of front leather) ── */}
+      {/* ── Screen (on top of the rounded leather case) ── */}
       <mesh position={[0, 0, D / 2 + 0.008]} renderOrder={2}>
         <planeGeometry args={[SW, SH]} />
         <meshBasicMaterial
@@ -426,15 +488,14 @@ function MenuTablet() {
         />
       </mesh>
 
-      {/* ── Back leather (full face) ── */}
-      <mesh position={[0, 0, -(D / 2 + 0.004)]} rotation={[0, Math.PI, 0]} renderOrder={1}>
-        <planeGeometry args={[W - 0.01, H - 0.01]} />
+      {/* ── Continuous inset back panel, hiding the box UV tiling without corner overhang. ── */}
+      <mesh geometry={leatherFaceGeometry} position={[0, 0, -(D / 2 + 0.006)]} rotation={[0, Math.PI, 0]} renderOrder={2}>
         <meshBasicMaterial
-          map={backLogoLeatherTex}
+          map={backFaceTex}
           toneMapped={false}
           polygonOffset
-          polygonOffsetFactor={-1}
-          polygonOffsetUnits={-1}
+          polygonOffsetFactor={-2}
+          polygonOffsetUnits={-2}
         />
       </mesh>
 
@@ -449,8 +510,8 @@ const LOCKED_POLAR = Math.acos(CAMERA_Y / Math.sqrt(CAMERA_Y ** 2 + CAMERA_Z ** 
 
 /* ─── Exported scene ─── */
 export function InteractiveMenu3D() {
-  /* Lower the DPR ceiling on small viewports to relieve fill-rate
-     pressure on mid-range phones. Desktops keep the sharper [1, 2]. */
+  /* Keep the WebGL surface crisp on retina desktop displays while capping
+     compact viewports to protect mobile fill-rate and first interaction. */
   const [isCompact, setIsCompact] = useState(false);
   useEffect(() => {
     if (typeof window === "undefined" || !window.matchMedia) return;
@@ -466,7 +527,7 @@ export function InteractiveMenu3D() {
       camera={{ position: [0, CAMERA_Y, CAMERA_Z], fov: 34 }}
       /* `pan-y` lets a vertical swipe scroll the page; horizontal drags still rotate the tablet. */
       style={{ width: "100%", height: "100%", touchAction: "pan-y" }}
-      dpr={isCompact ? [1, 1.25] : [1, 1.5]}
+      dpr={isCompact ? [1, 1.5] : [1, 2]}
       gl={{ antialias: true, powerPreference: "high-performance" }}
     >
       <ambientLight intensity={0.55} />
