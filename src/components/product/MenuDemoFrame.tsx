@@ -8,7 +8,8 @@ import type { ReactNode } from "react";
 
 const CASE_COLOR = "#061f13";
 const CASE_EDGE_COLOR = "#020c08";
-const BEZEL = "3.9%";
+const BEZEL = "3.1%";
+const STITCH_GAP = "8px";
 
 /* Matches the 3D hero's physical paper window: W/H minus the leather bezel. */
 const SCREEN_ASPECT = "2.76 / 1.76";
@@ -29,41 +30,33 @@ export function MenuDemoFrame({ children }: { children: ReactNode }) {
       }}
     >
       <div
-        className="pointer-events-none absolute rounded-[inherit] border border-dashed"
-        style={{
-          inset: "2.25%",
-          borderColor: "rgba(188, 150, 87, 0.42)",
-          boxShadow:
-            "0 1px 0 rgba(255,255,255,0.07), 0 -1px 0 rgba(0,0,0,0.18)",
-        }}
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute rounded-[14px] border sm:rounded-[16px]"
-        style={{
-          inset: "3.85%",
-          borderColor: "rgba(1, 8, 5, 0.72)",
-          boxShadow:
-            "0 1px 0 rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 0 0 1px rgba(14,45,29,0.32), inset 0 10px 18px rgba(0,0,0,0.22)",
-        }}
-        aria-hidden
-      />
-      <div
-        className="relative overflow-hidden rounded-[3px] bg-[#020604] p-[0.45%] shadow-[0_20px_30px_-22px_rgba(0,0,0,0.95),_0_2px_6px_-5px_rgba(0,0,0,0.85),_inset_0_0_0_1px_rgba(0,0,0,0.86),_inset_0_0_0_2px_rgba(1,7,4,0.62)] sm:rounded-[4px]"
+        className="relative"
         style={{
           aspectRatio: SCREEN_ASPECT,
         }}
       >
-        <div className="relative h-full w-full overflow-hidden border border-black/25 bg-[#efe8db] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.58),_inset_0_0_28px_rgba(32,55,43,0.13)]">
-          <div
-            className="pointer-events-none absolute inset-0 z-10"
-            style={{
-              boxShadow:
-                "inset 0 0 0 1px rgba(255,250,241,0.48), inset 0 8px 16px rgba(255,255,255,0.22), inset 0 -12px 20px rgba(20,23,21,0.09)",
-            }}
-            aria-hidden
-          />
-          {children}
+        <div
+          className="pointer-events-none absolute rounded-[7px] border border-dashed sm:rounded-[8px]"
+          style={{
+            inset: `-${STITCH_GAP}`,
+            borderColor: "rgba(188, 150, 87, 0.42)",
+            boxShadow:
+              "0 1px 0 rgba(255,255,255,0.07), 0 -1px 0 rgba(0,0,0,0.18)",
+          }}
+          aria-hidden
+        />
+        <div className="relative h-full w-full overflow-hidden rounded-[3px] bg-[#020604] p-[0.45%] shadow-[0_20px_30px_-22px_rgba(0,0,0,0.95),_0_2px_6px_-5px_rgba(0,0,0,0.85),_inset_0_0_0_1px_rgba(0,0,0,0.86),_inset_0_0_0_2px_rgba(1,7,4,0.62)] sm:rounded-[4px]">
+          <div className="relative h-full w-full overflow-hidden border border-black/25 bg-[#efe8db] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.58),_inset_0_0_28px_rgba(32,55,43,0.13)]">
+            <div
+              className="pointer-events-none absolute inset-0 z-10"
+              style={{
+                boxShadow:
+                  "inset 0 0 0 1px rgba(255,250,241,0.48), inset 0 8px 16px rgba(255,255,255,0.22), inset 0 -12px 20px rgba(20,23,21,0.09)",
+              }}
+              aria-hidden
+            />
+            {children}
+          </div>
         </div>
       </div>
 
