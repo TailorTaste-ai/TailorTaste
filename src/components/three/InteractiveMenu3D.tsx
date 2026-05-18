@@ -18,23 +18,23 @@ import type { Group } from "three";
 const W = 3.2;
 const H = 2.2;
 const D = 0.085;
-const R = 0.055;
+const R = 0.078;
 
 /* Screen inset from the case edge */
 const BEZEL = 0.22;
 const SW = W - BEZEL * 2;
 const SH = H - BEZEL * 2;
-const LEATHER_FACE_INSET = 0.06;
+const SCREEN_EDGE_OVERLAP = 0.018;
+const LEATHER_FACE_INSET = 0.006;
 const LEATHER_FACE_W = W - LEATHER_FACE_INSET;
 const LEATHER_FACE_H = H - LEATHER_FACE_INSET;
-const INNER_LIP = 0.075;
 
 /* ─── Palette ─── */
 const SCREEN_BG = "#F0E5D4";
 const INK = "#12100d";
 const MUTED = "#3b352f";
-const CASE_EDGE_COLOR = "#010604";
-const LIP_COLOR = "#010503";
+const CASE_EDGE_COLOR = "#04170d";
+const LEATHER_STITCH_COLOR = "rgba(214, 190, 146, 0.22)";
 const SERIF = "Georgia, 'Times New Roman', serif";
 
 /* ─── Menu data ─── */
@@ -406,41 +406,26 @@ function drawStitchedRect(
   y: number,
   width: number,
   height: number,
+  radius: number,
 ) {
-  const stitch = 13;
-  const gap = 11;
-
-  function dashLine(x1: number, y1: number, x2: number, y2: number) {
-    const horizontal = Math.abs(x2 - x1) > Math.abs(y2 - y1);
-    const length = horizontal ? Math.abs(x2 - x1) : Math.abs(y2 - y1);
-    const dir = horizontal ? Math.sign(x2 - x1) : Math.sign(y2 - y1);
-    let offset = 0;
-
-    while (offset < length - stitch) {
-      const wobble = Math.sin(offset * 0.09) * 1.4;
-      if (horizontal) {
-        const sx = x1 + offset * dir;
-        ctx.moveTo(sx, y1 + wobble);
-        ctx.lineTo(sx + stitch * dir, y1 - wobble * 0.4);
-      } else {
-        const sy = y1 + offset * dir;
-        ctx.moveTo(x1 + wobble, sy);
-        ctx.lineTo(x1 - wobble * 0.4, sy + stitch * dir);
-      }
-      offset += stitch + gap;
-    }
-  }
+  const r = Math.min(radius, width / 2, height / 2);
 
   ctx.save();
   ctx.lineCap = "round";
-
-  ctx.strokeStyle = "rgba(185, 150, 86, 0.66)";
-  ctx.lineWidth = 1.9;
+  ctx.lineJoin = "round";
+  ctx.setLineDash([16, 12]);
+  ctx.strokeStyle = LEATHER_STITCH_COLOR;
+  ctx.lineWidth = 2.6;
   ctx.beginPath();
-  dashLine(x, y, x + width, y);
-  dashLine(x + width, y, x + width, y + height);
-  dashLine(x + width, y + height, x, y + height);
-  dashLine(x, y + height, x, y);
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + width - r, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+  ctx.lineTo(x + width, y + height - r);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+  ctx.lineTo(x + r, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
   ctx.stroke();
 
   ctx.restore();
@@ -470,21 +455,21 @@ function drawPhotoMatchedLeather(
   drawFullBleedLeather(ctx, leatherImage, width, height);
 
   ctx.save();
-  ctx.globalAlpha = 0.95;
+  ctx.globalAlpha = 0.94;
   ctx.globalCompositeOperation = "color";
-  ctx.fillStyle = "#03140b";
+  ctx.fillStyle = "#061f13";
   ctx.fillRect(0, 0, width, height);
   ctx.restore();
 
   ctx.save();
-  ctx.globalAlpha = 0.025;
+  ctx.globalAlpha = 0.035;
   ctx.globalCompositeOperation = "screen";
   ctx.fillStyle = "#153b27";
   ctx.fillRect(0, 0, width, height);
   ctx.restore();
 
   ctx.save();
-  ctx.globalAlpha = 0.43;
+  ctx.globalAlpha = 0.39;
   ctx.globalCompositeOperation = "multiply";
   ctx.fillStyle = "#010604";
   ctx.fillRect(0, 0, width, height);
@@ -497,7 +482,8 @@ function drawPhotoMatchedLeather(
   ctx.restore();
 
   drawLeatherBevel(ctx, width, height);
-  drawStitchedRect(ctx, 74, 76, width - 148, height - 152);
+  drawStitchedRect(ctx, 28, 30, width - 56, height - 60, 62);
+  drawStitchedRect(ctx, 86, 86, width - 172, height - 172, 48);
 }
 
 function createLeatherFaceTexture(leatherImage: CanvasImageSource) {
@@ -613,7 +599,7 @@ function createRoundedFaceGeometry(width: number, height: number, radius: number
 function MenuTablet() {
   const group = useRef<Group>(null);
   const leatherFaceGeometry = useMemo(
-    () => createRoundedFaceGeometry(LEATHER_FACE_W, LEATHER_FACE_H, R * 0.7),
+    () => createRoundedFaceGeometry(LEATHER_FACE_W, LEATHER_FACE_H, R * 0.82),
     [],
   );
   const siteLogoTex = useLoader(THREE.TextureLoader, "/logo.png");
@@ -644,7 +630,7 @@ function MenuTablet() {
   return (
     <group ref={group} rotation={[-0.1, 0, 0]} scale={1.08}>
       {/* ── Case body — solid color for thin edges/corners ── */}
-      <RoundedBox args={[W, H, D]} radius={R} smoothness={8}>
+      <RoundedBox args={[W, H, D]} radius={R} smoothness={10}>
         <meshStandardMaterial
           color={CASE_EDGE_COLOR}
           roughness={0.94}
@@ -664,23 +650,9 @@ function MenuTablet() {
         />
       </mesh>
 
-      {/* ── Dark recessed lip, matching the photographed inset around the paper. ── */}
-      <mesh position={[0, 0, D / 2 + 0.007]} renderOrder={2}>
-        <planeGeometry args={[SW + INNER_LIP, SH + INNER_LIP]} />
-        <meshStandardMaterial
-          color={LIP_COLOR}
-          roughness={0.9}
-          metalness={0}
-          toneMapped={false}
-          polygonOffset
-          polygonOffsetFactor={-2}
-          polygonOffsetUnits={-2}
-        />
-      </mesh>
-
       {/* ── Screen (on top of the rounded leather case) ── */}
       <mesh position={[0, 0, D / 2 + 0.012]} renderOrder={3}>
-        <planeGeometry args={[SW, SH]} />
+        <planeGeometry args={[SW + SCREEN_EDGE_OVERLAP, SH + SCREEN_EDGE_OVERLAP]} />
         <meshBasicMaterial
           map={menuTex}
           toneMapped={false}
