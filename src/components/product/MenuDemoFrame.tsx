@@ -9,7 +9,9 @@ import type { ReactNode } from "react";
 const CASE_COLOR = "#061f13";
 const CASE_EDGE_COLOR = "#020c08";
 const BEZEL = "3.1%";
-const STITCH_GAP = "8px";
+const INNER_STITCH_GAP = "4px";
+const OUTER_STITCH_INSET = "6px";
+const STITCH_COLOR = "rgba(214, 190, 146, 0.26)";
 
 /* Matches the 3D hero's physical paper window: W/H minus the leather bezel. */
 const SCREEN_ASPECT = "2.76 / 1.76";
@@ -30,6 +32,15 @@ export function MenuDemoFrame({ children }: { children: ReactNode }) {
       }}
     >
       <div
+        className="pointer-events-none absolute rounded-[8px] border border-dashed sm:rounded-[10px]"
+        style={{
+          inset: OUTER_STITCH_INSET,
+          borderColor: STITCH_COLOR,
+          boxShadow: "0 1px 0 rgba(255,255,255,0.035)",
+        }}
+        aria-hidden
+      />
+      <div
         className="relative"
         style={{
           aspectRatio: SCREEN_ASPECT,
@@ -38,10 +49,9 @@ export function MenuDemoFrame({ children }: { children: ReactNode }) {
         <div
           className="pointer-events-none absolute rounded-[7px] border border-dashed sm:rounded-[8px]"
           style={{
-            inset: `-${STITCH_GAP}`,
-            borderColor: "rgba(188, 150, 87, 0.42)",
-            boxShadow:
-              "0 1px 0 rgba(255,255,255,0.07), 0 -1px 0 rgba(0,0,0,0.18)",
+            inset: `-${INNER_STITCH_GAP}`,
+            borderColor: STITCH_COLOR,
+            boxShadow: "0 1px 0 rgba(255,255,255,0.04)",
           }}
           aria-hidden
         />

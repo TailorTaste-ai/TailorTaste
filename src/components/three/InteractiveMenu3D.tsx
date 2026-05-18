@@ -33,8 +33,8 @@ const INNER_LIP = 0.075;
 const SCREEN_BG = "#F0E5D4";
 const INK = "#12100d";
 const MUTED = "#3b352f";
-const CASE_EDGE_COLOR = "#020c08";
-const LIP_COLOR = "#020905";
+const CASE_EDGE_COLOR = "#010604";
+const LIP_COLOR = "#010503";
 const SERIF = "Georgia, 'Times New Roman', serif";
 
 /* ─── Menu data ─── */
@@ -470,21 +470,21 @@ function drawPhotoMatchedLeather(
   drawFullBleedLeather(ctx, leatherImage, width, height);
 
   ctx.save();
-  ctx.globalAlpha = 0.92;
+  ctx.globalAlpha = 0.95;
   ctx.globalCompositeOperation = "color";
-  ctx.fillStyle = "#061f13";
+  ctx.fillStyle = "#03140b";
   ctx.fillRect(0, 0, width, height);
   ctx.restore();
 
   ctx.save();
-  ctx.globalAlpha = 0.06;
+  ctx.globalAlpha = 0.025;
   ctx.globalCompositeOperation = "screen";
   ctx.fillStyle = "#153b27";
   ctx.fillRect(0, 0, width, height);
   ctx.restore();
 
   ctx.save();
-  ctx.globalAlpha = 0.34;
+  ctx.globalAlpha = 0.43;
   ctx.globalCompositeOperation = "multiply";
   ctx.fillStyle = "#010604";
   ctx.fillRect(0, 0, width, height);
