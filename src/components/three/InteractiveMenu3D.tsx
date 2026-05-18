@@ -33,8 +33,8 @@ const INNER_LIP = 0.075;
 const SCREEN_BG = "#F0E5D4";
 const INK = "#12100d";
 const MUTED = "#3b352f";
-const CASE_EDGE_COLOR = "#0b2619";
-const LIP_COLOR = "#07180f";
+const CASE_EDGE_COLOR = "#020c08";
+const LIP_COLOR = "#020905";
 const SERIF = "Georgia, 'Times New Roman', serif";
 
 /* ─── Menu data ─── */
@@ -434,17 +434,8 @@ function drawStitchedRect(
   ctx.save();
   ctx.lineCap = "round";
 
-  ctx.strokeStyle = "rgba(2, 10, 6, 0.7)";
-  ctx.lineWidth = 4.8;
-  ctx.beginPath();
-  dashLine(x + 1.4, y + 2, x + width - 1.4, y + 2);
-  dashLine(x + width + 2, y + 1.4, x + width + 2, y + height - 1.4);
-  dashLine(x + width - 1.4, y + height + 2, x + 1.4, y + height + 2);
-  dashLine(x + 2, y + height - 1.4, x + 2, y + 1.4);
-  ctx.stroke();
-
-  ctx.strokeStyle = "rgba(185, 150, 86, 0.74)";
-  ctx.lineWidth = 2.2;
+  ctx.strokeStyle = "rgba(185, 150, 86, 0.66)";
+  ctx.lineWidth = 1.9;
   ctx.beginPath();
   dashLine(x, y, x + width, y);
   dashLine(x + width, y, x + width, y + height);
@@ -467,60 +458,36 @@ function drawLeatherBevel(ctx: CanvasRenderingContext2D, width: number, height: 
   ctx.fillStyle = outer;
   ctx.fillRect(0, 0, width, height);
 
-  ctx.globalCompositeOperation = "source-over";
-  ctx.strokeStyle = "rgba(3, 12, 7, 0.66)";
-  ctx.lineWidth = 42;
-  ctx.strokeRect(21, 21, width - 42, height - 42);
-
-  ctx.strokeStyle = "rgba(62, 105, 69, 0.52)";
-  ctx.lineWidth = 8;
-  ctx.strokeRect(51, 51, width - 102, height - 102);
-
-  ctx.strokeStyle = "rgba(5, 20, 10, 0.5)";
-  ctx.lineWidth = 16;
-  ctx.strokeRect(112, 112, width - 224, height - 224);
-
-  ctx.strokeStyle = "rgba(124, 151, 103, 0.22)";
-  ctx.lineWidth = 5;
-  ctx.strokeRect(129, 129, width - 258, height - 258);
-
   ctx.restore();
 }
 
 function drawPhotoMatchedLeather(
   ctx: CanvasRenderingContext2D,
   leatherImage: CanvasImageSource,
-  photoImage: CanvasImageSource,
   width: number,
   height: number,
 ) {
   drawFullBleedLeather(ctx, leatherImage, width, height);
 
   ctx.save();
-  ctx.globalAlpha = 0.82;
+  ctx.globalAlpha = 0.92;
   ctx.globalCompositeOperation = "color";
-  ctx.fillStyle = "#183e28";
+  ctx.fillStyle = "#061f13";
   ctx.fillRect(0, 0, width, height);
   ctx.restore();
 
   ctx.save();
-  ctx.globalAlpha = 0.18;
+  ctx.globalAlpha = 0.06;
   ctx.globalCompositeOperation = "screen";
-  ctx.fillStyle = "#285338";
+  ctx.fillStyle = "#153b27";
   ctx.fillRect(0, 0, width, height);
   ctx.restore();
 
   ctx.save();
-  ctx.globalAlpha = 0.16;
+  ctx.globalAlpha = 0.34;
   ctx.globalCompositeOperation = "multiply";
-  ctx.fillStyle = "#06160d";
+  ctx.fillStyle = "#010604";
   ctx.fillRect(0, 0, width, height);
-  ctx.restore();
-
-  ctx.save();
-  ctx.globalAlpha = 0.42;
-  ctx.globalCompositeOperation = "soft-light";
-  ctx.drawImage(photoImage, 470, 270, 780, 88, 0, 0, width, height);
   ctx.restore();
 
   ctx.save();
@@ -533,7 +500,7 @@ function drawPhotoMatchedLeather(
   drawStitchedRect(ctx, 74, 76, width - 148, height - 152);
 }
 
-function createLeatherFaceTexture(leatherImage: CanvasImageSource, photoImage: CanvasImageSource) {
+function createLeatherFaceTexture(leatherImage: CanvasImageSource) {
   const width = 2048;
   const height = 1408;
   const canvas = document.createElement("canvas");
@@ -541,7 +508,7 @@ function createLeatherFaceTexture(leatherImage: CanvasImageSource, photoImage: C
   canvas.height = height;
   const ctx = canvas.getContext("2d")!;
 
-  drawPhotoMatchedLeather(ctx, leatherImage, photoImage, width, height);
+  drawPhotoMatchedLeather(ctx, leatherImage, width, height);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
@@ -554,7 +521,6 @@ function createLeatherFaceTexture(leatherImage: CanvasImageSource, photoImage: C
 
 function createBackLeatherTexture(
   leatherImage: CanvasImageSource,
-  photoImage: CanvasImageSource,
   logoImage: CanvasImageSource,
 ) {
   const width = 2048;
@@ -564,7 +530,7 @@ function createBackLeatherTexture(
   canvas.height = height;
   const ctx = canvas.getContext("2d")!;
 
-  drawPhotoMatchedLeather(ctx, leatherImage, photoImage, width, height);
+  drawPhotoMatchedLeather(ctx, leatherImage, width, height);
 
   const logoSize = 360;
   const logoX = (width - logoSize) / 2;
@@ -654,14 +620,13 @@ function MenuTablet() {
   const menuTex = useMemo(() => createMenuTexture(siteLogoTex.image as HTMLImageElement), [siteLogoTex.image]);
   const logoTex = useLoader(THREE.TextureLoader, "/textures/tt-logo-gold.png");
   const backLeatherTex = useLoader(THREE.TextureLoader, "/textures/leather-green-back.png");
-  const homePhotoTex = useLoader(THREE.TextureLoader, "/menu-table-premium.png");
   const frontFaceTex = useMemo(
-    () => createLeatherFaceTexture(backLeatherTex.image, homePhotoTex.image),
-    [backLeatherTex.image, homePhotoTex.image],
+    () => createLeatherFaceTexture(backLeatherTex.image),
+    [backLeatherTex.image],
   );
   const backFaceTex = useMemo(
-    () => createBackLeatherTexture(backLeatherTex.image, homePhotoTex.image, logoTex.image),
-    [backLeatherTex.image, homePhotoTex.image, logoTex.image],
+    () => createBackLeatherTexture(backLeatherTex.image, logoTex.image),
+    [backLeatherTex.image, logoTex.image],
   );
 
   /* Gentle floating — no Z-rotation drift */
@@ -690,12 +655,8 @@ function MenuTablet() {
 
       {/* ── Continuous front leather panel; the screen sits above it. ── */}
       <mesh geometry={leatherFaceGeometry} position={[0, 0, D / 2 + 0.004]} renderOrder={1}>
-        <meshStandardMaterial
+        <meshBasicMaterial
           map={frontFaceTex}
-          bumpMap={frontFaceTex}
-          bumpScale={0.018}
-          roughness={0.88}
-          metalness={0}
           toneMapped={false}
           polygonOffset
           polygonOffsetFactor={-1}
@@ -732,12 +693,8 @@ function MenuTablet() {
 
       {/* ── Continuous inset back panel, hiding the box UV tiling without corner overhang. ── */}
       <mesh geometry={leatherFaceGeometry} position={[0, 0, -(D / 2 + 0.006)]} rotation={[0, Math.PI, 0]} renderOrder={2}>
-        <meshStandardMaterial
+        <meshBasicMaterial
           map={backFaceTex}
-          bumpMap={backFaceTex}
-          bumpScale={0.014}
-          roughness={0.9}
-          metalness={0}
           toneMapped={false}
           polygonOffset
           polygonOffsetFactor={-2}

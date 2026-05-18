@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   useEffect,
   useRef,
@@ -485,6 +486,15 @@ export function RestaurantMenu({
         <CornerDot color={COLORS.gold} position="right-[3.3%] top-[3.3%]" />
         <CornerDot color={COLORS.gold} position="left-[3.3%] bottom-[3.3%]" />
         <CornerDot color={COLORS.gold} position="right-[3.3%] bottom-[3.3%]" />
+
+        <Image
+          src="/logo.png"
+          alt=""
+          width={80}
+          height={80}
+          aria-hidden="true"
+          className="pointer-events-none absolute right-[3.4%] bottom-[3.4%] z-10 h-[8%] w-auto opacity-45 mix-blend-multiply"
+        />
 
         {/* Brand header + three columns */}
         <div className="relative flex h-full w-full flex-col px-[4.8%] py-[5.1%]">

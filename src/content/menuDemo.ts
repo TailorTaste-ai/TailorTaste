@@ -21,24 +21,31 @@ export const dishDiet: Record<string, Diet> = {
   /* Dinner — starters */
   oysters: "omnivore",
   "tuna-tartare": "omnivore",
+  "langoustine-raviolo": "omnivore",
   asparagus: "vegetarian",
   "foie-gras": "omnivore",
+  "hamachi-crudo": "omnivore",
   "tomato-carpaccio": "vegan",
   "mushroom-veloute": "vegetarian",
   /* Dinner — chef recs (service offerings, kept for any diet) */
   "tasting-menu": "omnivore",
   sommelier: "vegan",
+  "signature-reserve": "vegan",
   /* Dinner — mains */
   wagyu: "omnivore",
   sole: "omnivore",
+  "bresse-chicken": "omnivore",
   turbot: "omnivore",
+  "lobster-thermidor": "omnivore",
   lamb: "omnivore",
   "leek-cassoulet": "vegan",
   "saffron-risotto-truffle": "vegetarian",
   /* Dinner — desserts */
   souffle: "vegetarian",
   millefeuille: "vegetarian",
+  "affine-cheese-cart": "vegetarian",
   cremeux: "vegetarian",
+  "baba-au-rhum": "vegetarian",
   tatin: "vegetarian",
   "dark-chocolate-sorbet": "vegan",
   /* Lunch — starters */
@@ -133,6 +140,15 @@ const dinnerStarters: LocalizedDish[] = [
     ),
   },
   {
+    id: "langoustine-raviolo",
+    price: "26",
+    i18n: i18n(
+      { name: "Langoustine Raviolo", desc: "shellfish velouté" },
+      { name: "Raviolo de Langoustine", desc: "velouté de crustacés" },
+      { name: "Langustinen-Raviolo", desc: "Krustentier-Velouté" },
+    ),
+  },
+  {
     id: "asparagus",
     price: "24",
     i18n: i18n(
@@ -151,21 +167,12 @@ const dinnerStarters: LocalizedDish[] = [
     ),
   },
   {
-    id: "tomato-carpaccio",
-    price: "22",
+    id: "hamachi-crudo",
+    price: "27",
     i18n: i18n(
-      { name: "Heirloom Tomato Carpaccio", desc: "basil oil, sourdough crisp" },
-      { name: "Carpaccio de Tomates Anciennes", desc: "huile de basilic, croustillant de levain" },
-      { name: "Carpaccio alter Tomatensorten", desc: "Basilikumöl, Sauerteigcracker" },
-    ),
-  },
-  {
-    id: "mushroom-veloute",
-    price: "26",
-    i18n: i18n(
-      { name: "Wild Mushroom Velouté", desc: "chestnut, black truffle, sourdough" },
-      { name: "Velouté de Champignons Sauvages", desc: "châtaigne, truffe noire, levain" },
-      { name: "Waldpilz-Velouté", desc: "Kastanie, schwarzer Trüffel, Sauerteig" },
+      { name: "Hamachi Crudo", desc: "yuzu, finger lime, shiso" },
+      { name: "Crudo de Hamachi", desc: "yuzu, citron caviar, shiso" },
+      { name: "Hamachi-Crudo", desc: "Yuzu, Fingerlimette, Shiso" },
     ),
   },
 ];
@@ -187,6 +194,15 @@ const dinnerChefRecs: LocalizedDish[] = [
       { name: "Sommelier Pairing", desc: "rare and cellar selections" },
       { name: "Accord du Sommelier", desc: "sélections rares de cave" },
       { name: "Weinbegleitung des Sommeliers", desc: "rare Auswahl aus dem Keller" },
+    ),
+  },
+  {
+    id: "signature-reserve",
+    price: "65",
+    i18n: i18n(
+      { name: "Signature Reserve", desc: "prestige wine supplement" },
+      { name: "Réserve Signature", desc: "supplément de vins prestige" },
+      { name: "Signature Reserve", desc: "Prestige-Weinzuschlag" },
     ),
   },
 ];
@@ -211,6 +227,15 @@ const dinnerMains: LocalizedDish[] = [
     ),
   },
   {
+    id: "bresse-chicken",
+    price: "58",
+    i18n: i18n(
+      { name: "Bresse Chicken Suprême", desc: "morels, vin jaune cream" },
+      { name: "Suprême de Volaille de Bresse", desc: "morilles, crème au vin jaune" },
+      { name: "Bresse-Huhn Suprême", desc: "Morcheln, Vin-Jaune-Creme" },
+    ),
+  },
+  {
     id: "turbot",
     price: "76",
     i18n: i18n(
@@ -220,30 +245,21 @@ const dinnerMains: LocalizedDish[] = [
     ),
   },
   {
+    id: "lobster-thermidor",
+    price: "82",
+    i18n: i18n(
+      { name: "Lobster Thermidor", desc: "sauce américaine, fines herbes" },
+      { name: "Homard Thermidor", desc: "sauce américaine, fines herbes" },
+      { name: "Hummer Thermidor", desc: "Sauce américaine, feine Kräuter" },
+    ),
+  },
+  {
     id: "lamb",
     price: "64",
     i18n: i18n(
       { name: "Rack of Lamb", desc: "herb crust, ratatouille, jus" },
       { name: "Carré d'Agneau", desc: "croûte d'herbes, ratatouille, jus" },
       { name: "Lammkarree", desc: "Kräuterkruste, Ratatouille, Jus" },
-    ),
-  },
-  {
-    id: "leek-cassoulet",
-    price: "48",
-    i18n: i18n(
-      { name: "Charred Leek Cassoulet", desc: "smoked tomato, herb crumb" },
-      { name: "Cassoulet de Poireaux Brûlés", desc: "tomate fumée, chapelure aux herbes" },
-      { name: "Geröstetes Lauch-Cassoulet", desc: "geräucherte Tomate, Kräuterbrösel" },
-    ),
-  },
-  {
-    id: "saffron-risotto-truffle",
-    price: "62",
-    i18n: i18n(
-      { name: "Saffron Risotto, Black Truffle", desc: "carnaroli, aged parmesan" },
-      { name: "Risotto Safran et Truffe Noire", desc: "carnaroli, parmesan affiné" },
-      { name: "Safranrisotto mit schwarzem Trüffel", desc: "Carnaroli, gereifter Parmesan" },
     ),
   },
 ];
@@ -268,6 +284,15 @@ const dinnerDesserts: LocalizedDish[] = [
     ),
   },
   {
+    id: "affine-cheese-cart",
+    price: "28",
+    i18n: i18n(
+      { name: "Affiné Cheese Cart", desc: "selection du maître" },
+      { name: "Chariot de Fromages Affinés", desc: "sélection du maître" },
+      { name: "Affinierter Käsewagen", desc: "Auswahl des Maître" },
+    ),
+  },
+  {
     id: "cremeux",
     price: "22",
     i18n: i18n(
@@ -277,21 +302,21 @@ const dinnerDesserts: LocalizedDish[] = [
     ),
   },
   {
+    id: "baba-au-rhum",
+    price: "23",
+    i18n: i18n(
+      { name: "Baba au Rhum", desc: "Madagascar vanilla chantilly" },
+      { name: "Baba au Rhum", desc: "chantilly vanille de Madagascar" },
+      { name: "Baba au Rhum", desc: "Madagaskar-Vanille-Chantilly" },
+    ),
+  },
+  {
     id: "tatin",
     price: "20",
     i18n: i18n(
       { name: "Tarte Tatin", desc: "calvados, crème fraîche" },
       { name: "Tarte Tatin", desc: "calvados, crème fraîche" },
       { name: "Tarte Tatin", desc: "Calvados, Crème fraîche" },
-    ),
-  },
-  {
-    id: "dark-chocolate-sorbet",
-    price: "18",
-    i18n: i18n(
-      { name: "Dark Chocolate Sorbet", desc: "smoked sea salt, olive oil" },
-      { name: "Sorbet au Chocolat Noir", desc: "sel fumé, huile d'olive" },
-      { name: "Zartbitterschokoladen-Sorbet", desc: "geräuchertes Meersalz, Olivenöl" },
     ),
   },
 ];
