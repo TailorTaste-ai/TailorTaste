@@ -13,7 +13,7 @@ export const hero = {
 
 export const categoryGap: SectionIntro & { items: FeatureItem[] } = {
   eyebrow: "The missing middle",
-  title: "Paper protects the table. QR solves updates. TailorTaste combines the useful parts.",
+  title: "Paper protects the table.\nQR solves updates.\nTailorTaste combines the useful parts.",
   body: "The problem is practical: menus change by service, language, event, availability, and lighting conditions. TailorTaste keeps the guest-facing object physical while giving staff controlled ways to update what it shows.",
   items: [
     {
