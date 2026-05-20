@@ -9,4 +9,7 @@ export const footerNavigation = [
   ...mainNavigation,
   { label: "FAQ", href: "/faq" },
   { label: "Future", href: "/future" },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Legal", href: "/legal" },
+  { label: "Terms", href: "/terms" },
 ];

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useState } from "react";
 import type { ReactNode } from "react";
 import { analyticsEvents, trackEvent } from "@/lib/analytics";
@@ -196,6 +197,13 @@ export function ContactForm({ inquiryTypes }: ContactFormProps) {
       >
         {isSubmitting ? "Sending..." : "Send inquiry"}
       </button>
+      <p className="max-w-2xl text-xs leading-5 text-graphite/70">
+        By sending an inquiry, you agree that TailorTaste may process your details to respond. See the{" "}
+        <Link className="underline decoration-ink/30 underline-offset-4 hover:text-ink" href="/privacy">
+          Privacy Policy
+        </Link>
+        .
+      </p>
       {submitState.status === "success" ? (
         <p className="rounded-[8px] border border-cypress/20 bg-cypress/10 px-4 py-3 text-sm text-cypress" role="status">
           {submitState.message}
