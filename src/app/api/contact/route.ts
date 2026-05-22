@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { sendContactInquiry } from "@/lib/contact-delivery";
+import { resetRateLimitForTests, takeRateLimitSlot } from "@/lib/rate-limit";
 import {
   hasContactFormErrors,
   normalizeContactFormValues,
@@ -9,6 +10,7 @@ import {
 
 type ContactApiErrorCode =
   | "invalid_json"
+  | "payload_too_large"
   | "validation_failed"
   | "spam_detected"
   | "rate_limited"
@@ -32,7 +34,7 @@ export const runtime = "nodejs";
 const CONTACT_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
 const CONTACT_RATE_LIMIT_MAX_REQUESTS = 5;
 const CONTACT_MIN_SUBMIT_DURATION_MS = 2_000;
-const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
+const CONTACT_MAX_BODY_BYTES = 16 * 1024;
 
 type ParsedContactBody = {
   values: ContactFormValues;
@@ -93,28 +95,6 @@ function getClientIp(request: Request) {
   return request.headers.get("x-real-ip")?.trim() || "unknown";
 }
 
-function takeRateLimitSlot(ipAddress: string, now = Date.now()) {
-  const current = rateLimitStore.get(ipAddress);
-
-  if (!current || current.resetAt <= now) {
-    rateLimitStore.set(ipAddress, {
-      count: 1,
-      resetAt: now + CONTACT_RATE_LIMIT_WINDOW_MS,
-    });
-    return { allowed: true, retryAfterSeconds: 0 };
-  }
-
-  if (current.count >= CONTACT_RATE_LIMIT_MAX_REQUESTS) {
-    return {
-      allowed: false,
-      retryAfterSeconds: Math.max(1, Math.ceil((current.resetAt - now) / 1000)),
-    };
-  }
-
-  current.count += 1;
-  return { allowed: true, retryAfterSeconds: 0 };
-}
-
 function isLikelyBotSubmission(companyWebsite: string, startedAt: number | null, now = Date.now()) {
   if (companyWebsite.trim()) {
     return true;
@@ -128,14 +108,26 @@ function isLikelyBotSubmission(companyWebsite: string, startedAt: number | null,
 }
 
 export function resetContactRateLimitForTests() {
-  rateLimitStore.clear();
+  resetRateLimitForTests();
 }
 
 export async function POST(request: Request) {
   let json: unknown;
 
   try {
-    json = await request.json();
+    const body = await request.text();
+    if (new TextEncoder().encode(body).byteLength > CONTACT_MAX_BODY_BYTES) {
+      return NextResponse.json<ContactApiErrorResponse>(
+        {
+          ok: false,
+          error: "payload_too_large",
+          message: "Request body is too large.",
+        },
+        { status: 413 },
+      );
+    }
+
+    json = JSON.parse(body);
   } catch {
     return NextResponse.json<ContactApiErrorResponse>(
       {
@@ -148,7 +140,11 @@ export async function POST(request: Request) {
   }
 
   const { values: rawValues, companyWebsite, startedAt } = parseBody(json);
-  const rateLimit = takeRateLimitSlot(getClientIp(request));
+  const rateLimit = await takeRateLimitSlot(
+    `contact:${getClientIp(request)}`,
+    CONTACT_RATE_LIMIT_MAX_REQUESTS,
+    CONTACT_RATE_LIMIT_WINDOW_MS,
+  );
 
   if (!rateLimit.allowed) {
     return NextResponse.json<ContactApiErrorResponse>(

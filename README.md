@@ -85,6 +85,13 @@ Set these environment variables before expecting live delivery:
 - `CONTACT_SUBJECT_PREFIX` (optional)
 - `ALLOW_INDEXING` (optional; defaults to `false` outside production, `true` in production)
 
+For durable contact-form rate limiting in production, set either Upstash Redis REST variables or Vercel KV REST aliases:
+
+- `UPSTASH_REDIS_REST_URL`
+- `UPSTASH_REDIS_REST_TOKEN`
+- `KV_REST_API_URL` (fallback alias)
+- `KV_REST_API_TOKEN` (fallback alias)
+
 ## Analytics Contract
 
 Event names and payload contracts are defined in `src/lib/analytics.ts` without a provider dependency.

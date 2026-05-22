@@ -10,7 +10,7 @@ const contentSecurityPolicy = [
   "font-src 'self' data:",
   "style-src 'self' 'unsafe-inline'",
   "script-src 'self' 'unsafe-inline'",
-  "connect-src 'self' https://api.resend.com https:",
+  "connect-src 'self'",
   "worker-src 'self' blob:",
   "object-src 'none'",
   "upgrade-insecure-requests",
@@ -36,6 +36,23 @@ const nextConfig: NextConfig = {
       {
         key: "Strict-Transport-Security",
         value: "max-age=63072000; includeSubDomains; preload",
+      },
+      {
+        key: "Permissions-Policy",
+        value:
+          "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), display-capture=(), encrypted-media=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), usb=(), xr-spatial-tracking=()",
+      },
+      {
+        key: "Cross-Origin-Opener-Policy",
+        value: "same-origin",
+      },
+      {
+        key: "Cross-Origin-Resource-Policy",
+        value: "same-origin",
+      },
+      {
+        key: "Origin-Agent-Cluster",
+        value: "?1",
       },
     ];
 

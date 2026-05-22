@@ -10,6 +10,8 @@ vi.mock("@/lib/contact-delivery", () => ({
 
 afterEach(() => {
   vi.clearAllMocks();
+  vi.unstubAllEnvs();
+  vi.unstubAllGlobals();
   resetContactRateLimitForTests();
 });
 
@@ -58,6 +60,20 @@ describe("POST /api/contact", () => {
     expect(response.status).toBe(422);
     expect(body).toMatchObject({ ok: false, error: "validation_failed" });
     expect(body.fieldErrors).toBeDefined();
+  });
+
+  it("rejects oversized payloads before parsing form fields", async () => {
+    const request = createRequest({
+      ...validPayload,
+      message: "x".repeat(20_000),
+    });
+
+    const response = await POST(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(413);
+    expect(body).toMatchObject({ ok: false, error: "payload_too_large" });
+    expect(sendContactInquiry).not.toHaveBeenCalled();
   });
 
   it("returns delivery_unavailable when provider is not configured", async () => {
@@ -162,6 +178,88 @@ describe("POST /api/contact", () => {
 
     expect(response.status).toBe(429);
     expect(response.headers.get("Retry-After")).toBeTruthy();
+    expect(body).toMatchObject({ ok: false, error: "rate_limited" });
+  });
+
+  it("uses Redis rate limiting when Upstash REST config is available", async () => {
+    vi.stubEnv("UPSTASH_REDIS_REST_URL", "https://redis.example.com");
+    vi.stubEnv("UPSTASH_REDIS_REST_TOKEN", "secret-token");
+    vi.mocked(sendContactInquiry).mockResolvedValue({
+      ok: true,
+      provider: "resend",
+      messageId: "msg_123",
+    });
+
+    let count = 0;
+    const fetchMock = vi.fn(async () => {
+      count += 1;
+      return Response.json({ result: [count, 15 * 60 * 1000] });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      const response = await POST(
+        createRequest(validPayload, {
+          "x-forwarded-for": "203.0.113.10",
+        }),
+      );
+
+      expect(response.status).toBe(200);
+    }
+
+    const response = await POST(
+      createRequest(validPayload, {
+        "x-forwarded-for": "203.0.113.10",
+      }),
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(429);
+    expect(body).toMatchObject({ ok: false, error: "rate_limited" });
+    expect(fetchMock).toHaveBeenCalledTimes(6);
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://redis.example.com",
+      expect.objectContaining({
+        method: "POST",
+        headers: expect.objectContaining({
+          Authorization: "Bearer secret-token",
+        }),
+      }),
+    );
+  });
+
+  it("falls back to memory rate limiting if Redis is unavailable", async () => {
+    vi.stubEnv("UPSTASH_REDIS_REST_URL", "https://redis.example.com");
+    vi.stubEnv("UPSTASH_REDIS_REST_TOKEN", "secret-token");
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => Response.json({ error: "temporarily unavailable" }, { status: 503 })),
+    );
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    vi.mocked(sendContactInquiry).mockResolvedValue({
+      ok: true,
+      provider: "resend",
+      messageId: "msg_123",
+    });
+
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      const response = await POST(
+        createRequest(validPayload, {
+          "x-forwarded-for": "203.0.113.11",
+        }),
+      );
+
+      expect(response.status).toBe(200);
+    }
+
+    const response = await POST(
+      createRequest(validPayload, {
+        "x-forwarded-for": "203.0.113.11",
+      }),
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(429);
     expect(body).toMatchObject({ ok: false, error: "rate_limited" });
   });
 });
