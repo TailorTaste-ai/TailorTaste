@@ -23,15 +23,25 @@ describe("contact delivery builders", () => {
   });
 
   it("keeps the confirmation email generic", () => {
-    const plainText = buildConfirmationPlainText();
-    const html = buildConfirmationHtml();
+    const values = { name: "Ty" };
+    const plainText = buildConfirmationPlainText(values);
+    const html = buildConfirmationHtml(values);
 
+    expect(plainText).toContain("Dear Ty,");
     expect(plainText).toContain("Thank you for contacting TailorTaste.");
     expect(plainText).toContain("ty@tailortaste.ch");
     expect(plainText).not.toContain("Message:");
+    expect(html).toContain("Dear Ty,");
     expect(html).toContain("Thank you for contacting us");
     expect(html).toContain("ty@tailortaste.ch");
     expect(html).not.toContain("Your inquiry");
+  });
+
+  it("escapes the recipient name in the confirmation email", () => {
+    const html = buildConfirmationHtml({ name: "<b>Ty</b>" });
+
+    expect(html).toContain("Dear &lt;b&gt;Ty&lt;/b&gt;,");
+    expect(html).not.toContain("<b>Ty</b>");
   });
 
   it("removes header line breaks from the inquiry subject", () => {

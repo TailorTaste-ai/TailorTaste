@@ -120,8 +120,10 @@ export function buildHtml(values: ContactFormValues) {
   `;
 }
 
-export function buildConfirmationPlainText() {
+export function buildConfirmationPlainText(values: Pick<ContactFormValues, "name">) {
   return [
+    `Dear ${values.name},`,
+    "",
     "Thank you for contacting TailorTaste.",
     "",
     "We have received your inquiry and will review it shortly. If you have any questions in the meantime, you can reach us at ty@tailortaste.ch.",
@@ -132,13 +134,18 @@ export function buildConfirmationPlainText() {
   ].join("\n");
 }
 
-export function buildConfirmationHtml() {
+export function buildConfirmationHtml(values: Pick<ContactFormValues, "name">) {
+  const name = escapeHtml(values.name);
+
   return `
     <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#141715;max-width:560px;margin:0 auto;padding:24px">
       <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#8a6f3d">
         TailorTaste
       </p>
       <h2 style="margin:0 0 16px;font-size:22px;line-height:1.25;color:#141715">Thank you for contacting us</h2>
+      <p style="margin:0 0 14px;color:#3c443d">
+        Dear ${name},
+      </p>
       <p style="margin:0 0 14px;color:#3c443d">
         We have received your inquiry and will review it shortly.
       </p>
@@ -225,8 +232,8 @@ export async function sendContactInquiry(values: ContactFormValues): Promise<Con
       config,
       [values.email],
       "TailorTaste — We received your inquiry",
-      buildConfirmationPlainText(),
-      buildConfirmationHtml(),
+      buildConfirmationPlainText(values),
+      buildConfirmationHtml(values),
     );
 
     if (!confirmationResult.ok) {
