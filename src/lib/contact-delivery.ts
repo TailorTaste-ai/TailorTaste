@@ -221,15 +221,17 @@ export async function sendContactInquiry(values: ContactFormValues): Promise<Con
       };
     }
 
-    sendViaResend(
+    const confirmationResult = await sendViaResend(
       config,
       [values.email],
       "TailorTaste — We received your inquiry",
       buildConfirmationPlainText(),
       buildConfirmationHtml(),
-    ).catch(() => {
-      // Confirmation is best-effort; don't fail the main request
-    });
+    );
+
+    if (!confirmationResult.ok) {
+      console.warn(`[tailor-taste] Confirmation email failed: ${confirmationResult.error ?? "Unknown error."}`);
+    }
 
     return {
       ok: true,
