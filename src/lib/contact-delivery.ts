@@ -1,5 +1,6 @@
 import type { ContactFormValues } from "@/lib/validation";
 import { getContactEnvStatus, warnIfContactEnvMissing } from "@/lib/env";
+import { siteConfig } from "@/lib/site";
 
 export type ContactDeliveryConfigError = {
   ok: false;
@@ -71,18 +72,10 @@ function getResendConfig(): ContactDeliveryConfig | ContactDeliveryConfigError {
   const to = parseRecipients(process.env.CONTACT_TO_EMAILS);
   const subjectPrefix = process.env.CONTACT_SUBJECT_PREFIX?.trim() || "TailorTaste Inquiry";
 
-  if (!to.length) {
-    return {
-      ok: false,
-      reason: "config",
-      message: "Missing CONTACT_TO_EMAILS.",
-    };
-  }
-
   return {
     apiKey: apiKey as string,
     from,
-    to,
+    to: to.length ? to : [siteConfig.contactEmail],
     subjectPrefix,
   };
 }

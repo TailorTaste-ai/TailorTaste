@@ -128,6 +128,7 @@ export const siteConfig = {
   primaryCTA: "Discuss a pilot",
   url: "https://tailortaste.ch",
   officialDomain: "tailortaste.ch",
+  contactEmail: "ty@tailortaste.ch",
   location: {
     locality: "Zurich",
     countryName: "Switzerland",

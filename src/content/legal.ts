@@ -1,12 +1,19 @@
 import type { LegalSection } from "@/components/legal/LegalDocument";
+import { siteConfig } from "@/lib/site";
 
 export const legalUpdated = "May 20, 2026";
+export const privacyUpdated = "May 24, 2026";
 
 export const privacySections: LegalSection[] = [
   {
     title: "Who We Are",
     body:
-      "TailorTaste is an early-stage hospitality technology project led by its founding team, Ty Stevens and Bucur Andrei Borcoman. TailorTaste is not currently incorporated and does not sell products or services through this website. You can contact the team through the [contact page](/contact).",
+      `TailorTaste is an early-stage hospitality technology project led by its founding team, Ty Stevens and Bucur Andrei Borcoman. TailorTaste is not currently incorporated and does not sell products or services through this website. For privacy matters, the contact is Ty Stevens, TailorTaste, Weinbergstrasse 11 | CH 8001 Zürich, Switzerland, [${siteConfig.contactEmail}](mailto:${siteConfig.contactEmail}). You can also contact the team through the [contact page](/contact).`,
+  },
+  {
+    title: "Where The Data Comes From",
+    body:
+      "Most personal data we process comes directly from you when you submit the contact form or email us. Technical data is generated automatically when your browser requests pages or submits the contact form.",
   },
   {
     title: "Information We Collect",
@@ -28,21 +35,30 @@ export const privacySections: LegalSection[] = [
   },
   {
     title: "Legal Bases",
-    body:
-      "Where GDPR-style rules apply, we rely on legitimate interests for responding to business inquiries, securing the site, and measuring aggregate site performance. If a processing activity requires consent in your location, we will ask for it before using that activity.",
+    items: [
+      "Contact inquiries: legitimate interests in responding to business, pilot, partnership, press, investment, and collaboration inquiries. Where a conversation is about a possible agreement, we may also process data to take pre-contractual steps at your request.",
+      "Security, spam prevention, rate limiting, and debugging: legitimate interests in keeping the website reliable and protected from misuse.",
+      "Analytics: legitimate interests in understanding aggregate website usage and improving the site without advertising tracking or user profiling. If analytics or similar technologies require consent in your location, we will ask for it before using them.",
+      "Legal records and compliance: legitimate interests and, where applicable, compliance with legal obligations.",
+    ],
   },
   {
     title: "Service Providers",
     items: [
-      "Vercel hosts the site and provides privacy-focused web analytics.",
-      "Resend is used to deliver contact form emails and confirmation messages.",
+      "Vercel hosts the site and provides privacy-focused web analytics. See [Vercel's privacy notice](https://vercel.com/legal/privacy-policy).",
+      "Resend is used to deliver contact form emails and confirmation messages. See [Resend's privacy policy](https://resend.com/legal/privacy-policy).",
       "Email recipients on the TailorTaste team receive inquiry details so they can respond.",
     ],
   },
   {
     title: "International Transfers",
     body:
-      "Our providers may process data in countries outside your own, including the United States. We expect providers to use appropriate contractual and technical safeguards for those transfers.",
+      "Our providers may process data in countries outside your own, including the United States. Where required, we rely on adequacy decisions, standard contractual clauses, or equivalent safeguards used by our providers for those transfers.",
+  },
+  {
+    title: "Security",
+    body:
+      "We use reasonable technical and organizational measures to protect personal data, including HTTPS, server-side validation, anti-spam controls, rate limiting, and limited access to inquiry details. No website or email system can be guaranteed completely secure, but we work to keep the processing proportionate to this simple contact-form site.",
   },
   {
     title: "Retention",
@@ -52,12 +68,22 @@ export const privacySections: LegalSection[] = [
   {
     title: "Your Rights",
     body:
-      "Depending on your location, you may have rights to access, correct, delete, restrict, object to, or receive a copy of your personal data. You may also have the right to complain to a data protection authority. To make a request, contact us through the [contact page](/contact).",
+      `Depending on your location, you may have rights to access, correct, delete, restrict, object to, or receive a copy of your personal data. You may also have the right to complain to a data protection authority. To make a request, contact us through the [contact page](/contact) or email [${siteConfig.contactEmail}](mailto:${siteConfig.contactEmail}).`,
   },
   {
     title: "Cookies And Similar Technologies",
     body:
       "This site does not use advertising cookies. Vercel Web Analytics is designed to work without cookies. The theme preference uses browser local storage so the visual mode can persist; it is not used for advertising or cross-site tracking.",
+  },
+  {
+    title: "Children",
+    body:
+      "This website is intended for hospitality, business, partner, investor, press, and collaborator inquiries. It is not directed at children, and we do not knowingly collect personal data from children.",
+  },
+  {
+    title: "Changes To This Policy",
+    body:
+      "We may update this policy as the website, providers, product, or company structure develops. The updated date at the top of this page shows when the policy was last changed.",
   },
 ];
 
@@ -69,7 +95,7 @@ export const legalNoticeSections: LegalSection[] = [
       "Operator: the TailorTaste founding team, Ty Stevens and Bucur Andrei Borcoman",
       "Status: early-stage project, not currently incorporated",
       "Official website: https://tailortaste.ch",
-      "Contact: [contact page](/contact)",
+      `Contact: [${siteConfig.contactEmail}](mailto:${siteConfig.contactEmail}) or [contact page](/contact)`,
     ],
   },
   {

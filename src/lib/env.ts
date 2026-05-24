@@ -3,7 +3,7 @@ type ContactEnvStatus = {
   missingVars: string[];
 };
 
-const requiredContactVars = ["RESEND_API_KEY", "CONTACT_TO_EMAILS"] as const;
+const requiredContactVars = ["RESEND_API_KEY"] as const;
 
 function parseBoolean(value: string | undefined) {
   if (!value) {
