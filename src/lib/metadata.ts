@@ -1,12 +1,27 @@
 import type { Metadata } from "next";
 import { siteConfig } from "./site";
 
-export function buildPageMetadata(title: string, path: string, description = siteConfig.description): Metadata {
-  const url = `${siteConfig.url}${path}`;
+type PageMetadataOptions = {
+  keywords?: string[];
+};
+
+export function buildPageMetadata(
+  title: string,
+  path: string,
+  description = siteConfig.description,
+  options: PageMetadataOptions = {}
+): Metadata {
+  const url = new URL(path, siteConfig.url).toString();
+  const socialImage = {
+    ...siteConfig.socialImage,
+    url: new URL(siteConfig.socialImage.url, siteConfig.url).toString(),
+  };
+  const keywords = [...new Set([...siteConfig.keywords, ...(options.keywords ?? [])])];
 
   return {
     title,
     description,
+    keywords,
     alternates: {
       canonical: path,
     },
@@ -16,11 +31,14 @@ export function buildPageMetadata(title: string, path: string, description = sit
       url,
       siteName: siteConfig.name,
       type: "website",
+      locale: "en_US",
+      images: [socialImage],
     },
     twitter: {
       card: "summary_large_image",
       title: `${title} | ${siteConfig.name}`,
       description,
+      images: [socialImage.url],
     },
   };
 }

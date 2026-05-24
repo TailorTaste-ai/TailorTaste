@@ -5,7 +5,14 @@ import { SectionHeader } from "@/components/primitives/SectionHeader";
 import { contactPage } from "@/content/contact";
 import { buildPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = buildPageMetadata("Contact", "/contact");
+export const metadata: Metadata = buildPageMetadata(
+  "Contact for Restaurant and Hotel Pilots",
+  "/contact",
+  "Contact TailorTaste about pilot venues, hotel and restaurant workflows, partnerships, investor questions, or collaboration.",
+  {
+    keywords: ["restaurant pilot", "hotel pilot", "hospitality partnership", "TailorTaste contact"],
+  }
+);
 
 export default function ContactPage() {
   return (

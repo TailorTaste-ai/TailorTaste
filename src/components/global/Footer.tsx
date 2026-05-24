@@ -18,6 +18,9 @@ export function Footer() {
         <div className="max-w-md space-y-3">
           <p className="font-serif text-xl sm:text-2xl">{siteConfig.name}</p>
           <p className="text-sm leading-6 text-chalk/70">{siteConfig.productDefinition}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-chalk/45">
+            Official website: {siteConfig.officialDomain} · {siteConfig.location.locality}, {siteConfig.location.countryName}
+          </p>
         </div>
         <div className="flex flex-col items-start gap-6 md:items-end">
           <nav

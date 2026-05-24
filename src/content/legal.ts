@@ -68,6 +68,7 @@ export const legalNoticeSections: LegalSection[] = [
       "Project: TailorTaste",
       "Operator: the TailorTaste founding team, Ty Stevens and Bucur Andrei Borcoman",
       "Status: early-stage project, not currently incorporated",
+      "Official website: https://tailortaste.ch",
       "Contact: [contact page](/contact)",
     ],
   },

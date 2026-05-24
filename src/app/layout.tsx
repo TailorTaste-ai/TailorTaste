@@ -8,6 +8,52 @@ import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
 const allowIndexing = shouldAllowIndexing();
+const socialImage = {
+  ...siteConfig.socialImage,
+  url: new URL(siteConfig.socialImage.url, siteConfig.url).toString(),
+};
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": `${siteConfig.url}/#organization`,
+  name: siteConfig.name,
+  alternateName: siteConfig.alternateName,
+  url: siteConfig.url,
+  description: siteConfig.description,
+  logo: new URL("/logo.png", siteConfig.url).toString(),
+  foundingLocation: {
+    "@type": "Place",
+    name: `${siteConfig.location.locality}, ${siteConfig.location.countryName}`,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: siteConfig.location.locality,
+      addressCountry: siteConfig.location.countryCode,
+    },
+  },
+  areaServed: {
+    "@type": "Country",
+    name: siteConfig.location.countryName,
+  },
+  founder: siteConfig.founders.map((founder) => ({
+    "@type": "Person",
+    name: founder.name,
+    jobTitle: founder.role,
+    ...(founder.url ? { url: founder.url } : {}),
+  })),
+  sameAs: siteConfig.ecosystemLinks,
+};
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: siteConfig.name,
+  alternateName: [siteConfig.alternateName, `${siteConfig.name} ${siteConfig.location.countryName}`],
+  url: siteConfig.url,
+  description: siteConfig.description,
+  inLanguage: "en",
+  publisher: {
+    "@id": `${siteConfig.url}/#organization`,
+  },
+};
 const themePreviewScript = `
 (function () {
   try {
@@ -47,11 +93,16 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  applicationName: siteConfig.name,
   title: {
     default: `Home | ${siteConfig.name}`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
+  keywords: siteConfig.keywords,
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  category: "Hospitality technology",
   metadataBase: new URL(siteConfig.url),
   alternates: {
     canonical: "/",
@@ -67,6 +118,13 @@ export const metadata: Metadata = {
   robots: {
     index: allowIndexing,
     follow: allowIndexing,
+    googleBot: {
+      index: allowIndexing,
+      follow: allowIndexing,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
   openGraph: {
     title: siteConfig.name,
@@ -74,11 +132,14 @@ export const metadata: Metadata = {
     url: siteConfig.url,
     siteName: siteConfig.name,
     type: "website",
+    locale: "en_US",
+    images: [socialImage],
   },
   twitter: {
     card: "summary_large_image",
     title: siteConfig.name,
     description: siteConfig.description,
+    images: [socialImage.url],
   },
 };
 
@@ -89,6 +150,16 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         <Script id="tailor-taste-theme-preview" strategy="beforeInteractive">
           {themePreviewScript}
         </Script>
+        <Script
+          id="tailor-taste-organization-jsonld"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+        <Script
+          id="tailor-taste-website-jsonld"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
         <SiteShell>{children}</SiteShell>
         <Analytics />
       </body>

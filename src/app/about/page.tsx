@@ -8,7 +8,14 @@ import { aboutPage } from "@/content/about";
 import { buildPageMetadata } from "@/lib/metadata";
 import type { FeatureItem, SectionIntro } from "@/lib/site";
 
-export const metadata: Metadata = buildPageMetadata("About", "/about");
+export const metadata: Metadata = buildPageMetadata(
+  "Founders",
+  "/about",
+  "Meet the TailorTaste founders building a staff controlled physical menu object for premium hospitality teams.",
+  {
+    keywords: ["TailorTaste founders", "hospitality startup", "restaurant technology founders"],
+  }
+);
 
 export default function AboutPage() {
   const closingCta = {

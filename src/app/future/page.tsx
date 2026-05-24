@@ -8,7 +8,14 @@ import { futurePage } from "@/content/future";
 import { roadmapStages } from "@/content/roadmap";
 import { buildPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = buildPageMetadata("Future", "/future");
+export const metadata: Metadata = buildPageMetadata(
+  "Hospitality Menu Roadmap",
+  "/future",
+  "TailorTaste roadmap notes for staff controlled menu software, language workflows, service state scheduling, and future hospitality intelligence.",
+  {
+    keywords: ["hospitality menu roadmap", "menu workflow software", "restaurant service state scheduling"],
+  }
+);
 
 export default function FuturePage() {
   return (

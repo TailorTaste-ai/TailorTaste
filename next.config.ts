@@ -19,6 +19,28 @@ const contentSecurityPolicy = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "tailortaste.com" }],
+        destination: "https://tailortaste.ch/:path*",
+        permanent: true,
+      },
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.tailortaste.com" }],
+        destination: "https://tailortaste.ch/:path*",
+        permanent: true,
+      },
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.tailortaste.ch" }],
+        destination: "https://tailortaste.ch/:path*",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     const headers = [
       {

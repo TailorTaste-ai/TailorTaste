@@ -120,9 +120,49 @@ export type FuturePageContent = {
 
 export const siteConfig = {
   name: "TailorTaste",
-  description: "A physical menu object staff can update before and during service.",
+  alternateName: "Tailor Taste",
+  description:
+    "A leather bound physical menu system for premium restaurants and hotels, controlled by staff before and during service.",
   productDefinition:
     "TailorTaste keeps the menu physical for guests while staff update languages, service states, availability, dietary notes, and prices from their side.",
   primaryCTA: "Discuss a pilot",
-  url: "https://tailortaste.com",
+  url: "https://tailortaste.ch",
+  officialDomain: "tailortaste.ch",
+  location: {
+    locality: "Zurich",
+    countryName: "Switzerland",
+    countryCode: "CH",
+  },
+  founders: [
+    {
+      name: "Ty Stevens",
+      url: "https://www.linkedin.com/in/ty-stevens-/",
+      role: "Cofounder",
+    },
+    {
+      name: "Bucur Andrei Borcoman",
+      role: "Cofounder",
+    },
+  ],
+  ecosystemLinks: ["https://www.entrepreneur-club.org/", "https://sph.ethz.ch/"],
+  keywords: [
+    "TailorTaste",
+    "Tailor Taste",
+    "TailorTaste Switzerland",
+    "TailorTaste Zurich",
+    "physical menu system",
+    "restaurant menu technology",
+    "hotel menu technology",
+    "premium hospitality",
+    "digital restaurant menu",
+    "staff controlled menu",
+    "menu language switching",
+    "restaurant pilot",
+  ],
+  socialImage: {
+    url: "/menu-table-premium.png",
+    width: 1402,
+    height: 1122,
+    alt: "TailorTaste physical menu object on a premium restaurant table",
+  },
 };

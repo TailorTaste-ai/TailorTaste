@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Button } from "@/components/primitives/Button";
 import { Card } from "@/components/primitives/Card";
 import { Container } from "@/components/primitives/Container";
@@ -9,12 +10,43 @@ import { primaryCta } from "@/content/ctas";
 import { finalCta } from "@/content/home";
 import { productPage } from "@/content/product";
 import { buildPageMetadata } from "@/lib/metadata";
+import { siteConfig } from "@/lib/site";
 
-export const metadata: Metadata = buildPageMetadata("Product", "/product");
+export const metadata: Metadata = buildPageMetadata(
+  "Staff Controlled Digital Menu Object",
+  "/product",
+  "Explore the TailorTaste staff controlled menu object for live language switching, service states, menu updates, low light readability, and availability changes.",
+  {
+    keywords: ["digital menu object", "restaurant menu updates", "menu availability updates", "menu service states"],
+  }
+);
+
+const productJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: siteConfig.name,
+  alternateName: `${siteConfig.name} physical menu system`,
+  brand: {
+    "@type": "Brand",
+    name: siteConfig.name,
+  },
+  manufacturer: {
+    "@id": `${siteConfig.url}/#organization`,
+  },
+  category: "Hospitality menu system",
+  description: siteConfig.productDefinition,
+  image: new URL(siteConfig.socialImage.url, siteConfig.url).toString(),
+  url: new URL("/product", siteConfig.url).toString(),
+};
 
 export default function ProductPage() {
   return (
     <>
+      <Script
+        id="tailor-taste-product-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
       <section className="section-y">
         <Container className="space-y-12 sm:space-y-16">
           <SectionHeader as="h1" {...productPage.hero} />
