@@ -124,7 +124,7 @@ export function buildConfirmationPlainText() {
   return [
     "Thank you for contacting TailorTaste.",
     "",
-    "We have received your inquiry and will review it shortly. If there is a fit for a pilot, partnership, or follow-up conversation, we will reply from ty@tailortaste.ch.",
+    "We have received your inquiry and will review it shortly. If you have any questions in the meantime, you can reach us at ty@tailortaste.ch.",
     "",
     "Best regards,",
     "Ty Stevens",
@@ -143,7 +143,7 @@ export function buildConfirmationHtml() {
         We have received your inquiry and will review it shortly.
       </p>
       <p style="margin:0 0 22px;color:#3c443d">
-        If there is a fit for a pilot, partnership, or follow-up conversation, we will reply from
+        If you have any questions in the meantime, you can reach us at
         <a style="color:#141715;text-decoration:underline;text-underline-offset:3px" href="mailto:ty@tailortaste.ch">ty@tailortaste.ch</a>.
       </p>
       <p style="margin:0;font-size:13px;color:#3c443d">
