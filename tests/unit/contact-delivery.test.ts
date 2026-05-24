@@ -26,9 +26,11 @@ describe("contact delivery builders", () => {
     const plainText = buildConfirmationPlainText();
     const html = buildConfirmationHtml();
 
-    expect(plainText).toContain("Thank you for reaching out to TailorTaste.");
+    expect(plainText).toContain("Thank you for contacting TailorTaste.");
+    expect(plainText).toContain("ty@tailortaste.ch");
     expect(plainText).not.toContain("Message:");
-    expect(html).toContain("Thank you for reaching out to TailorTaste.");
+    expect(html).toContain("Thank you for contacting us");
+    expect(html).toContain("ty@tailortaste.ch");
     expect(html).not.toContain("Your inquiry");
   });
 

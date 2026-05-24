@@ -122,22 +122,32 @@ export function buildHtml(values: ContactFormValues) {
 
 export function buildConfirmationPlainText() {
   return [
-    "Thank you for reaching out to TailorTaste. We have received your inquiry and will get back to you shortly.",
+    "Thank you for contacting TailorTaste.",
+    "",
+    "We have received your inquiry and will review it shortly. If there is a fit for a pilot, partnership, or follow-up conversation, we will reply from ty@tailortaste.ch.",
     "",
     "Best regards,",
-    "The TailorTaste Team",
+    "Ty Stevens",
+    "TailorTaste",
   ].join("\n");
 }
 
 export function buildConfirmationHtml() {
   return `
-    <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#141715;max-width:560px">
-      <h2 style="margin:0 0 16px;font-size:20px;color:#141715">Thank you for reaching out</h2>
-      <p style="margin:0 0 16px;color:#3c443d">
-        Thank you for reaching out to TailorTaste. We have received your inquiry and our team will follow up shortly.
+    <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#141715;max-width:560px;margin:0 auto;padding:24px">
+      <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#8a6f3d">
+        TailorTaste
+      </p>
+      <h2 style="margin:0 0 16px;font-size:22px;line-height:1.25;color:#141715">Thank you for contacting us</h2>
+      <p style="margin:0 0 14px;color:#3c443d">
+        We have received your inquiry and will review it shortly.
+      </p>
+      <p style="margin:0 0 22px;color:#3c443d">
+        If there is a fit for a pilot, partnership, or follow-up conversation, we will reply from
+        <a style="color:#141715;text-decoration:underline;text-underline-offset:3px" href="mailto:ty@tailortaste.ch">ty@tailortaste.ch</a>.
       </p>
       <p style="margin:0;font-size:13px;color:#3c443d">
-        Best regards,<br/>The TailorTaste Team
+        Best regards,<br/>Ty Stevens<br/>TailorTaste
       </p>
     </div>
   `;
