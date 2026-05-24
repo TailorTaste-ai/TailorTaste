@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { sendContactInquiry } from "@/lib/contact-delivery";
 import { resetRateLimitForTests, takeRateLimitSlot } from "@/lib/rate-limit";
+import { siteConfig } from "@/lib/site";
 import {
   hasContactFormErrors,
   normalizeContactFormValues,
@@ -200,7 +201,7 @@ export async function POST(request: Request) {
         error: errorCode,
         message:
           deliveryResult.reason === "config"
-            ? "Contact delivery is not configured yet. Please try again soon or email the team directly."
+            ? `Contact delivery is not configured yet. Please try again soon or email ${siteConfig.contactEmail} directly.`
             : "We could not deliver this inquiry right now. Please try again in a moment.",
       },
       { status },
