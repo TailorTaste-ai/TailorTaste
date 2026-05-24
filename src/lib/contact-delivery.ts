@@ -68,7 +68,7 @@ function getResendConfig(): ContactDeliveryConfig | ContactDeliveryConfigError {
   }
 
   const apiKey = process.env.RESEND_API_KEY?.trim();
-  const from = process.env.CONTACT_FROM_EMAIL?.trim() || "TailorTaste <onboarding@resend.dev>";
+  const from = process.env.CONTACT_FROM_EMAIL?.trim() || `TailorTaste <${siteConfig.contactEmail}>`;
   const to = parseRecipients(process.env.CONTACT_TO_EMAILS);
   const subjectPrefix = process.env.CONTACT_SUBJECT_PREFIX?.trim() || "TailorTaste Inquiry";
 
