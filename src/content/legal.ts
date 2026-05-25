@@ -1,5 +1,4 @@
 import type { LegalSection } from "@/components/legal/LegalDocument";
-import { siteConfig } from "@/lib/site";
 
 export const legalUpdated = "May 20, 2026";
 export const privacyUpdated = "May 24, 2026";
@@ -8,7 +7,7 @@ export const privacySections: LegalSection[] = [
   {
     title: "Who We Are",
     body:
-      `TailorTaste is an early-stage hospitality technology project led by its founding team, Ty Stevens and Bucur Andrei Borcoman. TailorTaste is not currently incorporated and does not sell products or services through this website. For privacy matters, the contact is Ty Stevens, TailorTaste, Weinbergstrasse 11 | CH 8001 Zürich, Switzerland, [${siteConfig.contactEmail}](mailto:${siteConfig.contactEmail}). You can also contact the team through the [contact page](/contact).`,
+      "TailorTaste is an early-stage hospitality technology project led by its founding team, Ty Stevens and Bucur Andrei Borcoman. TailorTaste is not currently incorporated and does not sell products or services through this website. For privacy matters, you can contact the team through the [contact page](/contact).",
   },
   {
     title: "Where The Data Comes From",
@@ -68,7 +67,7 @@ export const privacySections: LegalSection[] = [
   {
     title: "Your Rights",
     body:
-      `Depending on your location, you may have rights to access, correct, delete, restrict, object to, or receive a copy of your personal data. You may also have the right to complain to a data protection authority. To make a request, contact us through the [contact page](/contact) or email [${siteConfig.contactEmail}](mailto:${siteConfig.contactEmail}).`,
+      "Depending on your location, you may have rights to access, correct, delete, restrict, object to, or receive a copy of your personal data. You may also have the right to complain to a data protection authority. To make a request, contact us through the [contact page](/contact).",
   },
   {
     title: "Cookies And Similar Technologies",
@@ -95,7 +94,7 @@ export const legalNoticeSections: LegalSection[] = [
       "Operator: the TailorTaste founding team, Ty Stevens and Bucur Andrei Borcoman",
       "Status: early-stage project, not currently incorporated",
       "Official website: https://tailortaste.ch",
-      `Contact: [${siteConfig.contactEmail}](mailto:${siteConfig.contactEmail}) or [contact page](/contact)`,
+      "Contact: [contact page](/contact)",
     ],
   },
   {

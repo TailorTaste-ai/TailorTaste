@@ -10,7 +10,7 @@ describe("contact delivery builders", () => {
   it("escapes user-provided HTML in the internal inquiry email", () => {
     const html = buildHtml({
       name: "<b>Ty</b>",
-      email: "ty@tailortaste.com",
+      email: "guest@example.com",
       organization: "Tailor <script>alert(1)</script>",
       inquiryType: "Pilot venue / hotel",
       message: "<a href=\"https://phish.example\">Click me</a>",
@@ -29,11 +29,12 @@ describe("contact delivery builders", () => {
 
     expect(plainText).toContain("Dear Ty,");
     expect(plainText).toContain("Thank you for contacting TailorTaste.");
-    expect(plainText).toContain("ty@tailortaste.ch");
+    expect(plainText).toContain("We have received your inquiry and will review it shortly.");
+    expect(plainText).not.toContain("@tailortaste.ch");
     expect(plainText).not.toContain("Message:");
     expect(html).toContain("Dear Ty,");
     expect(html).toContain("Thank you for contacting us");
-    expect(html).toContain("ty@tailortaste.ch");
+    expect(html).not.toContain("@tailortaste.ch");
     expect(html).not.toContain("Your inquiry");
   });
 

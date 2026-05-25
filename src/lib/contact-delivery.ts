@@ -1,6 +1,5 @@
 import type { ContactFormValues } from "@/lib/validation";
 import { getContactEnvStatus, warnIfContactEnvMissing } from "@/lib/env";
-import { siteConfig } from "@/lib/site";
 
 export type ContactDeliveryConfigError = {
   ok: false;
@@ -68,14 +67,22 @@ function getResendConfig(): ContactDeliveryConfig | ContactDeliveryConfigError {
   }
 
   const apiKey = process.env.RESEND_API_KEY?.trim();
-  const from = process.env.CONTACT_FROM_EMAIL?.trim() || `TailorTaste <${siteConfig.contactEmail}>`;
+  const from = process.env.CONTACT_FROM_EMAIL?.trim();
   const to = parseRecipients(process.env.CONTACT_TO_EMAILS);
   const subjectPrefix = process.env.CONTACT_SUBJECT_PREFIX?.trim() || "TailorTaste Inquiry";
+
+  if (!from || !to.length) {
+    return {
+      ok: false,
+      reason: "config",
+      message: "Missing CONTACT_FROM_EMAIL or CONTACT_TO_EMAILS.",
+    };
+  }
 
   return {
     apiKey: apiKey as string,
     from,
-    to: to.length ? to : [siteConfig.contactEmail],
+    to,
     subjectPrefix,
   };
 }
@@ -126,7 +133,7 @@ export function buildConfirmationPlainText(values: Pick<ContactFormValues, "name
     "",
     "Thank you for contacting TailorTaste.",
     "",
-    "We have received your inquiry and will review it shortly. If you have any questions in the meantime, you can reach us at ty@tailortaste.ch.",
+    "We have received your inquiry and will review it shortly.",
     "",
     "Best regards,",
     "Ty Stevens",
@@ -148,10 +155,6 @@ export function buildConfirmationHtml(values: Pick<ContactFormValues, "name">) {
       </p>
       <p style="margin:0 0 14px;color:#3c443d">
         We have received your inquiry and will review it shortly.
-      </p>
-      <p style="margin:0 0 22px;color:#3c443d">
-        If you have any questions in the meantime, you can reach us at
-        <a style="color:#141715;text-decoration:underline;text-underline-offset:3px" href="mailto:ty@tailortaste.ch">ty@tailortaste.ch</a>.
       </p>
       <p style="margin:0;font-size:13px;color:#3c443d">
         Best regards,<br/>Ty Stevens<br/>TailorTaste

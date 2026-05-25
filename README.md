@@ -80,8 +80,8 @@ Current provider path: Resend API (via server-side adapter in `src/lib/contact-d
 Set these environment variables before expecting live delivery:
 
 - `RESEND_API_KEY`
-- `CONTACT_TO_EMAILS` (optional comma-separated override; defaults to `ty@tailortaste.ch`)
-- `CONTACT_FROM_EMAIL` (optional; defaults to `TailorTaste <ty@tailortaste.ch>`)
+- `CONTACT_TO_EMAILS` (comma-separated recipients for private inquiry delivery)
+- `CONTACT_FROM_EMAIL` (verified sender address for Resend delivery)
 - `CONTACT_SUBJECT_PREFIX` (optional)
 - `ALLOW_INDEXING` (optional; defaults to `false` outside production, `true` in production)
 

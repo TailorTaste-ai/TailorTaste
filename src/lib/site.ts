@@ -70,7 +70,6 @@ export type FounderProfile = {
 
 export type ContactPageContent = {
   hero: SectionIntro;
-  deliveryNote: string;
   inquiryTypes: readonly string[];
 };
 
@@ -128,7 +127,6 @@ export const siteConfig = {
   primaryCTA: "Discuss a pilot",
   url: "https://tailortaste.ch",
   officialDomain: "tailortaste.ch",
-  contactEmail: "ty@tailortaste.ch",
   location: {
     locality: "Zurich",
     countryName: "Switzerland",
