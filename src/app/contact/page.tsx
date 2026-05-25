@@ -7,7 +7,7 @@ import { buildPageMetadata } from "@/lib/metadata";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata(
-  "Contact for Restaurant and Hotel Pilots",
+  "Contact",
   "/contact",
   "Contact TailorTaste about pilot venues, hotel and restaurant workflows, partnerships, investor questions, or collaboration.",
   {

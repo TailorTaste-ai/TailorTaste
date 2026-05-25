@@ -9,7 +9,7 @@ import { buildPageMetadata } from "@/lib/metadata";
 import type { FeatureItem, SectionIntro } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata(
-  "Founders",
+  "About",
   "/about",
   "Meet the TailorTaste founders building a staff controlled physical menu object for premium hospitality teams.",
   {

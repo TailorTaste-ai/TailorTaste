@@ -24,7 +24,7 @@ import { WhyNow } from "@/components/sections/WhyNow";
 import { buildPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = buildPageMetadata(
-  "Physical Menu System for Premium Restaurants and Hotels",
+  "Home",
   "/",
   "TailorTaste is a leather bound physical menu object for premium restaurants and hotels. Staff can update language, service state, availability, and menu content.",
   {

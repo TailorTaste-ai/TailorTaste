@@ -17,16 +17,17 @@ export function buildPageMetadata(
     url: new URL(siteConfig.socialImage.url, siteConfig.url).toString(),
   };
   const keywords = [...new Set([...siteConfig.keywords, ...(options.keywords ?? [])])];
+  const brandedTitle = `${title} | ${siteConfig.name}`;
 
   return {
-    title,
+    title: path === "/" ? brandedTitle : title,
     description,
     keywords,
     alternates: {
       canonical: path,
     },
     openGraph: {
-      title: `${title} | ${siteConfig.name}`,
+      title: brandedTitle,
       description,
       url,
       siteName: siteConfig.name,
@@ -36,7 +37,7 @@ export function buildPageMetadata(
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} | ${siteConfig.name}`,
+      title: brandedTitle,
       description,
       images: [socialImage.url],
     },

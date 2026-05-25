@@ -13,7 +13,7 @@ import { buildPageMetadata } from "@/lib/metadata";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata(
-  "Staff Controlled Digital Menu Object",
+  "Product",
   "/product",
   "Explore the TailorTaste staff controlled menu object for live language switching, service states, menu updates, low light readability, and availability changes.",
   {

@@ -9,7 +9,7 @@ import { roadmapStages } from "@/content/roadmap";
 import { buildPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = buildPageMetadata(
-  "Hospitality Menu Roadmap",
+  "Future",
   "/future",
   "TailorTaste roadmap notes for staff controlled menu software, language workflows, service state scheduling, and future hospitality intelligence.",
   {

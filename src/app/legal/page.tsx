@@ -4,7 +4,7 @@ import { legalNoticeSections, legalUpdated } from "@/content/legal";
 import { buildPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = buildPageMetadata(
-  "Legal Notice",
+  "Legal",
   "/legal",
   "Legal notice and website operator information for TailorTaste.",
 );

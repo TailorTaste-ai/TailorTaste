@@ -4,7 +4,7 @@ import { legalUpdated, termsSections } from "@/content/legal";
 import { buildPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = buildPageMetadata(
-  "Terms of Use",
+  "Terms",
   "/terms",
   "Terms for using the TailorTaste website.",
 );

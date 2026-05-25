@@ -9,7 +9,7 @@ import { finalCta } from "@/content/home";
 import { buildPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = buildPageMetadata(
-  "Pilot and Product FAQ",
+  "FAQ",
   "/faq",
   "Answers about TailorTaste pilots, staff controls, menu language switching, dietary notes, guest experience, and restaurant workflow fit.",
   {

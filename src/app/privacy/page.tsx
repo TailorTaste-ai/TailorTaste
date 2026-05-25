@@ -4,7 +4,7 @@ import { privacySections, privacyUpdated } from "@/content/legal";
 import { buildPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = buildPageMetadata(
-  "Privacy Policy",
+  "Privacy",
   "/privacy",
   "How TailorTaste handles contact inquiries, analytics, cookies, and related website data.",
 );
