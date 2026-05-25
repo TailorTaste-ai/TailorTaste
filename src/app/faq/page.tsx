@@ -6,6 +6,7 @@ import { SectionHeader } from "@/components/primitives/SectionHeader";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { faqPage } from "@/content/faq";
 import { finalCta } from "@/content/home";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { buildPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = buildPageMetadata(
@@ -36,7 +37,7 @@ export default function FaqPage() {
       <Script
         id="tailor-taste-faq-jsonld"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }}
       />
       <section className="section-y">
         <Container className="space-y-8 sm:space-y-10">

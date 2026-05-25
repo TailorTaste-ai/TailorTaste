@@ -1,10 +1,17 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   buildConfirmationHtml,
   buildConfirmationPlainText,
   buildHtml,
   buildInquirySubject,
+  sendContactInquiry,
 } from "@/lib/contact-delivery";
+
+afterEach(() => {
+  vi.clearAllMocks();
+  vi.unstubAllEnvs();
+  vi.unstubAllGlobals();
+});
 
 describe("contact delivery builders", () => {
   it("escapes user-provided HTML in the internal inquiry email", () => {
@@ -48,5 +55,28 @@ describe("contact delivery builders", () => {
   it("removes header line breaks from the inquiry subject", () => {
     expect(buildInquirySubject("TailorTaste Inquiry\r\nBcc: hidden", "Pilot venue / hotel\nInjected"))
       .toBe("TailorTaste Inquiry Bcc: hidden | Pilot venue / hotel Injected");
+  });
+
+  it("sets timeout signals on Resend delivery requests", async () => {
+    vi.stubEnv("RESEND_API_KEY", "secret-key");
+    vi.stubEnv("CONTACT_FROM_EMAIL", "hello@tailortaste.com");
+    vi.stubEnv("CONTACT_TO_EMAILS", "team@tailortaste.com");
+
+    const fetchMock = vi.fn(async () => Response.json({ id: "email_123" }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await sendContactInquiry({
+      name: "Ty",
+      email: "guest@example.com",
+      organization: "Tailor Taste",
+      inquiryType: "Pilot venue / hotel",
+      message: "Ready to pilot",
+    });
+
+    expect(result).toMatchObject({ ok: true, provider: "resend" });
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    for (const [, requestInit] of fetchMock.mock.calls) {
+      expect(requestInit?.signal).toBeInstanceOf(AbortSignal);
+    }
   });
 });

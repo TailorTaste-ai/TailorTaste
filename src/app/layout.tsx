@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { Analytics } from "@vercel/analytics/next";
 import { SiteShell } from "@/components/global/SiteShell";
 import { shouldAllowIndexing } from "@/lib/env";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
@@ -159,12 +160,12 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         <Script
           id="tailor-taste-organization-jsonld"
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(organizationJsonLd) }}
         />
         <Script
           id="tailor-taste-website-jsonld"
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(websiteJsonLd) }}
         />
         <SiteShell>{children}</SiteShell>
         <Analytics />

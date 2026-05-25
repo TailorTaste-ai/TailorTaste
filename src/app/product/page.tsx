@@ -9,6 +9,7 @@ import { FinalCTA } from "@/components/sections/FinalCTA";
 import { primaryCta } from "@/content/ctas";
 import { finalCta } from "@/content/home";
 import { productPage } from "@/content/product";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { buildPageMetadata } from "@/lib/metadata";
 import { siteConfig } from "@/lib/site";
 
@@ -45,7 +46,7 @@ export default function ProductPage() {
       <Script
         id="tailor-taste-product-jsonld"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(productJsonLd) }}
       />
       <section className="section-y">
         <Container className="space-y-12 sm:space-y-16">

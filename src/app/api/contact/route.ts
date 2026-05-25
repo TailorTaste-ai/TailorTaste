@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isIP } from "node:net";
 import { sendContactInquiry } from "@/lib/contact-delivery";
 import { resetRateLimitForTests, takeRateLimitSlot } from "@/lib/rate-limit";
 import {
@@ -10,7 +11,9 @@ import {
 
 type ContactApiErrorCode =
   | "invalid_json"
+  | "invalid_request"
   | "payload_too_large"
+  | "unsupported_media_type"
   | "validation_failed"
   | "spam_detected"
   | "rate_limited"
@@ -35,6 +38,7 @@ const CONTACT_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
 const CONTACT_RATE_LIMIT_MAX_REQUESTS = 5;
 const CONTACT_MIN_SUBMIT_DURATION_MS = 2_000;
 const CONTACT_MAX_BODY_BYTES = 16 * 1024;
+const MAX_PROXY_HEADER_BYTES = 512;
 
 type ParsedContactBody = {
   values: ContactFormValues;
@@ -86,13 +90,66 @@ function parseBody(value: unknown): ParsedContactBody {
   };
 }
 
-function getClientIp(request: Request) {
-  const forwardedFor = request.headers.get("x-forwarded-for");
-  if (forwardedFor) {
-    return forwardedFor.split(",")[0].trim();
+function parseBoolean(value: string | undefined) {
+  if (!value) {
+    return undefined;
   }
 
-  return request.headers.get("x-real-ip")?.trim() || "unknown";
+  const normalized = value.trim().toLowerCase();
+  if (["1", "true", "yes"].includes(normalized)) {
+    return true;
+  }
+  if (["0", "false", "no"].includes(normalized)) {
+    return false;
+  }
+
+  return undefined;
+}
+
+function shouldTrustProxyHeaders() {
+  const override = parseBoolean(process.env.TRUST_PROXY_HEADERS);
+  if (typeof override === "boolean") {
+    return override;
+  }
+
+  return process.env.VERCEL === "1" || process.env.NODE_ENV !== "production";
+}
+
+function getBoundedHeader(headers: Headers, name: string) {
+  const value = headers.get(name)?.trim();
+  if (!value || new TextEncoder().encode(value).byteLength > MAX_PROXY_HEADER_BYTES) {
+    return null;
+  }
+
+  return value;
+}
+
+function firstValidIp(value: string) {
+  for (const candidate of value.split(",").slice(0, 8)) {
+    const ip = candidate.trim();
+    if (isIP(ip)) {
+      return ip;
+    }
+  }
+
+  return null;
+}
+
+function getClientIp(request: Request) {
+  if (!shouldTrustProxyHeaders()) {
+    return "unknown";
+  }
+
+  const forwardedFor = getBoundedHeader(request.headers, "x-forwarded-for");
+  if (forwardedFor) {
+    const ip = firstValidIp(forwardedFor);
+    if (ip) {
+      return ip;
+    }
+  }
+
+  const realIp = getBoundedHeader(request.headers, "x-real-ip");
+  return realIp && isIP(realIp) ? realIp : "unknown";
 }
 
 function isLikelyBotSubmission(companyWebsite: string, startedAt: number | null, now = Date.now()) {
@@ -111,35 +168,127 @@ export function resetContactRateLimitForTests() {
   resetRateLimitForTests();
 }
 
-export async function POST(request: Request) {
-  let json: unknown;
+function isJsonContentType(request: Request) {
+  return request.headers.get("content-type")?.split(";")[0]?.trim().toLowerCase() === "application/json";
+}
 
-  try {
-    const body = await request.text();
-    if (new TextEncoder().encode(body).byteLength > CONTACT_MAX_BODY_BYTES) {
-      return NextResponse.json<ContactApiErrorResponse>(
-        {
-          ok: false,
-          error: "payload_too_large",
-          message: "Request body is too large.",
-        },
-        { status: 413 },
-      );
-    }
-
-    json = JSON.parse(body);
-  } catch {
-    return NextResponse.json<ContactApiErrorResponse>(
-      {
-        ok: false,
-        error: "invalid_json",
-        message: "Request body must be valid JSON.",
-      },
-      { status: 400 },
-    );
+function hasOversizedContentLength(request: Request) {
+  const contentLength = request.headers.get("content-length");
+  if (!contentLength) {
+    return false;
   }
 
-  const { values: rawValues, companyWebsite, startedAt } = parseBody(json);
+  const size = Number(contentLength);
+  return Number.isFinite(size) && size > CONTACT_MAX_BODY_BYTES;
+}
+
+function getFirstHeaderValue(request: Request, name: string) {
+  return getBoundedHeader(request.headers, name)?.split(",")[0]?.trim() || null;
+}
+
+function addOriginCandidate(candidates: Set<string>, protocol: string, host: string | null) {
+  if (!host) {
+    return;
+  }
+
+  try {
+    candidates.add(new URL(`${protocol}://${host}`).origin);
+  } catch {
+    // Ignore malformed proxy metadata.
+  }
+}
+
+function getRequestOriginCandidates(request: Request) {
+  const requestUrl = new URL(request.url);
+  const candidates = new Set([requestUrl.origin]);
+  const trustProxyHeaders = shouldTrustProxyHeaders();
+  const forwardedProto = trustProxyHeaders ? getFirstHeaderValue(request, "x-forwarded-proto") : null;
+  const protocol = forwardedProto === "http" || forwardedProto === "https" ? forwardedProto : requestUrl.protocol.slice(0, -1);
+
+  addOriginCandidate(candidates, protocol, getFirstHeaderValue(request, "host"));
+  if (trustProxyHeaders) {
+    addOriginCandidate(candidates, protocol, getFirstHeaderValue(request, "x-forwarded-host"));
+  }
+
+  return candidates;
+}
+
+function isAllowedBrowserOrigin(request: Request) {
+  const origin = request.headers.get("origin");
+  if (origin) {
+    try {
+      if (!getRequestOriginCandidates(request).has(new URL(origin).origin)) {
+        return false;
+      }
+    } catch {
+      return false;
+    }
+  }
+
+  const fetchSite = request.headers.get("sec-fetch-site")?.trim().toLowerCase();
+  if (!fetchSite) {
+    return true;
+  }
+
+  return fetchSite === "same-origin" || fetchSite === "same-site" || fetchSite === "none";
+}
+
+async function readBodyWithLimit(request: Request) {
+  if (!request.body) {
+    return "";
+  }
+
+  const reader = request.body.getReader();
+  const decoder = new TextDecoder();
+  let body = "";
+  let totalBytes = 0;
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) {
+        break;
+      }
+
+      totalBytes += value.byteLength;
+      if (totalBytes > CONTACT_MAX_BODY_BYTES) {
+        await reader.cancel().catch(() => {});
+        return null;
+      }
+
+      body += decoder.decode(value, { stream: true });
+    }
+
+    return body + decoder.decode();
+  } finally {
+    reader.releaseLock();
+  }
+}
+
+function jsonError(error: ContactApiErrorCode, message: string, status: number, headers?: HeadersInit) {
+  return NextResponse.json<ContactApiErrorResponse>(
+    {
+      ok: false,
+      error,
+      message,
+    },
+    { status, headers },
+  );
+}
+
+export async function POST(request: Request) {
+  if (!isJsonContentType(request)) {
+    return jsonError("unsupported_media_type", "Request body must be application/json.", 415);
+  }
+
+  if (!isAllowedBrowserOrigin(request)) {
+    return jsonError("invalid_request", "Request origin is not allowed.", 403);
+  }
+
+  if (hasOversizedContentLength(request)) {
+    return jsonError("payload_too_large", "Request body is too large.", 413);
+  }
+
   const rateLimit = await takeRateLimitSlot(
     `contact:${getClientIp(request)}`,
     CONTACT_RATE_LIMIT_MAX_REQUESTS,
@@ -151,7 +300,10 @@ export async function POST(request: Request) {
       {
         ok: false,
         error: "rate_limited",
-        message: "Too many inquiries were submitted from this connection. Please wait a few minutes and try again.",
+        message:
+          rateLimit.store === "memory_degraded"
+            ? "Contact submissions are busier than usual. Please wait a few minutes and try again."
+            : "Too many inquiries were submitted from this connection. Please wait a few minutes and try again.",
       },
       {
         status: 429,
@@ -162,6 +314,20 @@ export async function POST(request: Request) {
     );
   }
 
+  let json: unknown;
+
+  try {
+    const body = await readBodyWithLimit(request);
+    if (body === null) {
+      return jsonError("payload_too_large", "Request body is too large.", 413);
+    }
+
+    json = JSON.parse(body);
+  } catch {
+    return jsonError("invalid_json", "Request body must be valid JSON.", 400);
+  }
+
+  const { values: rawValues, companyWebsite, startedAt } = parseBody(json);
   const values = normalizeContactFormValues(rawValues);
   const validationErrors = validateContactForm(values);
 

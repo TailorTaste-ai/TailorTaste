@@ -1,3 +1,5 @@
+import "server-only";
+
 type ContactEnvStatus = {
   configured: boolean;
   missingVars: string[];

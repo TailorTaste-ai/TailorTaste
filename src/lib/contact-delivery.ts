@@ -1,3 +1,5 @@
+import "server-only";
+
 import type { ContactFormValues } from "@/lib/validation";
 import { getContactEnvStatus, warnIfContactEnvMissing } from "@/lib/env";
 
@@ -30,6 +32,8 @@ type ContactDeliveryConfig = {
   to: string[];
   subjectPrefix: string;
 };
+
+const RESEND_TIMEOUT_MS = 8_000;
 
 function sanitizeHeaderValue(input: string) {
   return input.replace(/[\r\n]+/g, " ").trim();
@@ -194,6 +198,7 @@ async function sendViaResend(
     },
     body: JSON.stringify(payload),
     cache: "no-store",
+    signal: AbortSignal.timeout(RESEND_TIMEOUT_MS),
   });
 
   if (!response.ok) {

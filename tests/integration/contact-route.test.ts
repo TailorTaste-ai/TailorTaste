@@ -51,6 +51,55 @@ describe("POST /api/contact", () => {
     expect(body).toMatchObject({ ok: false, error: "invalid_json" });
   });
 
+  it("requires application/json content", async () => {
+    const request = new Request("http://localhost/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify(validPayload),
+    });
+
+    const response = await POST(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(415);
+    expect(body).toMatchObject({ ok: false, error: "unsupported_media_type" });
+    expect(sendContactInquiry).not.toHaveBeenCalled();
+  });
+
+  it("rejects cross-origin browser submissions", async () => {
+    const request = createRequest(validPayload, {
+      Origin: "https://evil.example",
+      "Sec-Fetch-Site": "cross-site",
+    });
+
+    const response = await POST(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(403);
+    expect(body).toMatchObject({ ok: false, error: "invalid_request" });
+    expect(sendContactInquiry).not.toHaveBeenCalled();
+  });
+
+  it("allows browser submissions when the origin matches the host header", async () => {
+    vi.mocked(sendContactInquiry).mockResolvedValue({
+      ok: true,
+      provider: "resend",
+      messageId: "msg_123",
+    });
+
+    const request = createRequest(validPayload, {
+      Host: "127.0.0.1:3005",
+      Origin: "http://127.0.0.1:3005",
+      "Sec-Fetch-Site": "same-origin",
+    });
+
+    const response = await POST(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body).toMatchObject({ ok: true });
+  });
+
   it("returns validation_failed when required fields are missing", async () => {
     const request = createRequest({});
 
@@ -66,6 +115,24 @@ describe("POST /api/contact", () => {
     const request = createRequest({
       ...validPayload,
       message: "x".repeat(20_000),
+    });
+
+    const response = await POST(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(413);
+    expect(body).toMatchObject({ ok: false, error: "payload_too_large" });
+    expect(sendContactInquiry).not.toHaveBeenCalled();
+  });
+
+  it("rejects oversized content-length before reading the body", async () => {
+    const request = new Request("http://localhost/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": "20000",
+      },
+      body: "{",
     });
 
     const response = await POST(request);
@@ -226,9 +293,15 @@ describe("POST /api/contact", () => {
         }),
       }),
     );
+
+    const [, firstRedisRequest] = fetchMock.mock.calls[0];
+    const redisBody = JSON.parse(String(firstRedisRequest?.body));
+    expect(redisBody[3]).toMatch(/^rl:v1:/);
+    expect(redisBody[3]).not.toContain("203.0.113.10");
+    expect(firstRedisRequest?.signal).toBeInstanceOf(AbortSignal);
   });
 
-  it("falls back to memory rate limiting if Redis is unavailable", async () => {
+  it("uses degraded memory rate limiting if configured Redis is unavailable", async () => {
     vi.stubEnv("UPSTASH_REDIS_REST_URL", "https://redis.example.com");
     vi.stubEnv("UPSTASH_REDIS_REST_TOKEN", "secret-token");
     vi.stubGlobal(
@@ -260,6 +333,24 @@ describe("POST /api/contact", () => {
     const body = await response.json();
 
     expect(response.status).toBe(429);
+    expect(response.headers.get("Retry-After")).toBeTruthy();
     expect(body).toMatchObject({ ok: false, error: "rate_limited" });
+    expect(sendContactInquiry).toHaveBeenCalledTimes(5);
+  });
+
+  it("keeps production contact submissions working with degraded memory limits if Redis is not configured", async () => {
+    vi.stubEnv("NODE_ENV", "production");
+    vi.mocked(sendContactInquiry).mockResolvedValue({
+      ok: true,
+      provider: "resend",
+      messageId: "msg_123",
+    });
+
+    const response = await POST(createRequest(validPayload));
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body).toMatchObject({ ok: true });
+    expect(sendContactInquiry).toHaveBeenCalledTimes(1);
   });
 });

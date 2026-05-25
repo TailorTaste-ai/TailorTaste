@@ -1,7 +1,7 @@
 import type { LegalSection } from "@/components/legal/LegalDocument";
 
 export const legalUpdated = "May 20, 2026";
-export const privacyUpdated = "May 24, 2026";
+export const privacyUpdated = "May 25, 2026";
 
 export const privacySections: LegalSection[] = [
   {
@@ -46,6 +46,7 @@ export const privacySections: LegalSection[] = [
     items: [
       "Vercel hosts the site and provides privacy-focused web analytics. See [Vercel's privacy notice](https://vercel.com/legal/privacy-policy).",
       "Resend is used to deliver contact form emails and confirmation messages. See [Resend's privacy policy](https://resend.com/legal/privacy-policy).",
+      "Upstash Redis or Vercel KV may be used to store short-lived hashed rate-limit keys for abuse prevention.",
       "Email recipients on the TailorTaste team receive inquiry details so they can respond.",
     ],
   },
