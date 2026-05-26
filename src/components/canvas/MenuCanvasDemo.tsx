@@ -1,6 +1,6 @@
 "use client";
 
-import type { PointerEvent } from "react";
+import type { ChangeEvent, PointerEvent } from "react";
 import { useMemo, useRef, useState } from "react";
 
 type MenuItem = {
@@ -39,6 +39,16 @@ type DragState = {
   original: CanvasElement;
 };
 
+type ResizeHandle = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
+
+type ResizeState = {
+  id: string;
+  handle: ResizeHandle;
+  startX: number;
+  startY: number;
+  original: CanvasElement;
+};
+
 type Guide = {
   orientation: "vertical" | "horizontal";
   position: number;
@@ -47,6 +57,19 @@ type Guide = {
 const PAGE_WIDTH = 1200;
 const PAGE_HEIGHT = 900;
 const SNAP_THRESHOLD = 8;
+const MIN_ELEMENT_SIZE = 24;
+const MAX_IMAGE_BYTES = 3 * 1024 * 1024;
+
+const RESIZE_HANDLES: Array<{ id: ResizeHandle; className: string; label: string }> = [
+  { id: "nw", className: "left-0 top-0 cursor-nwse-resize", label: "Resize from top left" },
+  { id: "n", className: "left-1/2 top-0 -translate-x-1/2 cursor-n-resize", label: "Resize from top" },
+  { id: "ne", className: "right-0 top-0 cursor-nesw-resize", label: "Resize from top right" },
+  { id: "e", className: "right-0 top-1/2 -translate-y-1/2 cursor-e-resize", label: "Resize from right" },
+  { id: "se", className: "bottom-0 right-0 cursor-nwse-resize", label: "Resize from bottom right" },
+  { id: "s", className: "bottom-0 left-1/2 -translate-x-1/2 cursor-s-resize", label: "Resize from bottom" },
+  { id: "sw", className: "bottom-0 left-0 cursor-nesw-resize", label: "Resize from bottom left" },
+  { id: "w", className: "left-0 top-1/2 -translate-y-1/2 cursor-w-resize", label: "Resize from left" },
+];
 
 const initialSections: MenuSection[] = [
   {
@@ -372,6 +395,38 @@ function applySmartGuides(moving: CanvasElement, elements: CanvasElement[]) {
   };
 }
 
+function resizeCanvasElement(original: CanvasElement, handle: ResizeHandle, dx: number, dy: number) {
+  let nextX = original.x;
+  let nextY = original.y;
+  let nextW = original.w;
+  let nextH = original.h;
+
+  if (handle.includes("e")) {
+    nextW = Math.max(MIN_ELEMENT_SIZE, Math.min(PAGE_WIDTH - original.x, original.w + dx));
+  }
+  if (handle.includes("s")) {
+    nextH = Math.max(MIN_ELEMENT_SIZE, Math.min(PAGE_HEIGHT - original.y, original.h + dy));
+  }
+  if (handle.includes("w")) {
+    const maxX = original.x + original.w - MIN_ELEMENT_SIZE;
+    nextX = Math.max(0, Math.min(maxX, original.x + dx));
+    nextW = original.w + original.x - nextX;
+  }
+  if (handle.includes("n")) {
+    const maxY = original.y + original.h - MIN_ELEMENT_SIZE;
+    nextY = Math.max(0, Math.min(maxY, original.y + dy));
+    nextH = original.h + original.y - nextY;
+  }
+
+  return {
+    ...original,
+    x: Math.round(nextX),
+    y: Math.round(nextY),
+    w: Math.round(nextW),
+    h: Math.round(nextH),
+  };
+}
+
 function downloadJson(filename: string, value: unknown) {
   const url = URL.createObjectURL(new Blob([JSON.stringify(value, null, 2)], { type: "application/json" }));
   const anchor = document.createElement("a");
@@ -385,10 +440,12 @@ function downloadJson(filename: string, value: unknown) {
 
 export function MenuCanvasDemo() {
   const pageRef = useRef<HTMLDivElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const [sections, setSections] = useState(initialSections);
   const [elements, setElements] = useState(initialElements);
   const [selectedId, setSelectedId] = useState("menu.title");
   const [drag, setDrag] = useState<DragState | null>(null);
+  const [resize, setResize] = useState<ResizeState | null>(null);
   const [guides, setGuides] = useState<Guide[]>([]);
   const [status, setStatus] = useState("Ready. Edit the menu, move elements, and download the layout state.");
 
@@ -412,7 +469,24 @@ export function MenuCanvasDemo() {
     setDrag({ id: element.id, startX: point.x, startY: point.y, original: element });
   }
 
+  function startElementResize(event: PointerEvent<HTMLButtonElement>, element: CanvasElement, handle: ResizeHandle) {
+    event.preventDefault();
+    event.stopPropagation();
+    const point = pagePoint(event);
+    setSelectedId(element.id);
+    setDrag(null);
+    setResize({ id: element.id, handle, startX: point.x, startY: point.y, original: element });
+  }
+
   function onPointerMove(event: PointerEvent<HTMLDivElement>) {
+    if (resize) {
+      const point = pagePoint(event);
+      const dx = point.x - resize.startX;
+      const dy = point.y - resize.startY;
+      const next = resizeCanvasElement(resize.original, resize.handle, dx, dy);
+      setElements((current) => current.map((element) => (element.id === resize.id ? next : element)));
+      return;
+    }
     if (!drag) return;
     const point = pagePoint(event);
     const dx = point.x - drag.startX;
@@ -429,7 +503,9 @@ export function MenuCanvasDemo() {
 
   function endDrag() {
     if (drag) setStatus(`${drag.id} moved. Smart guides keep matching edges aligned.`);
+    if (resize) setStatus(`${resize.id} resized.`);
     setDrag(null);
+    setResize(null);
     setGuides([]);
   }
 
@@ -527,6 +603,49 @@ export function MenuCanvasDemo() {
     );
   }
 
+  function addImageFromFile(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setStatus("Choose an image file to add it to the menu editor.");
+      return;
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      setStatus("Image is larger than 3 MB. Please choose a smaller image for faster menu editing.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result !== "string") {
+        setStatus("Could not read that image file.");
+        return;
+      }
+      const id = `image.${Date.now()}`;
+      const element: CanvasElement = {
+        id,
+        type: "image",
+        source: reader.result,
+        x: 220,
+        y: 136,
+        w: 180,
+        h: 140,
+        fontSize: 16,
+        lineHeight: 20,
+        weight: 400,
+        align: "center",
+        color: "black",
+        z: Math.max(...elements.map((entry) => entry.z), 0) + 1,
+      };
+      setElements((current) => [...current, element]);
+      setSelectedId(id);
+      setStatus(`${file.name} added. Drag it or use the corner and side handles to resize it.`);
+    };
+    reader.onerror = () => setStatus("Could not read that image file.");
+    reader.readAsDataURL(file);
+  }
+
   function downloadLayout() {
     downloadJson("tailortaste-menu-editor-layout.json", {
       exportedAt: new Date().toISOString(),
@@ -556,6 +675,20 @@ export function MenuCanvasDemo() {
             >
               Save preview
             </button>
+            <button
+              className="rounded-md border border-accent px-4 py-2 text-sm font-bold text-accent"
+              type="button"
+              onClick={() => imageInputRef.current?.click()}
+            >
+              Add image
+            </button>
+            <input
+              ref={imageInputRef}
+              className="hidden"
+              type="file"
+              accept="image/*"
+              onChange={addImageFromFile}
+            />
             <button
               className="rounded-md border border-accent px-4 py-2 text-sm font-bold text-accent"
               type="button"
@@ -710,6 +843,19 @@ export function MenuCanvasDemo() {
                         <img alt="TailorTaste mark" className="h-full w-full object-contain" src={element.source} />
                       ) : (
                         text
+                      )}
+                      {selected && (
+                        <div className="pointer-events-none absolute inset-0">
+                          {RESIZE_HANDLES.map((handle) => (
+                            <button
+                              key={handle.id}
+                              aria-label={handle.label}
+                              className={`pointer-events-auto absolute h-3 w-3 rounded-sm border border-accent bg-chalk shadow-sm ${handle.className}`}
+                              type="button"
+                              onPointerDown={(event) => startElementResize(event, element, handle.id)}
+                            />
+                          ))}
+                        </div>
                       )}
                     </div>
                   );
