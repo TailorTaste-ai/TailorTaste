@@ -795,7 +795,7 @@ export function MenuCanvasDemo() {
             </div>
           </aside>
 
-          <section className="rounded-md border border-ink/10 bg-chalk p-4 shadow-soft">
+          <section className="rounded-md border border-ink/10 bg-chalk p-4 shadow-soft xl:sticky xl:top-24 xl:self-start">
             <div className="mb-3 flex items-center justify-between gap-3">
               <div>
                 <h2 className="font-bold">Menu Editor</h2>
@@ -886,7 +886,7 @@ export function MenuCanvasDemo() {
             </div>
           </section>
 
-          <aside className="rounded-md border border-ink/10 bg-chalk p-4 shadow-soft">
+          <aside className="rounded-md border border-ink/10 bg-chalk p-4 shadow-soft xl:sticky xl:top-24 xl:max-h-[calc(100vh-7rem)] xl:self-start xl:overflow-auto">
             <h2 className="mb-3 text-lg font-bold">Inspector</h2>
             {selectedElement ? (
               <div className="space-y-3 text-sm">
