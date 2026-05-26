@@ -45,7 +45,7 @@ type Guide = {
 };
 
 const PAGE_WIDTH = 1200;
-const PAGE_HEIGHT = 860;
+const PAGE_HEIGHT = 900;
 const SNAP_THRESHOLD = 8;
 
 const initialSections: MenuSection[] = [
@@ -60,10 +60,16 @@ const initialSections: MenuSection[] = [
         price: "24",
       },
       {
-        id: "starters.beetroot",
+        id: "starters.beetroot_carpaccio",
         name: "Roasted Beetroot Carpaccio",
-        description: "Whipped goat cheese, toasted hazelnuts, apple vinegar",
+        description: "Whipped goat cheese, toasted hazelnuts, apple vinegar, garden cress",
         price: "13",
+      },
+      {
+        id: "starters.chicken_liver_parfait",
+        name: "Chicken Liver Parfait",
+        description: "Port jelly, pickled cherries, grilled sourdough",
+        price: "15",
       },
     ],
   },
@@ -74,14 +80,45 @@ const initialSections: MenuSection[] = [
       {
         id: "mains.risotto",
         name: "Wild Mushroom Risotto",
-        description: "Carnaroli rice, roasted king oyster mushrooms, parmesan",
+        description: "Carnaroli rice, roasted king oyster mushrooms, parmesan, thyme oil",
         price: "22",
       },
       {
         id: "mains.sea_bass",
         name: "Pan-Roasted Sea Bass",
-        description: "Fennel puree, charred leek, mussel cream",
+        description: "Fennel puree, charred leek, mussel cream, parsley potatoes",
         price: "31",
+      },
+      {
+        id: "mains.long_beef_name",
+        name: "Slow-Braised Alpine Beef Cheek with Smoked Bone Marrow Crumb",
+        description: "Potato fondant, glazed carrots, red wine jus, horseradish gremolata",
+        price: "34",
+      },
+      {
+        id: "mains.duck_for_two",
+        name: "Aged Duck Crown for Two",
+        description:
+          "Carved tableside with confit leg croquettes, black garlic jus, bitter leaves, cherry mostarda, and roasted roots finished in duck fat; please allow 35 minutes during peak service",
+        price: "78",
+      },
+    ],
+  },
+  {
+    id: "sides",
+    title: "Sides",
+    items: [
+      {
+        id: "sides.fries",
+        name: "Fries",
+        description: "Sea salt, malt vinegar mayonnaise",
+        price: "6",
+      },
+      {
+        id: "sides.greens",
+        name: "Charred Seasonal Greens",
+        description: "Lemon, garlic, chili, toasted seeds",
+        price: "8",
       },
     ],
   },
@@ -90,10 +127,22 @@ const initialSections: MenuSection[] = [
     title: "Desserts",
     items: [
       {
-        id: "desserts.tart",
+        id: "desserts.chocolate_tart",
         name: "Dark Chocolate Tart",
         description: "Creme fraiche, cocoa nib praline, smoked sea salt",
         price: "11",
+      },
+      {
+        id: "desserts.pavlova",
+        name: "Rhubarb Pavlova",
+        description: "Vanilla cream, poached rhubarb, pistachio, citrus syrup",
+        price: "10",
+      },
+      {
+        id: "desserts.cheese",
+        name: "Local Cheese Selection",
+        description: "Three cheeses, pear chutney, seeded crackers",
+        price: "16",
       },
     ],
   },
@@ -135,11 +184,19 @@ const initialElements: CanvasElement[] = [
 
 function buildSectionElements(sections: MenuSection[]) {
   const elements: CanvasElement[] = [];
-  const columns = [86, 640];
+  const sectionPlacements: Record<string, { x: number; y: number }> = {
+    starters: { x: 86, y: 170 },
+    mains: { x: 86, y: 450 },
+    sides: { x: 640, y: 170 },
+    desserts: { x: 640, y: 420 },
+  };
   sections.forEach((section, sectionIndex) => {
-    const column = sectionIndex % 2;
-    const baseX = columns[column];
-    const baseY = 170 + Math.floor(sectionIndex / 2) * 270;
+    const placement = sectionPlacements[section.id] ?? {
+      x: sectionIndex % 2 === 0 ? 86 : 640,
+      y: Math.min(760, 170 + Math.floor(sectionIndex / 2) * 250),
+    };
+    const baseX = placement.x;
+    const baseY = placement.y;
     elements.push({
       id: `section.${section.id}.title`,
       type: "text",
@@ -156,8 +213,12 @@ function buildSectionElements(sections: MenuSection[]) {
       z: 2,
     });
 
-    section.items.forEach((item, itemIndex) => {
-      const y = baseY + 46 + itemIndex * 78;
+    let itemY = baseY + 46;
+    section.items.forEach((item) => {
+      const y = itemY;
+      const nameHeight = item.name.length > 42 ? 50 : 26;
+      const descriptionOffset = item.name.length > 42 ? 52 : 28;
+      const descriptionHeight = item.description.length > 110 ? 72 : 40;
       elements.push(
         {
           id: `${item.id}.name`,
@@ -165,8 +226,8 @@ function buildSectionElements(sections: MenuSection[]) {
           source: `${item.id}.name`,
           x: baseX,
           y,
-          w: 300,
-          h: 26,
+          w: 360,
+          h: nameHeight,
           fontSize: 18,
           lineHeight: 22,
           weight: 700,
@@ -179,9 +240,9 @@ function buildSectionElements(sections: MenuSection[]) {
           type: "text",
           source: `${item.id}.description`,
           x: baseX,
-          y: y + 28,
+          y: y + descriptionOffset,
           w: 380,
-          h: 34,
+          h: descriptionHeight,
           fontSize: 13,
           lineHeight: 17,
           weight: 400,
@@ -193,7 +254,7 @@ function buildSectionElements(sections: MenuSection[]) {
           id: `${item.id}.price`,
           type: "text",
           source: `${item.id}.price`,
-          x: baseX + 402,
+          x: baseX + 420,
           y,
           w: 56,
           h: 28,
@@ -205,6 +266,7 @@ function buildSectionElements(sections: MenuSection[]) {
           z: 3,
         },
       );
+      itemY += Math.max(78, descriptionOffset + descriptionHeight + 16);
     });
   });
   return elements;
@@ -611,7 +673,8 @@ export function MenuCanvasDemo() {
             <div className="overflow-auto rounded-md border border-ink/10 bg-mist p-5">
               <div
                 ref={pageRef}
-                className="relative mx-auto aspect-[1200/860] w-full max-w-[1080px] overflow-hidden border border-ink/15 bg-[#f8f4ea] shadow-soft"
+                className="relative mx-auto aspect-[1200/900] w-full max-w-[1080px] overflow-hidden border border-ink/15 bg-[#f8f4ea] shadow-soft [container-type:inline-size]"
+                data-canvas-page
                 onPointerMove={onPointerMove}
                 onPointerUp={endDrag}
                 onPointerLeave={endDrag}
@@ -628,14 +691,15 @@ export function MenuCanvasDemo() {
                       className={`absolute select-none overflow-hidden border bg-chalk/40 ${colorClass} ${
                         selected ? "border-accent ring-2 ring-accent/30" : "border-accent/20"
                       }`}
+                      data-canvas-element={element.id}
                       style={{
                         left: `${(element.x / PAGE_WIDTH) * 100}%`,
                         top: `${(element.y / PAGE_HEIGHT) * 100}%`,
                         width: `${(element.w / PAGE_WIDTH) * 100}%`,
                         height: `${(element.h / PAGE_HEIGHT) * 100}%`,
                         zIndex: element.z,
-                        fontSize: `clamp(8px, ${(element.fontSize / PAGE_WIDTH) * 100}vw, ${element.fontSize}px)`,
-                        lineHeight: `${element.lineHeight}px`,
+                        fontSize: `calc(${(element.fontSize / PAGE_WIDTH) * 100}cqw)`,
+                        lineHeight: `calc(${(element.lineHeight / PAGE_WIDTH) * 100}cqw)`,
                         fontWeight: element.weight,
                         textAlign: element.align,
                       }}
