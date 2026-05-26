@@ -71,6 +71,13 @@ const RESIZE_HANDLES: Array<{ id: ResizeHandle; className: string; label: string
   { id: "w", className: "left-0 top-1/2 -translate-y-1/2 cursor-w-resize", label: "Resize from left" },
 ];
 
+const INSPECTOR_FIELDS: Array<{ field: "x" | "y" | "w" | "h"; label: string }> = [
+  { field: "x", label: "Left" },
+  { field: "y", label: "Top" },
+  { field: "w", label: "Width" },
+  { field: "h", label: "Height" },
+];
+
 const initialSections: MenuSection[] = [
   {
     id: "starters",
@@ -653,30 +660,30 @@ export function MenuCanvasDemo() {
       sections,
       elements,
     });
-    setStatus("Downloaded the current menu editor layout JSON.");
+    setStatus("Downloaded the menu file for the waiter dashboard.");
   }
 
   return (
     <section className="bg-paper px-4 py-6 text-ink sm:px-6 lg:px-8">
-      <div className="mx-auto flex max-w-[1800px] flex-col gap-4">
+      <div className="mx-auto flex max-w-[1800px] min-w-0 flex-col gap-4">
         <div className="flex flex-col gap-3 border-b border-ink/10 pb-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">Password protected demo</p>
             <h1 className="font-serif text-3xl leading-tight sm:text-5xl">TailorTaste Menu Editor</h1>
             <p className="mt-2 max-w-3xl text-sm text-graphite">
-              Move menu objects, align paragraphs with smart guides, edit content, and export a layout snapshot.
+              Edit menu text, place images, align objects, and download the file for the waiter dashboard.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
             <button
-              className="rounded-md bg-cypress px-4 py-2 text-sm font-bold text-chalk"
+              className="min-h-11 rounded-md bg-cypress px-4 py-2 text-sm font-bold text-chalk"
               type="button"
-              onClick={() => setStatus("Preview saved in this browser session.")}
+              onClick={() => setStatus("Draft saved in this browser session.")}
             >
-              Save preview
+              Save draft
             </button>
             <button
-              className="rounded-md border border-accent px-4 py-2 text-sm font-bold text-accent"
+              className="min-h-11 rounded-md border border-accent px-4 py-2 text-sm font-bold text-accent"
               type="button"
               onClick={() => imageInputRef.current?.click()}
             >
@@ -690,23 +697,23 @@ export function MenuCanvasDemo() {
               onChange={addImageFromFile}
             />
             <button
-              className="rounded-md border border-accent px-4 py-2 text-sm font-bold text-accent"
+              className="min-h-11 rounded-md border border-accent px-4 py-2 text-sm font-bold text-accent"
               type="button"
               onClick={downloadLayout}
             >
-              Download layout
+              Download menu file
             </button>
           </div>
         </div>
 
         <p className="rounded-md border border-ink/10 bg-chalk px-4 py-2 text-sm text-graphite">{status}</p>
 
-        <div className="grid gap-4 xl:grid-cols-[420px_minmax(0,1fr)_320px]">
-          <aside className="rounded-md border border-ink/10 bg-chalk p-4 shadow-soft">
+        <div className="grid min-w-0 gap-4 xl:grid-cols-[360px_minmax(0,1fr)_300px] 2xl:grid-cols-[420px_minmax(0,1fr)_320px]">
+          <aside className="order-2 min-w-0 overflow-hidden rounded-md border border-ink/10 bg-chalk p-4 shadow-soft xl:order-none">
             <div className="mb-3 flex items-center justify-between gap-3">
-              <h2 className="text-lg font-bold">Menu</h2>
+              <h2 className="text-lg font-bold">Menu content</h2>
               <button
-                className="rounded-md border border-accent px-3 py-2 text-sm font-bold text-accent"
+                className="min-h-11 rounded-md border border-accent px-3 py-2 text-sm font-bold text-accent"
                 type="button"
                 onClick={addSection}
               >
@@ -715,33 +722,33 @@ export function MenuCanvasDemo() {
             </div>
             <div className="space-y-3">
               {sections.map((section, sectionIndex) => (
-                <section key={section.id} className="rounded-md border border-ink/10 bg-paper p-3">
-                  <div className="grid grid-cols-[30px_1fr_72px] gap-2">
+                <section key={section.id} className="min-w-0 overflow-hidden rounded-md border border-ink/10 bg-paper p-3">
+                  <div className="grid min-w-0 grid-cols-[52px_minmax(0,1fr)_80px] gap-2">
                     <div className="flex flex-col gap-1">
                       <button
-                        className="rounded border border-ink/15 text-xs"
+                        className="grid h-11 w-11 place-items-center rounded border border-ink/15 text-base font-bold"
                         type="button"
                         aria-label={`Move ${section.title} up`}
                         onClick={() => moveSection(sectionIndex, -1)}
                       >
-                        Up
+                        ↑
                       </button>
                       <button
-                        className="rounded border border-ink/15 text-xs"
+                        className="grid h-11 w-11 place-items-center rounded border border-ink/15 text-base font-bold"
                         type="button"
                         aria-label={`Move ${section.title} down`}
                         onClick={() => moveSection(sectionIndex, 1)}
                       >
-                        Dn
+                        ↓
                       </button>
                     </div>
                     <input
-                      className="rounded-md border border-ink/15 bg-chalk px-3 py-2 text-sm font-bold"
+                      className="min-w-0 rounded-md border border-ink/15 bg-chalk px-3 py-2 text-sm font-bold"
                       value={section.title}
                       onChange={(event) => updateSection(section.id, event.target.value)}
                     />
                     <button
-                      className="rounded-md border border-accent px-2 text-xs font-bold text-accent"
+                      className="min-h-11 rounded-md border border-accent px-2 text-xs font-bold text-accent"
                       type="button"
                       onClick={() => addItem(section.id)}
                     >
@@ -751,39 +758,39 @@ export function MenuCanvasDemo() {
 
                   <div className="mt-3 space-y-3">
                     {section.items.map((item, itemIndex) => (
-                      <div key={item.id} className="grid grid-cols-[30px_1fr_58px] gap-2 border-t border-ink/10 pt-3">
+                      <div key={item.id} className="grid min-w-0 grid-cols-[52px_minmax(0,1fr)_64px] gap-2 border-t border-ink/10 pt-3">
                         <div className="flex flex-col gap-1">
                           <button
-                            className="rounded border border-ink/15 text-xs"
+                            className="grid h-11 w-11 place-items-center rounded border border-ink/15 text-base font-bold"
                             type="button"
                             aria-label={`Move ${item.name} up`}
                             onClick={() => moveItem(section.id, itemIndex, -1)}
                           >
-                            Up
+                            ↑
                           </button>
                           <button
-                            className="rounded border border-ink/15 text-xs"
+                            className="grid h-11 w-11 place-items-center rounded border border-ink/15 text-base font-bold"
                             type="button"
                             aria-label={`Move ${item.name} down`}
                             onClick={() => moveItem(section.id, itemIndex, 1)}
                           >
-                            Dn
+                            ↓
                           </button>
                         </div>
-                        <div className="space-y-2">
+                        <div className="min-w-0 space-y-2">
                           <input
-                            className="w-full rounded-md border border-ink/15 bg-chalk px-3 py-2 text-sm"
+                            className="w-full min-w-0 rounded-md border border-ink/15 bg-chalk px-3 py-2 text-sm"
                             value={item.name}
                             onChange={(event) => updateItem(section.id, item.id, "name", event.target.value)}
                           />
                           <textarea
-                            className="min-h-16 w-full resize-y rounded-md border border-ink/15 bg-chalk px-3 py-2 text-sm leading-snug"
+                            className="min-h-16 w-full min-w-0 resize-y rounded-md border border-ink/15 bg-chalk px-3 py-2 text-sm leading-snug"
                             value={item.description}
                             onChange={(event) => updateItem(section.id, item.id, "description", event.target.value)}
                           />
                         </div>
                         <input
-                          className="rounded-md border border-ink/15 bg-chalk px-2 py-2 text-right text-sm font-bold"
+                          className="min-w-0 rounded-md border border-ink/15 bg-chalk px-2 py-2 text-right text-sm font-bold"
                           value={item.price}
                           onChange={(event) => updateItem(section.id, item.id, "price", event.target.value)}
                         />
@@ -795,15 +802,15 @@ export function MenuCanvasDemo() {
             </div>
           </aside>
 
-          <section className="rounded-md border border-ink/10 bg-chalk p-4 shadow-soft xl:sticky xl:top-24 xl:self-start">
-            <div className="mb-3 flex items-center justify-between gap-3">
+          <section className="order-1 min-w-0 rounded-md border border-ink/10 bg-chalk p-4 shadow-soft xl:sticky xl:top-24 xl:order-none xl:self-start">
+            <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="font-bold">Menu Editor</h2>
                 <p className="text-xs text-graphite">{PAGE_WIDTH} x {PAGE_HEIGHT}px editor surface</p>
               </div>
               <p className="text-xs text-graphite">Drag elements. Guides appear when edges align.</p>
             </div>
-            <div className="overflow-auto rounded-md border border-ink/10 bg-mist p-5">
+            <div className="overflow-auto rounded-md border border-ink/10 bg-mist p-3 sm:p-5">
               <div
                 ref={pageRef}
                 className="relative mx-auto aspect-[1200/900] w-full max-w-[1080px] overflow-hidden border border-ink/15 bg-[#f8f4ea] shadow-soft [container-type:inline-size]"
@@ -850,7 +857,7 @@ export function MenuCanvasDemo() {
                             <button
                               key={handle.id}
                               aria-label={handle.label}
-                              className={`pointer-events-auto absolute h-3 w-3 rounded-sm border border-accent bg-chalk shadow-sm ${handle.className}`}
+                              className={`pointer-events-auto absolute h-5 w-5 rounded-sm border-2 border-accent bg-chalk shadow-sm ${handle.className}`}
                               type="button"
                               onPointerDown={(event) => startElementResize(event, element, handle.id)}
                             />
@@ -886,17 +893,17 @@ export function MenuCanvasDemo() {
             </div>
           </section>
 
-          <aside className="rounded-md border border-ink/10 bg-chalk p-4 shadow-soft xl:sticky xl:top-24 xl:max-h-[calc(100vh-7rem)] xl:self-start xl:overflow-auto">
+          <aside className="order-3 min-w-0 rounded-md border border-ink/10 bg-chalk p-4 shadow-soft xl:sticky xl:top-24 xl:order-none xl:max-h-[calc(100vh-7rem)] xl:self-start xl:overflow-auto">
             <h2 className="mb-3 text-lg font-bold">Inspector</h2>
             {selectedElement ? (
               <div className="space-y-3 text-sm">
                 <p className="break-words text-xs font-bold text-accent">Selected: {selectedElement.id}</p>
                 <div className="grid grid-cols-2 gap-2">
-                  {(["x", "y", "w", "h"] as const).map((field) => (
-                    <label key={field} className="space-y-1">
-                      <span className="block text-xs text-graphite">{field.toUpperCase()}</span>
+                  {INSPECTOR_FIELDS.map(({ field, label }) => (
+                    <label key={field} className="min-w-0 space-y-1">
+                      <span className="block text-xs text-graphite">{label}</span>
                       <input
-                        className="w-full rounded-md border border-ink/15 px-2 py-2"
+                        className="w-full min-w-0 rounded-md border border-ink/15 px-2 py-2"
                         type="number"
                         value={Math.round(selectedElement[field])}
                         onChange={(event) => updateSelectedElement({ [field]: Number(event.target.value) })}
@@ -950,18 +957,18 @@ export function MenuCanvasDemo() {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <button
-                    className="rounded-md border border-ink/15 px-3 py-2 text-xs font-bold"
+                    className="min-h-11 rounded-md border border-ink/15 px-3 py-2 text-xs font-bold"
                     type="button"
                     onClick={() => updateSelectedElement({ x: Math.round((PAGE_WIDTH - selectedElement.w) / 2) })}
                   >
-                    Center X
+                    Center horizontally
                   </button>
                   <button
-                    className="rounded-md border border-ink/15 px-3 py-2 text-xs font-bold"
+                    className="min-h-11 rounded-md border border-ink/15 px-3 py-2 text-xs font-bold"
                     type="button"
                     onClick={() => updateSelectedElement({ y: Math.round((PAGE_HEIGHT - selectedElement.h) / 2) })}
                   >
-                    Center Y
+                    Center vertically
                   </button>
                 </div>
               </div>
